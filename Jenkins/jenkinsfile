@@ -1,7 +1,7 @@
 pipeline {
     agent { docker { image 'python:3.9.2-alpine3.12' } }
     stages {
-        stage('getInfo') {
+        stage('test') {
             sh 'ls -la'
             sh 'uname -a'
             sh 'pwd'
