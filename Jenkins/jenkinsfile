@@ -1,15 +1,11 @@
 pipeline {
     agent { docker { image 'python:3.9.2-alpine3.12' } }
     stages {
-        stage('build') {
-            steps {
-                sh 'pip install -r requirements.txt'
-            }
-        }
-        stage('test') {
-            steps {
-                sh 'pytest'
-            }   
+        stage('getInfo') {
+            sh 'ls -la'
+            sh 'uname -a'
+            sh 'pwd'
+            sh 'false'
         }
     }
 }
