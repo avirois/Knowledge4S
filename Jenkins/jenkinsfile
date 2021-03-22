@@ -3,14 +3,12 @@ pipeline {
     stages {
         stage('test') {
             steps {
-                sh 'ls -la'
-                    sh 'uname -a'
-                    sh 'pwd'
-                    sh 'python --version'
-                    sh 'python -m venv venv'
-                    sh 'ls -l venv/bin'
-                    sh 'source venv/bin/activate'
-                    sh 'python -m pip install -r requirements.txt'
+                sh '''
+                ls -la
+                python -m venv venv
+                source venv/bin/activate
+                pip install -r requirements.txt
+                '''
                     sh 'echo okay'
                     sh 'false'
             }
