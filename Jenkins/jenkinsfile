@@ -6,14 +6,12 @@ pipeline {
                 sh 'ls -la'
                     sh 'uname -a'
                     sh 'pwd'
-                    sh 'which pyhton'
-                    sh 'which pip'
+                    sh 'python --version'
                     sh 'python -m venv venv'
                     sh 'ls -l venv/bin'
                     sh 'source venv/bin/activate'
-                    sh 'which python'
                     sh 'python -m pip install -r requirements.txt'
-                    sh 'seems all right'
+                    sh 'echo 'seems all right''
                     sh 'false'
             }
         }
