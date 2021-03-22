@@ -2,10 +2,12 @@ pipeline {
     agent { docker { image 'python:3.9.2-alpine3.12' } }
     stages {
         stage('test') {
-            sh 'ls -la'
-            sh 'uname -a'
-            sh 'pwd'
-            sh 'false'
+            steps {
+                sh 'ls -la'
+                    sh 'uname -a'
+                    sh 'pwd'
+                    sh 'false'
+            }
         }
     }
 }
