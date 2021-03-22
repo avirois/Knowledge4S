@@ -3,22 +3,13 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh '''
-                    python -m venv venv
-                    source activate venv/bin/activate
-                    sh 'pip install -r requirements.txt'
-                    '''
+                sh 'pip install -r requirements.txt'
             }
         }
         stage('test') {
             steps {
                 sh 'pytest'
             }   
-        }
-    }
-    post {
-        always {
-            sh 'deactivate'
         }
     }
 }
