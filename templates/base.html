@@ -12,10 +12,17 @@
             <img src="../static/logo/logo.png" style="height:30px;"/>
         </div>
         <div id="menu">
+            {% if session['username'] %} 
+                <b class="navItem">Welcome {{ session['username'] }}!</b>
+            {% endif %}
             <a class="navItem" href="/">Home</a>
-            <a class="navItem" href="/">Login</a>
-            <a class="navItem" href="/">Register</a>
             <a class="navItem" href="/">About</a>
+            {% if session['username'] %}
+                <a class="navItem" href="/logout">Logout</a>
+            {% else %}
+                <a class="navItem" href="/login">Login</a>
+                <a class="navItem" href="/register">Register</a>
+            {% endif %}
         </div>
     </div>
     <div id="content">
