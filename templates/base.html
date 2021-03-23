@@ -1,10 +1,25 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>hello</title>
+    <title>Knowledge4S</title>
     <link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet"> 
 </head>
 <body>
+    <div id="header">
+        <div id="logo">
+            <img src="../static/logo/logo.png" style="height:30px;"/>
+        </div>
+        <div id="menu">
+            <a class="navItem" href="/">Home</a>
+            <a class="navItem" href="/">Login</a>
+            <a class="navItem" href="/">Register</a>
+            <a class="navItem" href="/">About</a>
+        </div>
+    </div>
+    <div id="content">
     {% block content %} {% endblock %}
+    </div>
 </body>
 </html>

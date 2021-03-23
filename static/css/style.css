@@ -1,1 +1,47 @@
-body{color:#444;font-size:18px;line-height:1.6;margin:40px auto;max-width:650px;padding:0 10px}h1,h2,h3{line-height:1.2}
+body{
+    font-family: 'Inter', sans-serif;
+    color:#1b1b1b;
+    font-size:16px;
+    line-height:1.6;
+    margin:0px auto;
+    max-width:100%;
+    background:#f7f7f7;
+}
+
+.clear {
+    overflow: auto;
+}
+
+#header{
+    background:#fff;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    grid-gap: 20px;
+    padding:15px;
+}
+
+#logo{
+    margin-right:50px;
+    padding:10px;
+}
+#menu{
+    margin-left:50px;
+    padding:15px;
+    text-align:right;
+}
+#menu a{
+    color:#1b1b1b;
+    text-decoration:none;
+    padding:15px;
+}
+#menu a:hover{
+    color:#3273dc;
+}
+
+#content{
+    width:800px;
+    padding:15px;
+    background:#fff;
+    border: 1px solid #ddd;
+    margin:30px auto;
+}
