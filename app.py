@@ -121,5 +121,14 @@ def register():
 
         return render_template('register.html', massage = "Please register", institutions = institutions, faculties = faculties)
 
+@app.route('/logout')
+def logout():
+    # Clean the session variable
+    session.pop('username',None)
+    session.pop('admin',None)
+
+    # Redirect back to main screen
+    return redirect('/')
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
