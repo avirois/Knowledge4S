@@ -12,6 +12,40 @@ app.register_blueprint(index_blueprint)
 # Database name
 app.config['DB_NAME'] = 'database.db'
 
+@app.route('/login',methods=['POST','GET'])
+def login():
+    # Check if user already logged in
+    if ('username' in session):
+        return redirect('/')
+    # Check if post method selected therfore need to login the user
+    if request.method == "POST":
+        # Connect to database and check if user exists
+        con = sqlite3.connect(app.config['DB_NAME'])
+        sqlQuryLogin = "SELECT UserName, Password, Role FROM Users WHERE username = (?)"
+        sqlRes = con.execute(sqlQuryLogin,(request.form["username"],))
+        record = sqlRes.fetchone()
+
+        # Check if the user exists
+        if ((record != None) and (request.form["password"] == record[1])):
+            # Check if the user is admin or not
+            if record[2] == 1:
+                session['admin'] = True
+                
+            session['username'] = request.form["username"]
+            massage = "Logged in successfuly!"
+            return redirect('/')
+        # The password is incorrect
+        else:
+            massage = "Wrong password entered!"
+
+        # Close the connection to DB
+        con.close()
+
+        return render_template('login.html', massage = massage)
+    # Get method mean open the page
+    else:
+        return render_template('login.html', massage = "Please fill the login form!")
+
 @app.route('/register',methods=['POST','GET'])
 def register():
     # Check if user already logged in
