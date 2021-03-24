@@ -3,3 +3,8 @@
 **.mypy_cache/
 **/.pytest_cache/
 **/__pycache__/
+geckodriver.exe
+geckodriver.zip
+geckodriver
+geckodriver-v0.29.0-linux64.tar.gz
+geckodriver.log
