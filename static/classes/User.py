@@ -96,11 +96,11 @@ class User():
 
         # Check if username is incorrect
         if (not re.match(regUserName, self.getUsername())):
-            msg += "User name is incorrect!\n"
+            msg += "User name was incorrect!\n"
 
         # Check if firstname is not empty
         if (self.getFName() == ""):
-            msg += "First name is not entered!\n"
+            msg += "First name was not entered!\n"
 
         # Check if lastname is not empty
         if (self.getLName() == ""):
@@ -110,6 +110,14 @@ class User():
         if (not re.match(regPassword, self.getPassword())):
             msg += "Password must be constructed from minimum eight characters, " +\
                     "at least one uppercase letter, one lowercase letter, " +\
-                    "one digit, and one special character!\n"  
+                    "one digit, and one special character!\n"
+        
+        # Check if no institution selected
+        if (self.getInstitutionID() == ""):
+            msg += "Institution was not selected!\n"
+
+        # Check if no faculty selected
+        if (self.getFacultyID() == ""):
+            msg += "Faculty was not selected!\n"
 
         return (msg)

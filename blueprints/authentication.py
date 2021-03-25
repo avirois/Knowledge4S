@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, redirect, current_app, Markup
+from flask import Blueprint, render_template, request, session, redirect, current_app, Markup, jsonify
 import sqlite3
 import os
 from static.classes.User import User
@@ -41,10 +41,10 @@ def login():
 
 @authentication_blueprint.route('/register',methods=['POST','GET'])
 def register():
-    con = sqlite3.connect(current_app.config['DB_NAME'])
-
     # Load all institutions
     institutions = []
+
+    con = sqlite3.connect(current_app.config['DB_NAME'])
 
     # Preprare query
     sqlQueryInstitutions = "SELECT * FROM Institutions"
@@ -55,19 +55,6 @@ def register():
     # Run over the lines of the result and append to list
     for line in sqlRes:
         institutions.append([line[0], line[1]])
-
-    # Load all faculties
-    faculties = []
-
-    # Preprare query
-    sqlQueryFaculties = "SELECT * FROM Faculties"
-
-    # Run the query and save result
-    sqlRes = con.execute(sqlQueryFaculties)
-
-    # Run over the lines of the result and append to list
-    for line in sqlRes:
-        faculties.append([line[0], line[1]])
 
     # Close the connection to the database
     con.close()
@@ -102,7 +89,7 @@ def register():
             
             # Check if user is valid
             if (valMessage != ""):
-                return render_template('register.html', massage = valMessage, institutions = institutions, faculties = faculties)
+                return render_template('register.html', massage = valMessage, institutions = institutions)
 
             # Insert the user into the table of users
             sqlQueryRegister = "INSERT INTO Users VALUES (?,?, ?, ?, ?, ?, ?, 0, 0)"
@@ -113,6 +100,7 @@ def register():
                                             newUser.getInstitutionID(),
                                             newUser.getFacultyID(),
                                             newUser.getStudyYear()))
+
             # Commit the changes in users table
             con.commit()
             
@@ -123,7 +111,7 @@ def register():
             session['username'] = newUser.getUsername()
         else:
             massage = "Username already taken please choose another!"
-            return render_template('register.html', massage = massage, institutions = institutions, faculties = faculties)
+            return render_template('register.html', massage = massage, institutions = institutions)
 
         # Close the database connection
         con.close()
@@ -131,7 +119,33 @@ def register():
         return redirect('/')
     # Load and prepare the page
     else:
-        return render_template('register.html', massage = "Please register", institutions = institutions, faculties = faculties)
+        return render_template('register.html', massage = "Please register", institutions = institutions)
+
+@authentication_blueprint.route('/faculties/<inst_ID>')
+def facultyByInstitution(inst_ID):
+    con = sqlite3.connect(current_app.config['DB_NAME'])
+
+    # Create list of faculties in current institution
+    facInInst = []
+
+    # Preprare query
+    sqlQueryFaculties = "SELECT * FROM Faculties WHERE FacultyID IN (SELECT FacultyID from FacIn WHERE InstitutionID = (?))"
+
+    # Run the query and save result
+    sqlRes = con.execute(sqlQueryFaculties, (inst_ID))
+
+    # Run over the lines of the result and append to list
+    for line in sqlRes:
+        faculty = {}
+        faculty['facID'] = line[0]
+        faculty['facName'] = line[1]
+        facInInst.append(faculty)
+
+    # Close the connection to the database
+    con.close()
+
+    # Create json from the result list
+    return jsonify({'facInst' : facInInst})
 
 @authentication_blueprint.route('/logout')
 def logout():
