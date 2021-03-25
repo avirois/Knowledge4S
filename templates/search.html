@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 {% block content %} 
-<p>
 <form name="queryform" action="/search" method="GET">
+    <div>
+        <p>Institutions:
+        <select name="institutions" >
+            <option value="all">all</option>
+        </select>
+        </p>
+    </div>
     <p>Search: <input type="text" name="freetextsearch"/></p>
     <input type="submit" value="Search" name="send"/>
 </form>
-</p>
 <script>
 </script>
 {% endblock %}
