@@ -29,7 +29,7 @@ def thread_flask_app():
     app.run(host=HOST, port=PORT, debug=True, use_reloader=False)
 
 
-def is_server_running(timeout: float, url: str):
+def is_server_running(timeout: float, url: str) -> bool:
     """Try to open url untill timeout."""
     time: float = 0
     while time < timeout:

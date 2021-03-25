@@ -13,7 +13,7 @@ class TestWebStuff:
     def test_h1(self, application: str, ff_browser: webdriver.Firefox):
         """Opening main page and checking the first h1."""
         ff_browser.get(application)
-        # in code comlition not working well you can add type hinting for
+        # if code code completion not working well you can add type hinting for
         # elements
         elm: webdriver.firefox.webdriver.FirefoxWebElement = (
             ff_browser.find_element_by_tag_name("h1")
