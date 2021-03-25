@@ -15,8 +15,15 @@ import urllib.error
 import pytest
 from selenium import webdriver
 from app import app
+from sys import platform
 
-HOST = "0.0.0.0"
+# check platform type
+# since hosts differ from platform to platform 
+if platform != "linux": # FK YOU OLEG REEEEEEEEEEE
+    HOST = "127.0.0.1"    
+else:
+    HOST = "0.0.0.0"
+
 PORT = 5000
 TIMEOUT = 5
 GECKODRIVER_PATH = os.getenv("GECKODRIVER_PATH")

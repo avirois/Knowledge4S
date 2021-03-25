@@ -19,3 +19,30 @@ class TestWebStuff:
             ff_browser.find_element_by_tag_name("h1")
         )
         assert elm.text == "h e ll o"
+
+
+    # ---------------------------------
+    # navbar gui testing
+    # ---------------------------------
+
+    # guest gui testing 
+    def test_navbar_home_link(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application)
+        elem = ff_browser.find_element_by_name("home_link")
+        assert elem.text == "Home"
+    
+    def test_navbar_login_link(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application)
+        elem = ff_browser.find_element_by_name("login_link")
+        assert elem.text == "Login"
+
+    def test_navbar_register_link(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application)
+        elem = ff_browser.find_element_by_name("register_link")
+        assert elem.text == "Register"
+
+    def test_navbar_about_link(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application)
+        elem = ff_browser.find_element_by_name("about_link")
+        assert elem.text == "About"
+        
