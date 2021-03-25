@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %} 
+<p>
+<form name="queryform" action="/search" method="GET">
+    <p>Search: <input type="text" name="freetextsearch"/></p>
+    <input type="submit" value="Search" name="send"/>
+</form>
+</p>
+<script>
+</script>
+{% endblock %}
