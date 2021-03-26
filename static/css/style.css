@@ -8,10 +8,6 @@ body{
     background:#f7f7f7;
 }
 
-.clear {
-    overflow: auto;
-}
-
 #header{
     background:#fff;
     display: grid;
@@ -44,4 +40,8 @@ body{
     background:#fff;
     border: 1px solid #ddd;
     margin:30px auto;
+}
+
+.clear {
+    overflow: auto;
 }
