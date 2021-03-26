@@ -14,22 +14,31 @@ def login():
     if request.method == "POST":
         # Connect to database and check if user exists
         con = sqlite3.connect(current_app.config['DB_NAME'])
-        sqlQuryLogin = "SELECT UserName, Password, Role FROM Users WHERE username = (?)"
+        sqlQuryLogin = "SELECT * FROM Users WHERE username = (?)"
         sqlRes = con.execute(sqlQuryLogin,(request.form["username"],))
         record = sqlRes.fetchone()
 
-        # Check if the user exists
-        if ((record != None) and (request.form["password"] == record[1])):
-            # Check if the user is admin or not
-            if record[2] == 1:
-                session['admin'] = True
+        # Check if user exists
+        if (record != None):
+            # Create user object for current selected username
+            usrLogin = User(record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[8])
+
+            # Check if password is correct
+            if (usrLogin.validatePassword(request.form["password"])):
+                # Check if the user is admin or not
+                if record[2] == 1:
+                    session['admin'] = True
                 
-            session['username'] = request.form["username"]
-            massage = "Logged in successfuly!"
-            return redirect('/')
-        # The password is incorrect
+                # Save user name in session
+                session['username'] = usrLogin.getUsername()
+                massage = "Logged in successfuly!"
+
+                return redirect('/')
+            # The password is incorrect
+            else:
+                massage = "Wrong password entered!"
         else:
-            massage = "Wrong password entered!"
+            massage = "Wrong username entered!"
 
         # Close the connection to DB
         con.close()

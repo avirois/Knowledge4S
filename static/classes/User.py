@@ -6,7 +6,7 @@ class User():
     lastname, password, institutionID, FacultyID, study year, role, isBanned.
     """
 
-    def __init__(self, username, fName, lName, password, institutionID, facultyID, studyYear):
+    def __init__(self, username, fName, lName, password, institutionID, facultyID, studyYear, isBanned = 0):
         """Ctor function for object of user"""
         self.username = username
         self.fName = fName
@@ -16,7 +16,7 @@ class User():
         self.facultyID = facultyID
         self.studyYear = studyYear
         self.role = 1
-        self.isBanned = 0
+        self.isBanned = isBanned
 
     def getUsername(self):
         """The function retruns username of user"""
@@ -121,3 +121,7 @@ class User():
             msg += "Faculty was not selected!\n"
 
         return (msg)
+
+    def validatePassword(self, password):
+        """Function to validate user password at login"""
+        return (self.getPassword() == password)
