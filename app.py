@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect,current_app
 from blueprints.index import index_blueprint
 from blueprints.uploads import upload_blueprint,UPLOAD_FOLDER
+from blueprints.authentication import authentication_blueprint
 import sqlite3,base64,os,datetime
 
 app = Flask(__name__)

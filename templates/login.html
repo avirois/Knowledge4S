@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %} 
+<p>    
+<h1>Login</h1>
+    <b> {{ massage }} </b>
+    <p>
+    <form action="/login" method="POST">
+        <p>Username: <input type="text" name="username"/></p>
+        <p>Password: <input type="password" name="password"/></p>
+        <input type="submit" value="Send" />
+    </form>
+    </p>   
+</p>
+{% endblock %}
