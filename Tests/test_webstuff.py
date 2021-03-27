@@ -22,7 +22,7 @@ class TestWebStuff:
 
 
     # ---------------------------------
-    # navbar gui testing
+    # navbar gui tests
     # ---------------------------------
 
     # guest gui testing 
@@ -46,3 +46,31 @@ class TestWebStuff:
         elem = ff_browser.find_element_by_name("about_link")
         assert elem.text == "About"
         
+
+    # ---------------------------------
+    # navbar unitests
+    # ---------------------------------
+
+    def test_home_route(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application)
+        elem = ff_browser.find_element_by_name("home_link")
+        elem.click()
+        assert ff_browser.current_url == application + "/"
+
+    def test_login_route(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application)
+        elem = ff_browser.find_element_by_name("login_link")
+        elem.click()
+        assert ff_browser.current_url == application + "/login"
+    
+    def test_register_route(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application)
+        elem = ff_browser.find_element_by_name("register_link")
+        elem.click()
+        assert ff_browser.current_url == application + "/register"
+    
+    def test_about_route(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application)
+        elem = ff_browser.find_element_by_name("about_link")
+        elem.click()
+        assert ff_browser.current_url == application + "/about"
