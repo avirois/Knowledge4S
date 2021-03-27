@@ -26,7 +26,7 @@ def login():
             # Check if password is correct
             if (usrLogin.validatePassword(request.form["password"])):
                 # Check if the user is admin or not
-                if record[2] == 1:
+                if record[7] == 1:
                     session['admin'] = True
                 
                 # Save user name in session
