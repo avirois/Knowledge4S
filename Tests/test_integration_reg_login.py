@@ -8,10 +8,142 @@ import sqlite3
 # Prepare the user and password for test
 username_test = "test111"
 password_test = "Aa123456!!"
+institution_test = "SCE_Test"
+faculty_test = "Chemistry_Test"
+instID = 0
+facID = 0
+courseID = 0
+
+@pytest.fixture
+def fill_db():
+    global instID, facID, courseID
+
+    # Prepare the institution
+    db_name = "database.db"
+
+    # connect to db to clean the created user
+    con = sqlite3.connect(db_name)
+    cursor=con.cursor()
+
+    # Check if institution exists
+    sqlQueryCheckExist = "SELECT * FROM Institutions WHERE InstitutionName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (institution_test,))
+    record = sqlRes.fetchone()
+    
+    # If institution does not exists create it
+    if record == None:
+        sqtInsertInst = "INSERT INTO Institutions (InstitutionName) VALUES (?)"
+        cursor.execute(sqtInsertInst, (institution_test,))
+        instID = cursor.lastrowid
+    else:
+        instID = record[0]
+    
+    # Check if faculty exists
+    sqlQueryCheckExist = "SELECT * FROM Faculties WHERE FacultyName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (faculty_test,))
+    record = sqlRes.fetchone()
+    
+    # If faculty does not exists create it
+    if record == None:
+        sqlInsertFac = "INSERT INTO Faculties (FacultyName) VALUES (?)"
+        cursor.execute(sqlInsertFac, (faculty_test,))
+        facID = cursor.lastrowid
+    else:
+        facID = record[0]
+
+    # Check if course exists
+    sqlQueryCheckExist = "SELECT * FROM Courses WHERE CourseName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, ("C1_test",))
+    record = sqlRes.fetchone()
+    
+    # If course does not exists create it
+    if record == None:
+        sqtInsertCourse = "INSERT INTO Courses (CourseName, LecturerID, Year) VALUES (?, ?, ?)"
+        cursor.execute(sqtInsertCourse, ("C1_test", "1", 2))
+        courseID = cursor.lastrowid
+    else:
+        courseID = record[0]
+
+    # Check if institution and faculty exists in FacIn table
+    sqlQueryCheckExist = "SELECT * FROM FacIn WHERE InstitutionID = (?) AND FacultyID = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (instID, facID))
+    record = sqlRes.fetchone()
+    
+    # If institution and faculty does not exists create it
+    if record == None:
+        sqtInsertInstFac = "INSERT INTO FacIn VALUES (?, ?, ?)"
+        con.execute(sqtInsertInstFac, (instID, facID, courseID))
+    
+    # Commit the changes in users table
+    con.commit()
+
+    # CLose connection to DB
+    con.close()
+
+def db_cleaner():
+    # connect to db to clean the created user
+    con = sqlite3.connect("database.db")
+
+    # Check if user exists
+    sqlQueryCheckExist = "SELECT * FROM Users WHERE UserName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (username_test,))
+    record = sqlRes.fetchone()
+    
+    # If user exists delete the user from DB
+    if record != None:
+        sqlDelete = "DELETE FROM Users WHERE UserName = (?)"
+        sqlRes = con.execute(sqlDelete, (username_test,))
+
+    # Check if institution and faculty exists in FacIn table
+    sqlQueryCheckExist = "SELECT * FROM FacIn WHERE InstitutionID = (?) AND FacultyID = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (instID, facID))
+    record = sqlRes.fetchone()
+    
+    # If course exists create it
+    if record != None:
+        sqtDelInstFac = "DELETE FROM FacIn WHERE InstitutionID = (?) AND FacultyID = (?)"
+        con.execute(sqtDelInstFac, (instID, facID))
+
+    # Check if course exists
+    sqlQueryCheckExist = "SELECT * FROM Courses WHERE CourseName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, ("C1_test",))
+    record = sqlRes.fetchone()
+    
+    # If course exists create it
+    if record != None:
+        sqtDelCourse = "DELETE FROM Courses WHERE CourseID = (?)"
+        con.execute(sqtDelCourse, (courseID,))
+
+    # Check if faculty exists
+    sqlQueryCheckExist = "SELECT * FROM Faculties WHERE FacultyName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (faculty_test,))
+    record = sqlRes.fetchone()
+    
+    # If faculty exists create it
+    if record != None:
+        sqlDelFac = "DELETE FROM Faculties WHERE FacultyID = (?)"
+        con.execute(sqlDelFac, (facID,))
+
+    # Check if institution exists
+    sqlQueryCheckExist = "SELECT * FROM Institutions WHERE InstitutionName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (institution_test,))
+    record = sqlRes.fetchone()
+    
+    # If institution exists create it
+    if record != None:
+        sqtDelInst = "DELETE FROM Institutions WHERE InstitutionID = (?)"
+        con.execute(sqtDelInst, (instID,))
+
+    # Commit the changes in users table
+    con.commit()
+
+    # CLose connection to DB
+    con.close()
+    
 
 class TestIntegrationRegister:
 
-    def test_register_page(self, application: str, ff_browser: webdriver.Firefox):
+    def test_register_page(self, application: str, ff_browser: webdriver.Firefox, fill_db):
         """Opening main page."""
         ff_browser.get(application)
 
@@ -30,16 +162,12 @@ class TestIntegrationRegister:
         assert (strMsg == "Register")
 
     def test_register_success(self, application: str, ff_browser: webdriver.Firefox):
-        """Opening login page."""
+        """Opening register page."""
         ff_browser.get(application + "/register")
         
         # Prepare the user and password for test
-        #username_test = "test1"
         fname_test = "test1"
         lname_test = "test1"
-        #password_test = "Aa123456!"
-        institution_test = "SCE"
-        faculty_test = "Chemistry"
         year_test = 2
 
         # Get all elements on register page
@@ -60,7 +188,7 @@ class TestIntegrationRegister:
         lname.send_keys(lname_test)
         password.send_keys(password_test)
         institution.select_by_visible_text(institution_test)
-        sleep(3)
+        sleep(1)
         faculty.select_by_visible_text(faculty_test)
         studyYear.send_keys(year_test)
 
@@ -71,8 +199,6 @@ class TestIntegrationRegister:
         welcomeMsg = ff_browser.find_element_by_xpath("/html/body/div[1]/div[2]/b")
 
         assert welcomeMsg.text == ("Welcome " + username_test + "!")
-        
-        # Remove the new created user from DB
 
 class TestIntegrationLogin:
     
@@ -141,21 +267,5 @@ class TestIntegrationLogin:
         
         assert ((strLogin == "Login") and (strRegister == "Register"))
 
-        # connect to db to clean the created user
-        con = sqlite3.connect("database.db")
-
-        # Check if user exists
-        sqlQueryCheckExist = "SELECT * FROM Users WHERE UserName = (?)"
-        sqlRes = con.execute(sqlQueryCheckExist, (username_test,))
-        record = sqlRes.fetchone()
-        
-        # If user exists delete the user from DB
-        if record != None:
-            sqlDelete = "DELETE FROM Users WHERE UserName = (?)"
-            sqlRes = con.execute(sqlDelete, (username_test,))
-        
-        # Commit the changes in users table
-        con.commit()
-
-        # CLose connection to DB
-        con.close()
+        # Clean DB after end of all tests
+        db_cleaner()
