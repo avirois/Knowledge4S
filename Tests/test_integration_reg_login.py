@@ -12,11 +12,10 @@ institution_test = "SCE_Test"
 faculty_test = "Chemistry_Test"
 instID = 0
 facID = 0
-courseID = 0
 
 @pytest.fixture
 def fill_db():
-    global instID, facID, courseID
+    global instID, facID
 
     # Prepare the institution
     db_name = "database.db"
@@ -51,19 +50,6 @@ def fill_db():
     else:
         facID = record[0]
 
-    # Check if course exists
-    sqlQueryCheckExist = "SELECT * FROM Courses WHERE CourseName = (?)"
-    sqlRes = con.execute(sqlQueryCheckExist, ("C1_test",))
-    record = sqlRes.fetchone()
-    
-    # If course does not exists create it
-    if record == None:
-        sqtInsertCourse = "INSERT INTO Courses (CourseName, LecturerID, Year) VALUES (?, ?, ?)"
-        cursor.execute(sqtInsertCourse, ("C1_test", "1", 2))
-        courseID = cursor.lastrowid
-    else:
-        courseID = record[0]
-
     # Check if institution and faculty exists in FacIn table
     sqlQueryCheckExist = "SELECT * FROM FacIn WHERE InstitutionID = (?) AND FacultyID = (?)"
     sqlRes = con.execute(sqlQueryCheckExist, (instID, facID))
@@ -71,8 +57,8 @@ def fill_db():
     
     # If institution and faculty does not exists create it
     if record == None:
-        sqtInsertInstFac = "INSERT INTO FacIn VALUES (?, ?, ?)"
-        con.execute(sqtInsertInstFac, (instID, facID, courseID))
+        sqtInsertInstFac = "INSERT INTO FacIn VALUES (?, ?)"
+        con.execute(sqtInsertInstFac, (instID, facID))
     
     # Commit the changes in users table
     con.commit()
@@ -99,27 +85,17 @@ def db_cleaner():
     sqlRes = con.execute(sqlQueryCheckExist, (instID, facID))
     record = sqlRes.fetchone()
     
-    # If course exists create it
+    # If faculty in institution exists delete it
     if record != None:
         sqtDelInstFac = "DELETE FROM FacIn WHERE InstitutionID = (?) AND FacultyID = (?)"
         con.execute(sqtDelInstFac, (instID, facID))
-
-    # Check if course exists
-    sqlQueryCheckExist = "SELECT * FROM Courses WHERE CourseName = (?)"
-    sqlRes = con.execute(sqlQueryCheckExist, ("C1_test",))
-    record = sqlRes.fetchone()
-    
-    # If course exists create it
-    if record != None:
-        sqtDelCourse = "DELETE FROM Courses WHERE CourseID = (?)"
-        con.execute(sqtDelCourse, (courseID,))
 
     # Check if faculty exists
     sqlQueryCheckExist = "SELECT * FROM Faculties WHERE FacultyName = (?)"
     sqlRes = con.execute(sqlQueryCheckExist, (faculty_test,))
     record = sqlRes.fetchone()
     
-    # If faculty exists create it
+    # If faculty exists delete it
     if record != None:
         sqlDelFac = "DELETE FROM Faculties WHERE FacultyID = (?)"
         con.execute(sqlDelFac, (facID,))
