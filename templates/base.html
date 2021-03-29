@@ -15,14 +15,17 @@
             {% if session['username'] %} 
                 <b class="navItem">Welcome {{ session['username'] }}!</b>
             {% endif %}
-            <a class="navItem" href="/">Home</a>
-            <a class="navItem" href="/">About</a>
             <a class="navItem" href="/upload">Upload</a>
+            <a class="navItem" href="/" name="home_link">Home</a>
+            <a class="navItem" href="/" name="about_link">About</a>
+            {% if session['admin'] %}
+                <a class="navItem" href="/controlpanel" name="control_panel_link">Control Panel</a>
+            {% endif %}
             {% if session['username'] %}
-                <a class="navItem" href="/logout">Logout</a>
+                <a class="navItem" href="/logout" name="logout_link">Logout</a>
             {% else %}
-                <a class="navItem" href="/login">Login</a>
-                <a class="navItem" href="/register">Register</a>
+                <a class="navItem" href="/login" name="login_link">Login</a>
+                <a class="navItem" href="/register" name="register_link">Register</a>
             {% endif %}
         </div>
     </div>

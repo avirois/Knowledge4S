@@ -141,7 +141,7 @@ def facultyByInstitution(inst_ID):
     sqlQueryFaculties = "SELECT * FROM Faculties WHERE FacultyID IN (SELECT FacultyID from FacIn WHERE InstitutionID = (?))"
 
     # Run the query and save result
-    sqlRes = con.execute(sqlQueryFaculties, (inst_ID))
+    sqlRes = con.execute(sqlQueryFaculties, (int(inst_ID),))
 
     # Run over the lines of the result and append to list
     for line in sqlRes:

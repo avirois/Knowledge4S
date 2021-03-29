@@ -36,10 +36,15 @@ faculty_select = document.getElementById('faculty');
 
 institution_select.onchange = function() {
     inst = institution_select.value;
-
-    fetch('faculties/' + inst).then(function(response) {
+    
+    if (inst == "") {
+        optionHTML = '<option value="">Select Faculty!</option>';
+        faculty_select.innerHTML = optionHTML;
+    }
+    else {
+        fetch('faculties/' + inst).then(function(response) {
         response.json().then(function(data){
-            optionHTML = '<option value="">Select Institution!</option>';
+            optionHTML = '<option value="">Select Faculty!</option>';
 
             for (fac of data.facInst) {
                 optionHTML += '<option value="' + fac.facID + '">' + fac.facName + '</option>'
@@ -47,6 +52,7 @@ institution_select.onchange = function() {
             faculty_select.innerHTML = optionHTML;
         });
     });  
+    }
 }
 </script>
 {% endblock %}
