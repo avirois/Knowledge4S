@@ -16,20 +16,14 @@
                 <b class="navItem">Welcome {{ session['username'] }}!</b>
             {% endif %}
             <a class="navItem" href="/">Home</a>
-<<<<<<< HEAD
-            <a class="navItem" href="/login">Login</a>
-            <a class="navItem" href="/register">Register</a>
-            <a class="navItem" href="/upload">Upload</a>
-            <a class="navItem" href="/about">About</a>
-=======
             <a class="navItem" href="/">About</a>
+            <a class="navItem" href="/upload">Upload</a>
             {% if session['username'] %}
                 <a class="navItem" href="/logout">Logout</a>
             {% else %}
                 <a class="navItem" href="/login">Login</a>
                 <a class="navItem" href="/register">Register</a>
             {% endif %}
->>>>>>> 3c4198470b9d0c87e6b3a88321d483c99173d77d
         </div>
     </div>
     <div id="content">

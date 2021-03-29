@@ -2,16 +2,44 @@
 {% block content %} 
     <p>
       <form action = "http://localhost:5000/upload" method = "POST" 
-         enctype = "multipart/form-data">
-         <input type = "file" name = "file" />
-         <input type = "submit" value="Upload Now"/>
-         <input type= "text" value="UserName"/>
-         <input type= "text" value="Title"/>
-         <input type= "text" value="Description"/>
-         <input type= "text" value="InstituteID"/>
-         <input type= "text" value="FacultyID"/>
-         <input type= "text" value="CourseID"/>
+        enctype = "multipart/form-data">
+        <input type = "file" name = "file" />
+        <p>Title: <input type="text" name="Title" size="20"/></p>
+        <p>Description: <input type="text" name="Description" size="20"/></p>
+        <select name="InstituteID" id="institution"> 
+              <option value="">Select Institution!</option>
+              {% for istitution in institutions %}
+                      <option value="{{istitution[0]}}">{{istitution[1]}}</option>
+              {% endfor %}   
+        </select>
+        <select name="FacultyID" id="faculty">
+            <option value="">Select Faculty!</option>
+        </select> 
+        <select name="CourseID" id="course">
+                <option value="">Select Course!</option>
+        </select>
+          <input type = "submit" value="Upload Now"/>
    </form>
    {{data['msg']}}
     </p>
+
+    <script>
+        institution_select = document.getElementById('institution');
+        faculty_select = document.getElementById('faculty');
+        
+        institution_select.onchange = function() {
+            inst = institution_select.value;
+        
+            fetch('faculties/' + inst).then(function(response) {
+                response.json().then(function(data){
+                    optionHTML = '<option value="">Select Faculty!</option>';
+        
+                    for (fac of data.facInst) {
+                        optionHTML += '<option value="' + fac.facID + '">' + fac.facName + '</option>'
+                    }
+                    faculty_select.innerHTML = optionHTML;
+                });
+            });  
+        }
+        </script>
 {% endblock %}
