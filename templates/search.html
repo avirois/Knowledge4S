@@ -2,34 +2,107 @@
 {% block content %} 
 <form name="queryform" action="/search" method="GET">
     <p>Institutions:
-    <select name="institutions" >
+    <select onchange="onSelection()" name="institutions" id="institutions" >
         <option value="all">all</option>
     </select>
     </p>
     <p>Faculties:
-    <select name="facultie" >
+    <select onchange="onSelection()" name="faculties" id="faculties" >
         <option value="all">all</option>
     </select>
     </p>
     <p>Lecturers:
-    <select name="lecturers" >
+    <select onchange="onSelection()" name="lecturers" id="lecturers" >
         <option value="all">all</option>
     </select>
     </p>
     <p>Courses:
-    <select name="courses" >
+    <select onchange="onSelection()" name="courses" id="courses" >
         <option value="all">all</option>
     </select>
     </p>
     <p>Years:
-    <select name="years" >
+    <select onchange="onSelection()" name="years" id="years" >
         <option value="all">all</option>
     </select>
     </p>
-
     <p>Search: <input type="text" name="freetextsearch"/></p>
     <input type="submit" value="Search" name="send"/>
 </form>
+
 <script>
+"use strict";
+const selectors = {
+  institutions: document.getElementById("institutions"),
+  faculties: document.getElementById("faculties"),
+  lecturers: document.getElementById("lecturers"),
+  courses: document.getElementById("courses"),
+  years: document.getElementById("years"),
+};
+
+function createOption(text, value) {
+  let objOption = document.createElement("option");
+  objOption.text = text;
+  objOption.value = text;
+  return objOption;
+}
+
+function deleteOptions(selector) {
+  selector.options.length = 0;
+}
+
+async function updateSelecions() {
+  const currentSelections = {
+    institutions:
+      selectors.institutions.options[selectors.institutions.selectedIndex]
+        .value,
+    faculties:
+      selectors.faculties.options[selectors.faculties.selectedIndex].value,
+    lecturers:
+      selectors.lecturers.options[selectors.lecturers.selectedIndex].value,
+    courses: selectors.courses.options[selectors.courses.selectedIndex].value,
+    years: selectors.years.options[selectors.years.selectedIndex].value,
+  };
+
+  let response = await fetch("/search/fetch/selection", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+    body: JSON.stringify(currentSelections),
+  });
+
+  let result = await response.json(); // read response body and parse as JSON
+
+  for (const sel in selectors) {
+    deleteOptions(selectors[sel]);
+  }
+
+  for (const sel in selectors) {
+    selectors[sel].options.add(createOption("all", "all"));
+  }
+
+  for (const sel in result) {
+    for (const option of result[sel]) {
+      selectors[sel].options.add(createOption(option, option));
+    }
+  }
+
+  for (const sel in selectors) {
+    let index = 0;
+    const to_select = currentSelections[sel];
+    for (const opt of selectors[sel].options) {
+      if (opt.value === to_select) index = opt.index;
+    }
+    selectors[sel].selectedIndex = index;
+  }
+}
+
+function onSelection() {
+  let promise = new Promise((resolve, reject) => {
+    updateSelecions();
+    resolve();
+  });
+}
 </script>
 {% endblock %}
