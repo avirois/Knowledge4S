@@ -20,6 +20,9 @@
     <p>Lecturers:
     <select onchange="onSelection()" name="lecturers" id="lecturers" >
         <option value="all">all</option>
+        {% for opt in lecturers%}
+        <option value="{{opt}}">{{opt}}</option>
+        {% endfor %}                                              
     </select>
     </p>
     <p>Courses:
