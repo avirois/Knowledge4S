@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ operation }} institution:</h1>
+<p>
+    {{ massage }}
+    <form action="" method="POST">
+        <p>Institution name: <input type="text" name="instName" value={{ institution }}></p>
+        <input type="submit" value="Save"/>
+    </form>
+</p>
+{% endblock %}
