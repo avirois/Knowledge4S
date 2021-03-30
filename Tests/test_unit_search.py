@@ -507,3 +507,27 @@ def test_select_other_top_with_year(fill_db):
     except_dict_str = json.dumps(expected, sort_keys=True)
 
     assert test_dict_str == except_dict_str
+
+
+def test_test_all_combinations(fill_db):
+    selections = Selections(DB_NAME)
+
+    institutions = ["A", "B", "all", None]
+    faculties = ["math", "art", None]
+    lecturers = ["Moshe", "Sarah", None]
+    courses = ["Calculus", "study of drawing", None]
+    years = ["2021", 2021, None]
+
+    for ins in institutions:
+        for fac in faculties:
+            for lec in lecturers:
+                for cur in courses:
+                    for yer in years:
+                        selections.get_selections(
+                            institutions=ins,
+                            faculties=fac,
+                            lecturers=lec,
+                            courses=cur,
+                            years=yer,
+                        )
+    assert True

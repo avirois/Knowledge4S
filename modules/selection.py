@@ -226,7 +226,7 @@ class Selections:
         """
         Receive current selection status and returning corresponding selection.
 
-        For in depth explanation of the decisions mechanism read the comments below.
+        For update next selection acurding to that selected in kwargs
         """
         (
             institutions_selected,
@@ -235,154 +235,41 @@ class Selections:
             courses_selected,
             years_selected,
         ) = self.__get_selection_status(kwargs)
+        institutions = set(self.institutions.values())
+        faculties = set()
+        lecturers = set()
+        courses = set()
+        years = set(self.years.values())
 
-        # if institutions choosen and facultie and lecturers and course and year
-        # return:
-        # > all years that can reach selected course
-        # > all institutions
-        # > all institutions's faculties
-        # > all facultie's lecturers
-        # > all lecturer's and year's cources
-        if (
-            institutions_selected
-            and faculties_selected
-            and lecturers_selected
-            and courses_selected
-            and years_selected
-        ):
+        if institutions_selected:
             selected_institution = kwargs["institutions"]
             faculties = self.__get_next_selection("institutions", selected_institution)
 
+        if faculties_selected:
             selected_facultie = kwargs["faculties"]
-            lecturers = set()
             if selected_facultie in [o.name for o in faculties]:
                 lecturers = self.__get_next_selection("faculties", selected_facultie)
 
+        if lecturers_selected:
             selected_lecturer = kwargs["lecturers"]
-            courses1 = set()
             if selected_lecturer in [o.name for o in lecturers]:
-                courses1 = self.__get_next_selection("lecturers", selected_lecturer)
+                courses = self.__get_next_selection("lecturers", selected_lecturer)
 
+        if courses_selected and not years_selected:
+            for year in years:
+                tmp = set(year.connections)
+                if set.union(tmp, courses):
+                    years.add(year)
+
+        if courses_selected and years_selected:
             selected_year = str(kwargs["years"])
             courses2 = set()
             if selected_year in self.years.keys():
                 courses2 = set(self.years[selected_year].connections)
+            courses = set.intersection(courses, courses2)
 
-            courses = set.intersection(courses1, courses2)
-            all_institutions = set(self.institutions.values())
-            all_years = set(self.years.values())
-            return self.__set_to_selection_dict(
-                set.union(courses, lecturers, faculties, all_institutions, all_years)
-            )
-
-        # if institutions,facultie ,lecturers and course choosen and year not choosen
-        # return:
-        # > all years that can reach selected course
-        # > all institutions
-        # > all institutions's faculties
-        # > all facultie's lecturers
-        # > all lecturer's cources
-        if (
-            institutions_selected
-            and faculties_selected
-            and lecturers_selected
-            and courses_selected
-            and not years_selected
-        ):
-            selected_institution = kwargs["institutions"]
-            faculties = self.__get_next_selection("institutions", selected_institution)
-
-            selected_facultie = kwargs["faculties"]
-            lecturers = set()
-            if selected_facultie in [o.name for o in faculties]:
-                lecturers = self.__get_next_selection("faculties", selected_facultie)
-
-            selected_lecturer = kwargs["lecturers"]
-            courses = set()
-            if selected_lecturer in [o.name for o in lecturers]:
-                courses = self.__get_next_selection("lecturers", selected_lecturer)
-
-            years = []
-            all_years = set(self.years.values())
-            for year in all_years:
-                tmp = set(year.connections)
-                if set.union(tmp, courses):
-                    years.append(year)
-
-            all_institutions = set(self.institutions.values())
-            return self.__set_to_selection_dict(
-                set.union(courses, lecturers, faculties, all_institutions, all_years)
-            )
-
-        # if institutions,facultie and lecturers choosen
-        # return:
-        # > all years
-        # > all institutions
-        # > all institutions's faculties
-        # > all facultie's lecturers
-        # > all lecturer's cources
-        if institutions_selected and faculties_selected and lecturers_selected:
-            selected_institution = kwargs["institutions"]
-            faculties = self.__get_next_selection("institutions", selected_institution)
-
-            selected_facultie = kwargs["faculties"]
-            lecturers = set()
-            if selected_facultie in [o.name for o in faculties]:
-                lecturers = self.__get_next_selection("faculties", selected_facultie)
-
-            selected_lecturer = kwargs["lecturers"]
-            courses = set()
-            if selected_lecturer in [o.name for o in lecturers]:
-                courses = self.__get_next_selection("lecturers", selected_lecturer)
-
-            all_institutions = set(self.institutions.values())
-            all_years = set(self.years.values())
-            return self.__set_to_selection_dict(
-                set.union(courses, lecturers, faculties, all_institutions, all_years)
-            )
-
-        # if institutions and facultie choosen
-        # return:
-        # > all years
-        # > all institutions
-        # > all institutions's faculties
-        # > all faculties's lecturers
-        if institutions_selected and faculties_selected:
-            selected_institution = kwargs["institutions"]
-            faculties = self.__get_next_selection("institutions", selected_institution)
-
-            selected_facultie = kwargs["faculties"]
-            lecturers = set()
-            if selected_facultie in [o.name for o in faculties]:
-                lecturers = self.__get_next_selection("faculties", selected_facultie)
-            all_institutions = set(self.institutions.values())
-            all_years = set(self.years.values())
-
-            return self.__set_to_selection_dict(
-                set.union(lecturers, faculties, all_institutions, all_years)
-            )
-        # if institutions choosen
-        # return:
-        # > all years
-        # > all institutions
-        # > all institutions's faculties
-        if institutions_selected:
-            selected_institution = kwargs["institutions"]
-
-            faculties = self.__get_next_selection("institutions", selected_institution)
-            all_institutions = set(self.institutions.values())
-            all_years = set(self.years.values())
-
-            return self.__set_to_selection_dict(
-                set.union(faculties, all_institutions, all_years)
-            )
-
-        # if all are "all"
-        # return:
-        # > all years
-        # > all institutions
         return self.__set_to_selection_dict(
-            set.union(set(self.institutions.values()), set(self.years.values()))
+            set.union(institutions, faculties, lecturers, courses, years)
         )
 
     def __get_selection_status(

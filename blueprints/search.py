@@ -2,21 +2,19 @@
 from flask import Blueprint, render_template, request, jsonify
 from modules.selection import Selections
 
+DB_NAME = "database.db"
+
 search_blueprint = Blueprint("search_blueprint", __name__, template_folder="templates")
 search_options_bp = Blueprint(
     "search_options_bp", __name__, template_folder="templates"
 )
 
-selections = Selections(
-    "database.db"
-)  # TODO get db fromsomewhere else maybe enviroment Variable
+selections = Selections(DB_NAME)
 
 
 @search_blueprint.route("/search", methods=["GET", "POST"])
 def search_route():
-    selections = Selections(
-        "database.db"
-    )  # TODO get db fromsomewhere else maybe enviroment Variable
+    selections = Selections(DB_NAME)
 
     initial_selections = selections.get_selections()
     return render_template("search.html", **initial_selections)
