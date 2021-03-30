@@ -12,6 +12,9 @@
     <p>Faculties:
     <select onchange="onSelection()" name="faculties" id="faculties" >
         <option value="all">all</option>
+        {% for opt in faculties%}
+        <option value="{{opt}}">{{opt}}</option>
+        {% endfor %}                                              
     </select>
     </p>
     <p>Lecturers:
