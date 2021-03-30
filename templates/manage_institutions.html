@@ -11,11 +11,20 @@
                 <option value="{{istitution[0]}}">{{istitution[1]}}</option>
             {% endfor %}
         </select>
+        <a href="" id="editBtn"><button>Edit</button></a>
     </div>
     </br>
     <div>
         <a href="/create_institution" id="instCreate"><button>Create New Institution</button></a>
     </div>
-    </br>
 </p>
+<script>
+    institution_select = document.getElementById('inst');
+    edit_btn = document.getElementById('editBtn');
+
+    institution_select.onchange = function() {
+        inst = institution_select.value;
+        edit_btn.setAttribute('href', "/edit_institution/" + inst);
+    }
+</script>
 {% endblock %}
