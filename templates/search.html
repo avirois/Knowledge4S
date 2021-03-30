@@ -4,6 +4,9 @@
     <p>Institutions:
     <select onchange="onSelection()" name="institutions" id="institutions" >
         <option value="all">all</option>
+        {% for opt in institutions%}
+        <option value="{{opt}}">{{opt}}</option>
+        {% endfor %}                                              
     </select>
     </p>
     <p>Faculties:
