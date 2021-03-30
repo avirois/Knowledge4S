@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ operation }} Manage Institutions:</h1>
+<p>
+    {{ massage }}
+    <div>
+        <select name="institution" id="inst"> 
+            <option value="">Select Institution!</option>
+            {% for istitution in institutions %}
+                <option value="{{istitution[0]}}">{{istitution[1]}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    </br>
+</p>
+{% endblock %}
