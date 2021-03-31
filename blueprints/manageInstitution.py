@@ -28,6 +28,10 @@ def getInstitutions():
 
 @inst_manage_blueprint.route('/create_institution', methods=['POST', 'GET'])
 def create_institution():
+    # If user is not admin redirect him back to main page
+    if (session.get("admin") == None):
+        return redirect('/')
+
     # If method post selected then need to create the institution
     if (request.method == "POST"):
         # connect to db and check if institution already exists
@@ -51,6 +55,11 @@ def create_institution():
 
         # Create institution object
         newInst = Institution(instID, request.form["instName"])
+
+        # Check if not valid institution name
+        if (not newInst.validateInstitution()):
+            massage = "Invalid institution name!"
+            return render_template('add_edit_instit.html', operation = "Add new", massage = massage)
         
         # Check if the institution is not already exists
         if (record == None):
@@ -79,6 +88,9 @@ def create_institution():
 
 @inst_manage_blueprint.route('/edit_institution/<inst_ID>', methods=['POST', 'GET'])
 def edit_institution(inst_ID):
+    # If user is not admin redirect him back to main page
+    if (session.get("admin") == None):
+        return redirect('/')
 
     # If method post selected then need to create the institution
     if (request.method == "POST"):
@@ -90,6 +102,11 @@ def edit_institution(inst_ID):
 
         # Create institution object
         newInst = Institution(instID, request.form["instName"])
+
+        # Check if not valid institution name
+        if (not newInst.validateInstitution()):
+            massage = "Invalid institution name!"
+            return render_template('add_edit_instit.html', operation = "Edit", massage = massage, institution = newInst.getName())
 
         # Get the institution data
         sqlQueryGetData = "SELECT * FROM Institutions WHERE InstitutionName = (?)"
@@ -121,6 +138,7 @@ def edit_institution(inst_ID):
 
     # Load and prepare the page
     else:
+
         # connect to db and check if institution already exists
         con = sqlite3.connect(current_app.config['DB_NAME'])
 
@@ -139,5 +157,8 @@ def edit_institution(inst_ID):
 
 @inst_manage_blueprint.route('/manage_institutions', methods=['GET'])
 def manage_institutions():
+    # If user is not admin redirect him back to main page
+    if (session.get("admin") == None):
+        return redirect('/')
 
     return render_template('manage_institutions.html', institutions = getInstitutions())
