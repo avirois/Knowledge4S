@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+.buttonInstSave { width: 200px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonHover { background-color: #555555; color: white; border: 2px solid #555555; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonHover:hover { background-color: white; color: black; }
+</style>
+
 <h1>{{ operation }} institution:</h1>
 <p>
     {{ massage }}
     <form action="" method="POST">
         <p>Institution name: <input type="text" name="instName" value={{ institution }}></p>
-        <input type="submit" value="Save"/>
+        <input type="submit" value="Save" class="buttonInstSave buttonHover"/>
     </form>
 </p>
 {% endblock %}
