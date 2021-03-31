@@ -19,3 +19,7 @@ class Institution():
     def setName(self, name):
         """The function sets new name for institution"""
         self.name = name
+
+    def validateInstitution(self):
+        """ The function validates the institution name """
+        return (self.getName() != "")
