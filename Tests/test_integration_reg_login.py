@@ -14,13 +14,13 @@ instID = 0
 facID = 0
 
 @pytest.fixture
-def fill_db():
+def db_prepare_register():
     global instID, facID
 
     # Prepare the institution
     db_name = "database.db"
 
-    # connect to db to clean the created user
+    # connect to db to prepare it before testing
     con = sqlite3.connect(db_name)
     cursor=con.cursor()
 
@@ -63,12 +63,8 @@ def fill_db():
     # Commit the changes in users table
     con.commit()
 
-    # CLose connection to DB
-    con.close()
-
-def db_cleaner():
-    # connect to db to clean the created user
-    con = sqlite3.connect("database.db")
+    #----------------------------------------------------------------
+    yield db_name
 
     # Check if user exists
     sqlQueryCheckExist = "SELECT * FROM Users WHERE UserName = (?)"
@@ -115,12 +111,11 @@ def db_cleaner():
 
     # CLose connection to DB
     con.close()
-    
 
 class TestIntegrationRegister:
 
-    def test_register_page(self, application: str, ff_browser: webdriver.Firefox, fill_db):
-        """Opening main page."""
+    def test_register_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_register):
+        # Opening main page
         ff_browser.get(application)
 
         # Get the register button element
@@ -136,9 +131,9 @@ class TestIntegrationRegister:
         strMsg = strRegisterHeader.text
 
         assert (strMsg == "Register")
-
-    def test_register_success(self, application: str, ff_browser: webdriver.Firefox):
-        """Opening register page."""
+    
+    def test_register_success(self, application: str, ff_browser: webdriver.Firefox, db_prepare_register):
+        # Opening register page.
         ff_browser.get(application + "/register")
         
         # Prepare the user and password for test
@@ -176,9 +171,118 @@ class TestIntegrationRegister:
 
         assert welcomeMsg.text == ("Welcome " + username_test + "!")
 
+@pytest.fixture
+def db_prepare_login():
+    global instID, facID
+
+    # Prepare the institution
+    db_name = "database.db"
+
+    # connect to db to prepare it before testing
+    con = sqlite3.connect(db_name)
+    cursor=con.cursor()
+
+    # Check if institution exists
+    sqlQueryCheckExist = "SELECT * FROM Institutions WHERE InstitutionName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (institution_test,))
+    record = sqlRes.fetchone()
+    
+    # If institution does not exists create it
+    if record == None:
+        sqtInsertInst = "INSERT INTO Institutions (InstitutionName) VALUES (?)"
+        cursor.execute(sqtInsertInst, (institution_test,))
+        instID = cursor.lastrowid
+    else:
+        instID = record[0]
+    
+    # Check if faculty exists
+    sqlQueryCheckExist = "SELECT * FROM Faculties WHERE FacultyName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (faculty_test,))
+    record = sqlRes.fetchone()
+    
+    # If faculty does not exists create it
+    if record == None:
+        sqlInsertFac = "INSERT INTO Faculties (FacultyName) VALUES (?)"
+        cursor.execute(sqlInsertFac, (faculty_test,))
+        facID = cursor.lastrowid
+    else:
+        facID = record[0]
+
+    # Check if institution and faculty exists in FacIn table
+    sqlQueryCheckExist = "SELECT * FROM FacIn WHERE InstitutionID = (?) AND FacultyID = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (instID, facID))
+    record = sqlRes.fetchone()
+    
+    # If institution and faculty does not exists create it
+    if record == None:
+        sqtInsertInstFac = "INSERT INTO FacIn VALUES (?, ?)"
+        con.execute(sqtInsertInstFac, (instID, facID))
+
+    # Check if user exists in Users table
+    sqlQueryCheckExist = "SELECT * FROM Users WHERE UserName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (username_test,))
+    record = sqlRes.fetchone()
+    
+    # If user does not exists create it
+    if record == None:
+        sqtInsertUser = "INSERT INTO Users VALUES (?,?, ?, ?, ?, ?, ?, 0, 0)"
+        con.execute(sqtInsertUser, (username_test, "test1", "test1", password_test, instID, facID, 2))
+    
+    # Commit the changes in users table
+    con.commit()
+
+    #----------------------------------------------------------------
+    yield db_name
+
+    # Check if user exists
+    sqlQueryCheckExist = "SELECT * FROM Users WHERE UserName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (username_test,))
+    record = sqlRes.fetchone()
+    
+    # If user exists delete the user from DB
+    if record != None:
+        sqlDelete = "DELETE FROM Users WHERE UserName = (?)"
+        sqlRes = con.execute(sqlDelete, (username_test,))
+
+    # Check if institution and faculty exists in FacIn table
+    sqlQueryCheckExist = "SELECT * FROM FacIn WHERE InstitutionID = (?) AND FacultyID = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (instID, facID))
+    record = sqlRes.fetchone()
+    
+    # If faculty in institution exists delete it
+    if record != None:
+        sqtDelInstFac = "DELETE FROM FacIn WHERE InstitutionID = (?) AND FacultyID = (?)"
+        con.execute(sqtDelInstFac, (instID, facID))
+
+    # Check if faculty exists
+    sqlQueryCheckExist = "SELECT * FROM Faculties WHERE FacultyName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (faculty_test,))
+    record = sqlRes.fetchone()
+    
+    # If faculty exists delete it
+    if record != None:
+        sqlDelFac = "DELETE FROM Faculties WHERE FacultyID = (?)"
+        con.execute(sqlDelFac, (facID,))
+
+    # Check if institution exists
+    sqlQueryCheckExist = "SELECT * FROM Institutions WHERE InstitutionName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (institution_test,))
+    record = sqlRes.fetchone()
+    
+    # If institution exists create it
+    if record != None:
+        sqtDelInst = "DELETE FROM Institutions WHERE InstitutionID = (?)"
+        con.execute(sqtDelInst, (instID,))
+
+    # Commit the changes in users table
+    con.commit()
+
+    # CLose connection to DB
+    con.close()
+
 class TestIntegrationLogin:
     
-    def test_login_page(self, application: str, ff_browser: webdriver.Firefox):
+    def test_login_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_login):
         
         # Run logout to clean session
         ff_browser.get(application + "/logout")
@@ -199,8 +303,8 @@ class TestIntegrationLogin:
         strMsg = strLoginHeader.text
 
         assert (strMsg == "Login")
-
-    def test_login_success(self, application: str, ff_browser: webdriver.Firefox):
+    
+    def test_login_success(self, application: str, ff_browser: webdriver.Firefox, db_prepare_login):
         # Open the login page
         ff_browser.get(application + "/login")
 
@@ -223,8 +327,8 @@ class TestIntegrationLogin:
         
         assert welcomeMsg.text == ("Welcome " + username_test + "!")
     
-    def test_logout_success(self, application: str, ff_browser: webdriver.Firefox):
-        """Performing logout from main screen"""
+    def test_logout_success(self, application: str, ff_browser: webdriver.Firefox, db_prepare_login):
+        # Performing logout from main screen
         ff_browser.get(application)
         
         # Get the logout button element
@@ -242,6 +346,4 @@ class TestIntegrationLogin:
         strRegister = btnRegister.text
         
         assert ((strLogin == "Login") and (strRegister == "Register"))
-
-        # Clean DB after end of all tests
-        db_cleaner()
+    
