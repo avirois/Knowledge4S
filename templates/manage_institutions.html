@@ -29,10 +29,12 @@
 <script>
     institution_select = document.getElementById('inst');
     edit_btn = document.getElementById('editBtn');
+    faculties_btn = document.getElementById('addFaculties')
 
     institution_select.onchange = function() {
         inst = institution_select.value;
         edit_btn.setAttribute('href', "/edit_institution/" + inst);
+        faculties_btn.setAttribute('href', "/register_faculty/" + inst)
     }
 </script>
 {% endblock %}

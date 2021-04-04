@@ -26,6 +26,27 @@ def getInstitutions():
 
     return (institutions)
 
+def getFacultiesNotRegistered(inst_ID):
+    # Load all institutions
+    facultiesNotReg = []
+
+    con = sqlite3.connect(current_app.config['DB_NAME'])
+
+    # Preprare query
+    sqlQueryNotRegistered = "SELECT FacultyID, FacultyName FROM Faculties WHERE FacultyID not in (SELECT FacultyID FROM FacIn WHERE InstitutionID = (?))"
+
+    # Run the query and save result
+    sqlRes = con.execute(sqlQueryNotRegistered, (int(inst_ID),))
+
+    # Run over the lines of the result and append to list
+    for line in sqlRes:
+        facultiesNotReg.append([line[0], line[1]])
+
+    # Close the connection to the database
+    con.close()
+
+    return (facultiesNotReg)
+
 @inst_manage_blueprint.route('/create_institution', methods=['POST', 'GET'])
 def create_institution():
     # If user is not admin redirect him back to main page
@@ -162,3 +183,35 @@ def manage_institutions():
         return redirect('/')
 
     return render_template('manage_institutions.html', institutions = getInstitutions())
+
+@inst_manage_blueprint.route('/register_faculty/<inst_ID>', methods=['POST', 'GET'])
+def register_faculty(inst_ID):
+    # If user is not admin redirect him back to main page
+    if (session.get("admin") == None):
+        return redirect('/')
+
+    # If method post selected then need to create the institution
+    if (request.method == "POST"):
+        # Check if selected faculty
+        if (request.form["faculty"] == ""):
+            return render_template('register_faculty_institution.html', instID = inst_ID, facultiesNotReg = getFacultiesNotRegistered(inst_ID), message ="Please select faculty!")
+
+        # Register the faculty to institutions
+        con = sqlite3.connect(current_app.config['DB_NAME'])
+
+        # Preprare query
+        sqlQueryRegister = "INSERT INTO FacIn VALUES (?, ?)"
+
+        # Run the query and save result
+        sqlRes = con.execute(sqlQueryRegister, (int(inst_ID), request.form["faculty"]))
+
+        # Commit changes in DB
+        con.commit()
+
+        # Close the connection to the database
+        con.close()
+
+        return render_template('register_faculty_institution.html', instID = inst_ID, facultiesNotReg = getFacultiesNotRegistered(inst_ID), message="Faculty registered!")
+    else:
+        # Render the register faculties page
+        return render_template('register_faculty_institution.html', instID = inst_ID, facultiesNotReg = getFacultiesNotRegistered(inst_ID))
