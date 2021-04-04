@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+.buttonInstEdit { width: 200px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonInstCreate { width: 700px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonHover { background-color: #555555; color: white; border: 2px solid #555555; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonHover:hover { background-color: white; color: black; }
+</style>
+
+<h1>{{ operation }} Manage Institutions:</h1>
+<p>
+    {{ massage }}
+    <div>
+        <select name="institution" id="inst" style="height:3.5em; width: 300px;"> 
+            <option value="">Select Institution!</option>
+            {% for istitution in institutions %}
+                <option value="{{istitution[0]}}">{{istitution[1]}}</option>
+            {% endfor %}
+        </select>
+        <a href="" id="editBtn"><button class="buttonInstEdit buttonHover">Edit</button></a>
+        <a href="" id="addFaculties"><button class="buttonInstEdit buttonHover">Faculties</button></a>
+    </div>
+    </br>
+    <div>
+        <a href="/create_institution" id="instCreate"><button class="buttonInstCreate buttonHover">Create New Institution</button></a>
+    </div>
+</p>
+<script>
+    institution_select = document.getElementById('inst');
+    edit_btn = document.getElementById('editBtn');
+    faculties_btn = document.getElementById('addFaculties')
+
+    institution_select.onchange = function() {
+        inst = institution_select.value;
+        edit_btn.setAttribute('href', "/edit_institution/" + inst);
+        faculties_btn.setAttribute('href', "/register_faculty/" + inst)
+    }
+</script>
+{% endblock %}
