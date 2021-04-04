@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %} 
     <p>
-      <form action = "http://localhost:5000/upload" method = "POST" 
+      <form action = "/upload" method = "POST" 
         enctype = "multipart/form-data">
         <input type = "file" name = "file" />
         <p>Title: <input type="text" name="Title" size="20"/></p>
@@ -22,15 +22,13 @@
    </form>
    {{data['msg']}}
     </p>
-
     <script>
         institution_select = document.getElementById('institution');
         faculty_select = document.getElementById('faculty');
         
         institution_select.onchange = function() {
             inst = institution_select.value;
-        
-            fetch('faculties/' + inst).then(function(response) {
+            fetch('/faculties/' + inst).then(function(response) {
                 response.json().then(function(data){
                     optionHTML = '<option value="">Select Faculty!</option>';
         
@@ -38,6 +36,25 @@
                         optionHTML += '<option value="' + fac.facID + '">' + fac.facName + '</option>'
                     }
                     faculty_select.innerHTML = optionHTML;
+                });
+            });  
+        }
+        </script>
+    <script>
+        faculty_select = document.getElementById('faculty');
+        course_select = document.getElementById('course')
+        
+        faculty_select.onchange = function() {
+            fac = faculty_select.value;
+        
+            fetch('/upload/course/' + fac).then(function(response) {
+                response.json().then(function(data){
+                    optionHTML = '<option value="">Select Course!</option>';
+        
+                    for (cour of data.courInst) {
+                        optionHTML += '<option value="' + cour.courID + '">' + cour.courName + '</option>'
+                    }
+                    course_select.innerHTML = optionHTML;
                 });
             });  
         }
