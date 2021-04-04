@@ -10,11 +10,12 @@ t_firstname = 'john'
 t_lastname =  'doe'
 DB_NAME = 'database.db'
 
-def clean_DB():
+def test_clean_DB():
     connection = sqlite3.connect(DB_NAME)
-    cur = connection.execute("DELETE FROM Users WHERE UserName=(?)",(t_username,))
+    cur = connection.execute("DELETE FROM Users WHERE UserName = ? ",(t_username,))
     connection.commit()
     connection.close()
+
 
 
 class TestNavbar:
@@ -78,10 +79,12 @@ class TestNavbar:
         elem.click()
         assert ff_browser.current_url == application + "/about"
     '''
-    #remove previous inserts
-    clean_DB()
-
+    
     def test_user_navbar(self, application: str, ff_browser: webdriver.Firefox):
+        ''' check that there is user profile button '''
+        test_clean_DB() # remove previous inserts in case there are any
+        ff_browser.get(application + "/logout") # logout 
+
         connection = sqlite3.connect(DB_NAME)
 
         #insert normal user
@@ -103,5 +106,36 @@ class TestNavbar:
         elem = ff_browser.find_element_by_name("user_link")
         assert elem.text == "My Profile"
 
-    #remove previous inserts
-    clean_DB()
+    def test_user_navbar_route(self, application: str, ff_browser: webdriver.Firefox):
+        ''' check if My Profile moves the user to the right route '''
+        elem = ff_browser.find_element_by_name("user_link")
+        elem.click()
+        assert ff_browser.current_url == application + "/user/" + t_username
+
+    def test_admin_navbar(self, application: str, ff_browser: webdriver.Firefox):
+        ''' check there is an admin navbar button '''
+        test_clean_DB() # remove previous inserts in case there are any
+        ff_browser.get(application + "/logout") # logout 
+        
+        connection = sqlite3.connect(DB_NAME)
+
+        #insert admin user
+        cur = connection.execute("INSERT INTO Users VALUES (?,?,?,?,?,?,?,?,?)",
+            (t_username,t_firstname,t_lastname,t_password,1,1,1,1,0,)
+        )
+
+        connection.commit()
+        connection.close()
+
+        #connect to admin user
+        ff_browser.get(application + "/login")
+        elem = ff_browser.find_element_by_name("username")
+        elem.send_keys(t_username)
+        elem = ff_browser.find_element_by_name("password")
+        elem.send_keys(t_password)
+        elem = ff_browser.find_element_by_name("submit")
+        elem.click()
+        elem = ff_browser.find_element_by_name("control_panel_link")
+
+        test_clean_DB() # remove previous inserts in case there are any
+        assert elem.text == "Control Panel"
