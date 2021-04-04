@@ -2,7 +2,7 @@ import pytest
 from selenium import webdriver
 from flask import current_app
 import sqlite3
-
+from time import sleep
 #globals
 t_username = 'testUsername29475'
 t_password = 'kjdfvi4kjvsd4'
@@ -12,10 +12,9 @@ DB_NAME = 'database.db'
 
 def test_clean_DB():
     connection = sqlite3.connect(DB_NAME)
-    cur = connection.execute("DELETE FROM Users WHERE UserName = ? ",(t_username,))
+    cur = connection.execute("DELETE FROM Users WHERE UserName = (?) ",(t_username,))
     connection.commit()
     connection.close()
-
 
 
 class TestNavbar:
@@ -116,7 +115,7 @@ class TestNavbar:
         ''' check there is an admin navbar button '''
         test_clean_DB() # remove previous inserts in case there are any
         ff_browser.get(application + "/logout") # logout 
-        
+
         connection = sqlite3.connect(DB_NAME)
 
         #insert admin user
@@ -137,5 +136,35 @@ class TestNavbar:
         elem.click()
         elem = ff_browser.find_element_by_name("control_panel_link")
 
-        test_clean_DB() # remove previous inserts in case there are any
         assert elem.text == "Control Panel"
+
+    def test_admin_navbar(self, application: str, ff_browser: webdriver.Firefox):
+        ''' check if Control Panel moves the admin to the right route '''
+        test_clean_DB() # remove previous inserts in case there are any
+        ff_browser.get(application + "/logout") # logout 
+
+        connection = sqlite3.connect(DB_NAME)
+
+        #insert admin user
+        cur = connection.execute("INSERT INTO Users VALUES (?,?,?,?,?,?,?,?,?)",
+            (t_username,t_firstname,t_lastname,t_password,1,1,1,1,0,)
+        )
+
+        connection.commit()
+        connection.close()
+
+        #connect to admin user
+        ff_browser.get(application + "/login")
+        elem = ff_browser.find_element_by_name("username")
+        elem.send_keys(t_username)
+        elem = ff_browser.find_element_by_name("password")
+        elem.send_keys(t_password)
+        elem = ff_browser.find_element_by_name("submit")
+        elem.click()
+        elem = ff_browser.find_element_by_name("control_panel_link")
+
+        elem.click()
+        assert ff_browser.current_url == application + "/controlpanel"
+
+    def test_house_cleaning(self):
+        test_clean_DB()
