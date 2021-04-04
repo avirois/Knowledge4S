@@ -21,10 +21,11 @@ class TestNavbar:
         assert elem.text == "Login"
 
     def test_navbar_register_link(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application + "/logout")
         ff_browser.get(application)
         elem = ff_browser.find_element_by_name("register_link")
         assert elem.text == "Register"
-
+    
     def test_navbar_about_link(self, application: str, ff_browser: webdriver.Firefox):
         ff_browser.get(application)
         elem = ff_browser.find_element_by_name("about_link")
@@ -42,20 +43,23 @@ class TestNavbar:
         assert ff_browser.current_url == application + "/"
 
     def test_login_route(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application + "/logout")
         ff_browser.get(application)
         elem = ff_browser.find_element_by_name("login_link")
         elem.click()
         assert ff_browser.current_url == application + "/login"
     
     def test_register_route(self, application: str, ff_browser: webdriver.Firefox):
+        ff_browser.get(application + "/logout")
         ff_browser.get(application)
         elem = ff_browser.find_element_by_name("register_link")
         elem.click()
         assert ff_browser.current_url == application + "/register"
-    
+    '''
+    # uncomment next sprint
     def test_about_route(self, application: str, ff_browser: webdriver.Firefox):
         ff_browser.get(application)
         elem = ff_browser.find_element_by_name("about_link")
         elem.click()
         assert ff_browser.current_url == application + "/about"
-
+    '''

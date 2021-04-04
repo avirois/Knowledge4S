@@ -332,14 +332,14 @@ class TestIntegrationLogin:
         ff_browser.get(application)
         
         # Get the logout button element
-        btnLogout = ff_browser.find_element_by_xpath("/html/body/div[1]/div[2]/a[3]")
+        btnLogout = ff_browser.find_element_by_name("logout_link")
 
         # Click on logout button
         btnLogout.click()
 
         # Get buttons login and register that exist only if the user was not logged in
-        btnLogin = ff_browser.find_element_by_xpath("/html/body/div[1]/div[2]/a[3]")
-        btnRegister = ff_browser.find_element_by_xpath("/html/body/div[1]/div[2]/a[4]")
+        btnLogin = ff_browser.find_element_by_name("login_link")
+        btnRegister = ff_browser.find_element_by_name("register_link")
 
         # Save text of buttons
         strLogin = btnLogin.text
