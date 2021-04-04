@@ -23,17 +23,22 @@ def login():
             # Create user object for current selected username
             usrLogin = User(record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[8])
 
-            # Check if password is correct
+            # Check if password is correct and user is not banned
             if (usrLogin.validatePassword(request.form["password"])):
-                # Check if the user is admin or not
-                if record[7] == 1:
-                    session['admin'] = True
-                
-                # Save user name in session
-                session['username'] = usrLogin.getUsername()
-                massage = "Logged in successfuly!"
+                # Check if user banned
+                if (not usrLogin.getIsBanned()):
+                    # Check if the user is admin or not
+                    if (record[7] == 1):
+                        session['admin'] = True
+                    
+                    # Save user name in session
+                    session['username'] = usrLogin.getUsername()
+                    massage = "Logged in successfuly!"
 
-                return redirect('/')
+                    return redirect('/')
+                # The user banned
+                else:
+                    massage = "Your user is banned!"
             # The password is incorrect
             else:
                 massage = "Wrong password entered!"
