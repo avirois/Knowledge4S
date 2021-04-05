@@ -1,8 +1,10 @@
 """Main module from here the app starts."""
 from flask import Flask
+from modules.search import SearchEngine
 from blueprints.index import index_blueprint
 from blueprints.search import search_blueprint, search_options_bp
 
+search_engine = SearchEngine("database.db")
 
 app = Flask(__name__)
 app.register_blueprint(index_blueprint)

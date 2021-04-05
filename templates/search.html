@@ -44,6 +44,19 @@
     <p>Search: <input type="text" name="freetextsearch"/></p>
     <input type="submit" value="Search" name="send"/>
 </form>
+{% for res in search_res["files"] %}
+<div class="fileitem">
+  {{res[0]}}|
+  {{res[1]}}|
+  {{res[2]}}|
+  {{res[3]}}|
+  {{res[4]}}|
+  {{res[5]}}|
+  {{res[6]}}|
+  {{res[7]}}|
+  {{res[8]}}
+<div>
+{% endfor %}                                              
 
 <script>
 "use strict";
