@@ -32,7 +32,7 @@ def search_route():
             institutions, faculties, lecturers, courses, years, freetext
         )
     return render_template(
-        "search.html", **initial_selections, search_res=search_res["files"]
+        "search.html", **initial_selections, search_res=search_res
     )
 
 

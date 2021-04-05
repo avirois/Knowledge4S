@@ -105,7 +105,7 @@ class SearchEngine(metaclass=Singleton):
             AND Files.CourseID == Courses.CourseID
             AND Courses.LecturerID == Lecturers.LecturerID
             """
-            if institutions:
+            if institutions not in ["all", ""]:
                 where = (
                     where
                     + """
@@ -113,7 +113,7 @@ class SearchEngine(metaclass=Singleton):
                 """
                 )
                 args.append(institutions)
-            if faculties:
+            if faculties not in ["all", ""]:
                 where = (
                     where
                     + """
@@ -121,7 +121,7 @@ class SearchEngine(metaclass=Singleton):
                 """
                 )
                 args.append(faculties)
-            if lecturer:
+            if lecturer not in ["all", ""]:
                 where = (
                     where
                     + """
@@ -129,7 +129,7 @@ class SearchEngine(metaclass=Singleton):
                 """
                 )
                 args.append(lecturer)
-            if course:
+            if course not in ["all", ""]:
                 where = (
                     where
                     + """
@@ -137,16 +137,17 @@ class SearchEngine(metaclass=Singleton):
                 """
                 )
                 args.append(course)
-            if year:
+            if year not in ["all", ""]:
                 where = (
                     where
                     + """
                 AND Courses.Year == ?
                 """
                 )
-                args.append(year)
+                args.append(int(year))
             cur = con.execute(select + from_ + where, args)
             result = cur.fetchall()
+            print(result)
             if freetext:
                 relevant_file_ids = []
                 for res in result:
