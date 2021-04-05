@@ -2,6 +2,7 @@
 from flask import Flask, current_app
 from blueprints.authentication import authentication_blueprint
 from blueprints.controlpanel import controlpanel_blueprint
+from blueprints.user import user_blueprint
 from blueprints.index import index_blueprint
 from blueprints.manageFaculty import fac_manage_blueprint
 from blueprints.manageInstitution import inst_manage_blueprint
@@ -18,6 +19,7 @@ app.register_blueprint(search_blueprint)
 app.register_blueprint(search_options_bp)
 app.register_blueprint(authentication_blueprint)
 app.register_blueprint(controlpanel_blueprint)
+app.register_blueprint(user_blueprint)
 app.register_blueprint(inst_manage_blueprint)
 app.register_blueprint(fac_manage_blueprint)
 app.config["DB_NAME"] = "database.db"
