@@ -8,7 +8,6 @@ import os
 upload_blueprint = Blueprint("upload_blueprint", __name__, template_folder="templates")
 UPLOAD_FOLDER ='storage/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-current_app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and \
