@@ -3,6 +3,7 @@ from selenium import webdriver
 from time import sleep
 from selenium.webdriver.support.select import Select
 import sqlite3
+from static.classes.User import User, encryptPassword, decryptPassword
 
 # Global variable
 # Prepare the user and password for test
@@ -226,7 +227,7 @@ def db_prepare_login():
     # If user does not exists create it
     if record == None:
         sqtInsertUser = "INSERT INTO Users VALUES (?,?, ?, ?, ?, ?, ?, 0, 0)"
-        con.execute(sqtInsertUser, (username_test, "test1", "test1", password_test, instID, facID, 2))
+        con.execute(sqtInsertUser, (username_test, "test1", "test1", encryptPassword(password_test), instID, facID, 2))
     
     # Commit the changes in users table
     con.commit()
@@ -346,4 +347,40 @@ class TestIntegrationLogin:
         strRegister = btnRegister.text
         
         assert ((strLogin == "Login") and (strRegister == "Register"))
-    
+
+    def test_login_failed_banned(self, application: str, ff_browser: webdriver.Firefox, db_prepare_login):
+        # Prepare the institution
+        db_name = "database.db"
+
+        # connect to db to prepare it before testing
+        con = sqlite3.connect(db_name)
+
+        # Update user to be banned
+        sqlQueryBanUser = "UPDATE Users SET IsBanned = 1 WHERE UserName = (?)"
+        sqlRes = con.execute(sqlQueryBanUser, (username_test,))
+
+        # Commit and close DB connection
+        con.commit()
+        con.close()
+        
+        # Open the login page
+        ff_browser.get(application + "/login")
+
+        # Get username and password elements on page
+        username = ff_browser.find_element_by_name("username")
+        password = ff_browser.find_element_by_name("password")
+
+        # Get submit button element
+        btnSubmit = ff_browser.find_element_by_xpath("/html/body/div[2]/form/input")
+
+        # Inject username and password of test user
+        username.send_keys(username_test)
+        password.send_keys(password_test)
+
+        # Click on submit button
+        btnSubmit.click()
+
+        # Get the banned message element
+        bannedMsg = ff_browser.find_element_by_xpath("/html/body/div[2]/b")
+        
+        assert bannedMsg.text == ("Your user is banned!")
