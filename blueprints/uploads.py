@@ -2,11 +2,13 @@ from flask import Blueprint, render_template,request,current_app,session, redire
 from werkzeug.utils import secure_filename
 import sqlite3,base64,os,datetime
 from datetime import datetime
+from modules.search import SearchEngine
 import os
 
 upload_blueprint = Blueprint("upload_blueprint", __name__, template_folder="templates")
 UPLOAD_FOLDER ='storage/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+current_app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -35,10 +37,10 @@ def db_update(filename,file):
                 request.form['FacultyID'],
                 request.form['CourseID'],
     )
-    print(values)##debug
     file_id = add_file_info_to_db(add_query,values)
     file_extension = filename.rsplit('.', 1)[1].lower()
     file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], "{}.{}".format(file_id,file_extension)))
+    SearchEngine(None).add_document(file_id, request.form["Description"], filename, request.form["Title"])
     
 
 @upload_blueprint.route("/upload",methods = ['GET', 'POST'])
@@ -91,8 +93,6 @@ def courseByfaculty(facul_ID):
 
     # Close the connection to the database
     con.close()
-
-    print(coursInfac)
 
     # Create json from the result list
     return jsonify({'courInst' : coursInfac})
