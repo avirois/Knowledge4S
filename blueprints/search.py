@@ -1,7 +1,8 @@
 """Search api module."""
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, session, current_app
 from modules.selection import Selections
 from modules.search import SearchEngine
+import sqlite3
 
 DB_NAME = "database.db"
 
@@ -24,6 +25,28 @@ def search_route():
     courses = request.args.get("courses", default=None, type=str)
     years = request.args.get("years", default=None, type=str)
     freetext = request.args.get("freetextsearch", default=None, type=str)
+
+    if ('username' in session):
+        if (institutions == None and faculties == None and lecturers == None and courses == None and years == None and freetext == None):
+            search_res = {"files":[]}
+            connection = sqlite3.connect(current_app.config['DB_NAME'])
+            cur = connection.execute("SELECT InstitutelID,FacultyID,StudyYear FROM Users WHERE UserName = (?)",(session['username'],))
+            for x in cur:
+                institutions = request.args.get("institutions", x[0], type=str)
+                faculties = request.args.get("faculties", x[1], type=str)
+                lecturers = request.args.get("lecturers", default=None, type=str)
+                courses = request.args.get("courses", default=None, type=str)
+                years = request.args.get("years", x[2], type=str)
+                freetext = request.args.get("freetextsearch", default=None, type=str)
+
+            cur = connection.execute("SELECT * FROM Files WHERE InstituteID = ? AND FacultyID = ? ",(institutions,faculties,))
+            for row in cur:
+                search_res["files"].append(row)
+            print(search_res)
+            connection.close()
+            return render_template(
+                "search.html", **initial_selections, search_res=search_res
+            )
 
     search_res = {"files": None}
 
