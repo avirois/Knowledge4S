@@ -16,6 +16,7 @@
                 <b class="navItem">Welcome {{ session['username'] }}!</b>
             {% endif %}
             <a class="navItem" href="/" name="home_link">Home</a>
+            <a class="navItem" href="/search" name="search_link">Search</a>
             <a class="navItem" href="/" name="about_link">About</a>
             {% if session['admin'] %}
                 <a class="navItem" href="/controlpanel" name="control_panel_link">Control Panel</a>
