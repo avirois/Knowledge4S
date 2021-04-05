@@ -1,4 +1,27 @@
 import re
+from cryptography.fernet import Fernet
+
+# Secret key for passwords
+sec_key = b'pRmgMa8T0INjEAfksaq2aafzoZXEuwKI7wDe4c1F8AY='
+
+def encryptPassword(password):
+    """Function that returns encrypted password"""
+
+    # Encrypt passwords
+    cipher_suite = Fernet(sec_key)
+    ciphered_text = cipher_suite.encrypt(str(password).encode("utf-8"))
+
+    return (ciphered_text)
+
+def decryptPassword(password):
+    """Function that returns decrypted password"""
+
+    # Decrypt password
+    cipher_suite = Fernet(sec_key)
+    unciphered_text = (cipher_suite.decrypt(password))
+
+    return (unciphered_text.decode('utf-8'))
+
 
 class User():
     """

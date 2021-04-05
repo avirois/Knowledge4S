@@ -1,9 +1,13 @@
 from flask import Blueprint, render_template, request, session, redirect, current_app, Markup, jsonify
 import sqlite3
 import os
-from static.classes.User import User
+from static.classes.User import User, encryptPassword, decryptPassword
+from cryptography.fernet import Fernet
 
 authentication_blueprint = Blueprint("authentication_blueprint", __name__, template_folder="templates")
+
+# Secret key for passwords
+sec_key = b'pRmgMa8T0INjEAfksaq2aafzoZXEuwKI7wDe4c1F8AY='
 
 @authentication_blueprint.route('/login',methods=['POST','GET'])
 def login():
@@ -20,9 +24,10 @@ def login():
 
         # Check if user exists
         if (record != None):
+            
             # Create user object for current selected username
-            usrLogin = User(record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[8])
-
+            usrLogin = User(record[0], record[1], record[2], decryptPassword(record[3]), record[4], record[5], record[6], record[8])
+            
             # Check if password is correct and user is not banned
             if (usrLogin.validatePassword(request.form["password"])):
                 # Check if user banned
@@ -110,7 +115,7 @@ def register():
             con.execute(sqlQueryRegister, (newUser.getUsername(),
                                             newUser.getFName(),
                                             newUser.getLName(),
-                                            newUser.getPassword(),
+                                            encryptPassword(newUser.getPassword()),
                                             newUser.getInstitutionID(),
                                             newUser.getFacultyID(),
                                             newUser.getStudyYear()))
