@@ -1,10 +1,29 @@
-import sqlite3
-import pytest
-import os
-from modules.selection import Selections
 import json
+import os
+import pytest
+import sqlite3
+from modules.selection import Selections
+from modules.util import Singleton
+import modules.search as srch
 
 DB_NAME = "database.db"
+TEST_STORAGE_1 = "Tests/test_storage_1"
+TEST_STORAGE_2 = "Tests/test_storage_2"
+
+
+@pytest.fixture
+def use_test_storage1():
+    srch.STORAGE_FOLDER = TEST_STORAGE_1
+
+
+@pytest.fixture
+def use_test_storage2():
+    srch.STORAGE_FOLDER = TEST_STORAGE_2
+
+
+@pytest.fixture
+def reset_singletons():
+    Singleton._instances = {}
 
 
 @pytest.fixture
@@ -25,6 +44,21 @@ def fill_db():
             "INSERT INTO Courses VALUES (?, ?, ?, ?)", (111, "Calculus", 1111, 2021)
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (1, 11))
+        con.execute(
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                1,
+                "Yosi",
+                "F1.txt",
+                "title-math",
+                "special number",
+                "1.1.2021",
+                "1.1.2021",
+                1,
+                11,
+                111,
+            ),
+        )
         # 2)
         con.execute("INSERT INTO Faculties VALUES (?, ?)", (22, "art"))
         con.execute("INSERT INTO Institutions VALUES (?, ?)", (2, "B"))
@@ -34,6 +68,21 @@ def fill_db():
             (222, "study of drawing", 2222, 2021),
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (2, 22))
+        con.execute(
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                2,
+                "Moshe",
+                "F2.txt",
+                "titile-sokal",
+                "sokal-affair",
+                "1.1.2021",
+                "1.1.2021",
+                2,
+                22,
+                222,
+            ),
+        )
     yield
     # Teardown :
     with sqlite3.connect(DB_NAME) as con:
@@ -42,6 +91,58 @@ def fill_db():
         con.execute("DELETE FROM Lecturers")
         con.execute("DELETE FROM Courses")
         con.execute("DELETE FROM FacIn")
+        con.execute("DELETE FROM Files")
+
+
+class TestSearch:
+    def test_can_create_SearchEngine_with_empty_db(self):
+        try:
+            srch.SearchEngine(DB_NAME)
+        except:
+            assert False
+        assert True
+
+    def test_can_create_SearchEngine_with_db(
+        self, reset_singletons, use_test_storage1, fill_db
+    ):
+        try:
+            srch.SearchEngine(DB_NAME)
+        except:
+            assert False
+        assert True
+
+    def test_can_create_only_one_SearchEngine(self, reset_singletons):
+        a = srch.SearchEngine(DB_NAME)
+        b = srch.SearchEngine(None)
+        assert b.db_name == DB_NAME
+        assert a is b
+
+    def test_search_executable(self, reset_singletons, use_test_storage1, fill_db):
+        try:
+            s = srch.SearchEngine(DB_NAME)
+            s.search("A", "math", "Moshe", "Calculus", "2021", "special number")
+        except:
+            assert False
+        assert True
+
+    def test_search_with_free_text_get_correct_order(
+        self, reset_singletons, use_test_storage1, fill_db
+    ):
+        s = srch.SearchEngine(DB_NAME)
+        res = s.search("", "", "", "", "2021", "the special number i like")
+        assert res["files"][0][0] == "Calculus"
+
+    def test_search_with_free_text_only(
+        self, reset_singletons, use_test_storage1, fill_db
+    ):
+        s = srch.SearchEngine(DB_NAME)
+        res = s.search("", "", "", "", "", "some haox by Alan")
+        assert res["files"][0][4] == "art"
+
+    def test_search_with_pdfs(self, reset_singletons, use_test_storage2, fill_db):
+        s = srch.SearchEngine(DB_NAME)
+        res = s.search("", "", "", "", "", "some haox by Alan")
+        assert res["files"][0][4] == "art"
 
 
 class TestSelection:
