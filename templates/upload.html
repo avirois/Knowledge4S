@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %} 
+    <p>
+      <form action = "/upload" method = "POST" 
+        enctype = "multipart/form-data">
+        <input type = "file" name = "file" />
+        <p>Title: <input type="text" name="Title" size="20"/></p>
+        <p>Description: <input type="text" name="Description" size="20"/></p>
+        <select name="InstituteID" id="institution"> 
+              <option value="">Select Institution!</option>
+              {% for istitution in institutions %}
+                      <option value="{{istitution[0]}}">{{istitution[1]}}</option>
+              {% endfor %}   
+        </select>
+        <select name="FacultyID" id="faculty">
+            <option value="">Select Faculty!</option>
+        </select> 
+        <select name="CourseID" id="course">
+                <option value="">Select Course!</option>
+        </select>
+          <input type = "submit" value="Upload Now"/>
+   </form>
+   {{data['msg']}}
+    </p>
+    <script>
+        institution_select = document.getElementById('institution');
+        faculty_select = document.getElementById('faculty');
+        
+        institution_select.onchange = function() {
+            inst = institution_select.value;
+            fetch('/faculties/' + inst).then(function(response) {
+                response.json().then(function(data){
+                    optionHTML = '<option value="">Select Faculty!</option>';
+        
+                    for (fac of data.facInst) {
+                        optionHTML += '<option value="' + fac.facID + '">' + fac.facName + '</option>'
+                    }
+                    faculty_select.innerHTML = optionHTML;
+                });
+            });  
+        }
+        </script>
+    <script>
+        faculty_select = document.getElementById('faculty');
+        course_select = document.getElementById('course')
+        
+        faculty_select.onchange = function() {
+            fac = faculty_select.value;
+        
+            fetch('/upload/course/' + fac).then(function(response) {
+                response.json().then(function(data){
+                    optionHTML = '<option value="">Select Course!</option>';
+        
+                    for (cour of data.courInst) {
+                        optionHTML += '<option value="' + cour.courID + '">' + cour.courName + '</option>'
+                    }
+                    course_select.innerHTML = optionHTML;
+                });
+            });  
+        }
+        </script>
+{% endblock %}
