@@ -1,159 +1,150 @@
-"""SearchEngine."""
+"""
+Main search module.
+
+This module combine the functionality of search_by_sql_queries and search_by_free_text
+modules.
+
+=> Functions:
+    -> extract_text_from_document : extract all textual metadata and text from
+                                    given file to sinle string.
+    -> init_search : Populate DocumentsTermsFrequency object with documents from db
+                     and return its instance.
+    -> add_document : Add document id and documents text to DocumentsTermsFrequency.
+    -> order_by_similarity_to : warper around search_by_free_text order_by_similarity_to
+    -> search : search by search sql queries than sort quries acoring to freetext
+                search logic (see freetext docs).
+
+       search return format:
+        list[                  # index # type
+            tuple(             # ----- # ----
+             Course name       #   0   #  str
+            ,Date modified     #   1   #  str
+            ,Date upload       #   2   #  str
+            ,Description       #   3   #  str
+            ,Faculty name      #   4   #  str
+            ,File id           #   5   #  int
+            ,File name         #   6   #  str
+            ,Institution name  #   7   #  str
+            ,Title             #   8   #  str
+            ,User name         #   9   #  int
+            )
+        ]
+"""
 import sys
-from pathlib import Path
 import sqlite3
 import PyPDF2
-from modules.free_text import FreeTextSearchEngine
-from modules.util import Singleton
+from typing import Union, Any
+from pathlib import Path
+from modules.search_by_free_text import DocumentsTermsFrequency
+from modules.search_by_sql_queries import search_by_sql_queries
 
 STORAGE_FOLDER = "storage"
 
 
-class SearchEngine(metaclass=Singleton):
-    """Eager initialization singeton search engine."""
+def extract_text_from_document(database_name: str, document_id: Union[str, int]) -> str:
+    """
+    Collect text from document.
 
-    def __init__(self, database_name):
-        """
-        Create instance.
+    Combine exctracted text from file (text/pdf) with text in title,
+    file_name and description.
+    """
+    text = ""
+    with sqlite3.connect(database_name) as con:
+        res = con.execute(
+            """
+            select UserName, FileName, Title, Description
+            from Files
+            where FileID == ?
+            """,
+            (str(document_id),),
+        ).fetchone()
+        username = res[0]
+        file_name = res[1]
+        title = res[2]
+        description = res[3]
+        text = description + " " + file_name + " " + title + " " + username
 
-        Create SearchEngine instance with database_name,
-        and initialse the free text search engine.
-        """
-        self.db_name = database_name
-        self.free_text_engine = FreeTextSearchEngine(self.get_all_documents_txt())
+    storage_folder = Path(".", STORAGE_FOLDER)
+    file_search_regex = str(document_id) + ".*"
+    found = list(storage_folder.glob(file_search_regex))
 
-    def add_document(self, document_id, description, file_name, title):
-        """
-        Add document to the search engine.
-
-        This will allow document to be found via free text search.
-        """
-        self.free_text_engine.add_document(
-            document_id,
-            self.document2text(document_id, description, file_name, title),
-        )
-
-    def get_all_documents_txt(self):
-        """Exctract text  information from stored documents."""
-        documents_text = dict()
-        files_data = list()
-        with sqlite3.connect(self.db_name) as con:
-            files_cur: sqlite3.Cursor = con.execute(
-                "SELECT FileID, Description, FileName, Title FROM Files"
-            )
-            files_data = files_cur.fetchall()
-
-        for (f_id, description, file_name, title) in files_data:
-            documents_text[str(f_id)] = self.document2text(
-                f_id, description, file_name, title
-            )
-        return documents_text
-
-    def document2text(self, document_id, description, file_name, title):
-        """
-        Collect text.
-
-        Combine exctracted text from file (text/pdf) with text in title,
-        file_name and description.
-        """
-        text = description + " " + file_name + " " + title
-        storage_folder = Path(".", STORAGE_FOLDER)
-        file_search_regex = str(document_id) + ".*"
-        found = list(storage_folder.glob(file_search_regex))
-        if len(found) != 1:
+    if len(found) != 1:
+        if found:
             sys.exit("error have two same files with same id")
-        file = found[0]
-        if ".txt" in str(file):
-            with open(file, "r") as f:
-                text = text + f.read().replace("\n", "")
-        if ".pdf" in str(file):
-            extracted_txt = []
-            with open(file, "rb") as f:
-                pdfReader = PyPDF2.PdfFileReader(f)
-                numOfPages = pdfReader.getNumPages()
-                for i in range(0, numOfPages):
-                    pageObj = pdfReader.getPage(i)
-                    extracted_txt.append(pageObj.extractText())
-            print(extracted_txt)
-            text = text + " ".join(extracted_txt)
-        return text
+        else:
+            sys.exit("error no file in storage start with: %d" % int(document_id))
 
-    def search(self, institutions, faculties, lecturer, course, year, freetext):
-        """Perform Search according to given parameters."""
-        with sqlite3.connect(self.db_name) as con:
-            args = []
-            select = """
-            SELECT
-                Courses.CourseName
-                ,Files.DateModified
-                ,Files.DateUpload
-                ,Files.Description
-                ,Faculties.FacultyName
-                ,Files.FileID
-                ,Files.FileName
-                ,Institutions.InstitutionName
-                ,Files.Title
-                ,Files.UserName
-            """
-            from_ = """
-            FROM Files, Institutions, Faculties, Lecturers, Courses
-            """
-            where = """
-            WHERE
-            Files.InstituteID == Institutions.InstitutionID
-            AND Files.FacultyID == Faculties.FacultyID
-            AND Files.CourseID == Courses.CourseID
-            AND Courses.LecturerID == Lecturers.LecturerID
-            """
-            if institutions not in ["all", ""]:
-                where = (
-                    where
-                    + """
-                AND Institutions.InstitutionName == ?
-                """
-                )
-                args.append(institutions)
-            if faculties not in ["all", ""]:
-                where = (
-                    where
-                    + """
-                AND Faculties.FacultyName == ?
-                """
-                )
-                args.append(faculties)
-            if lecturer not in ["all", ""]:
-                where = (
-                    where
-                    + """
-                AND Lecturers.LecturerName == ?
-                """
-                )
-                args.append(lecturer)
-            if course not in ["all", ""]:
-                where = (
-                    where
-                    + """
-                AND Courses.CourseName == ?
-                """
-                )
-                args.append(course)
-            if year not in ["all", ""]:
-                where = (
-                    where
-                    + """
-                AND Courses.Year == ?
-                """
-                )
-                args.append(int(year))
-            cur = con.execute(select + from_ + where, args)
-            result = cur.fetchall()
-            print(result)
-            if freetext:
-                relevant_file_ids = []
-                for res in result:
-                    relevant_file_ids.append(res[5])
-                document_ids = self.free_text_engine.search_free_text(
-                    freetext, relevant_file_ids
-                )
-                result = [t for id_ in document_ids for t in result if str(t[5]) == id_]
-            return {"files": result}
+    # File is .txt
+    file = found[0]
+    if ".txt" in str(file):
+        with open(file, "r") as opened_file:
+            text = text + opened_file.read().replace("\n", "")
+
+    # File is .pdf TODO
+    if ".pdf" in str(file):
+        extracted_txt = []
+        with open(file, "rb") as opened_file:
+            pdf_reader = PyPDF2.PdfFileReader(opened_file)
+            num_of_pages = pdf_reader.getNumPages()
+            for i in range(0, num_of_pages):
+                pageObj = pdf_reader.getPage(i)
+                extracted_txt.append(pageObj.extractText())
+        print(extracted_txt)
+        text = text + " ".join(extracted_txt)
+    return text
+
+
+def order_by_similarity_to(
+    query: str, documents: list[Union[str, int]]
+) -> tuple[str, ...]:
+    """Warper aroud DocumentsTermsFrequency's order_by_similarity_to."""
+    dtf = DocumentsTermsFrequency()
+    return dtf.order_by_similarity_to(query, *documents)
+
+
+def add_document(database_name: str, document_id: Union[str, int]) -> None:
+    """Exatacting text from given document and adding to DocumentsTermsFrequency."""
+    dtf = DocumentsTermsFrequency()
+    dtf.add_document(
+        document_id, extract_text_from_document(database_name, document_id)
+    )
+
+
+def init_search(database_name: str) -> DocumentsTermsFrequency:
+    """
+    Initialze DocumentsTermsFrequency.
+
+    add all document from database to DocumentsTermsFrequency.
+    """
+    document_ids = list()
+    with sqlite3.connect(database_name) as con:
+        document_ids = con.execute("select FileID from Files").fetchall()
+
+    for (id_,) in document_ids:
+        add_document(database_name, id_)
+    return DocumentsTermsFrequency()
+
+
+def search(
+    database_name: str,
+    institutions: str,
+    faculties: str,
+    lecturers: str,
+    courses: str,
+    years: str,
+    freetext: str,
+) -> list[Any]:
+    """
+    Search.
+
+    search by search sql queries than sort quries acoring to freetext
+    search logic (see freetext docs).
+    """
+    db_search_res = search_by_sql_queries(
+        database_name, institutions, faculties, lecturers, courses, years
+    )
+    if freetext not in ("", None):
+        ids = [res[5] for res in db_search_res]
+        sorted_ids = order_by_similarity_to(freetext, ids)
+        db_search_res.sort(key=lambda x: sorted_ids.index(str(x[5])))
+    return db_search_res
