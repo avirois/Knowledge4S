@@ -62,7 +62,7 @@ def extract_text_from_document(database_name: str, document_id: Union[str, int])
         file_name = res[1]
         title = res[2]
         description = res[3]
-        text = description + " " + file_name + " " + title + " " + username
+        text = description + " " + file_name + " " + title + " " + username + " "
 
     storage_folder = Path(".", STORAGE_FOLDER)
     file_search_regex = str(document_id) + ".*"
@@ -78,7 +78,7 @@ def extract_text_from_document(database_name: str, document_id: Union[str, int])
     file = found[0]
     if ".txt" in str(file):
         with open(file, "r") as opened_file:
-            text = text + opened_file.read().replace("\n", "")
+            text = text + opened_file.read().replace("\n", " ")
 
     # File is .pdf TODO
     if ".pdf" in str(file):
