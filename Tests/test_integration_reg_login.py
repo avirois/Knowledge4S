@@ -120,7 +120,7 @@ class TestIntegrationRegister:
         ff_browser.get(application)
 
         # Get the register button element
-        btnRegister = ff_browser.find_element_by_xpath("/html/body/div[1]/div[2]/a[4]")
+        btnRegister = ff_browser.find_element_by_name("register_link")
 
         # Click on login button
         btnRegister.click()
@@ -292,7 +292,8 @@ class TestIntegrationLogin:
         ff_browser.get(application)
 
         # Get the login button element
-        btnLogin = ff_browser.find_element_by_xpath("/html/body/div[1]/div[2]/a[3]")
+        #btnLogin = ff_browser.find_element_by_xpath("/html/body/div[1]/div[2]/a[3]")
+        btnLogin = ff_browser.find_element_by_name("login_link")
 
         # Click on login button
         btnLogin.click()

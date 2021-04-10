@@ -3,6 +3,7 @@ from selenium import webdriver
 from time import sleep
 from selenium.webdriver.support.select import Select
 import sqlite3
+from static.classes.User import User, encryptPassword, decryptPassword
 
 # Global variable
 # Prepare the user and password for test
@@ -71,7 +72,7 @@ def db_prepare_manage_fac():
     # If user does not exists create it
     if record == None:
         sqtInsertUser = "INSERT INTO Users VALUES (?,?, ?, ?, ?, ?, ?, 1, 0)"
-        con.execute(sqtInsertUser, (username_test, "test1", "test1", password_test, instID, facID, 2))
+        con.execute(sqtInsertUser, (username_test, "test1", "test1", encryptPassword(password_test), instID, facID, 2))
     
     # Commit the changes in users table
     con.commit()
