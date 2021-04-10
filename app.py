@@ -9,7 +9,6 @@ from blueprints.manageInstitution import inst_manage_blueprint
 from blueprints.search import search_blueprint, search_options_bp
 from blueprints.uploads import upload_blueprint,UPLOAD_FOLDER
 from blueprints.manageCourse import cour_manage_blueprint
-from modules.search import SearchEngine
 
 
 app = Flask(__name__)
