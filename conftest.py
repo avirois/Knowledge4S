@@ -12,15 +12,17 @@ import threading
 from time import sleep
 import urllib.request
 import urllib.error
+import sqlite3
 import pytest
+from modules.util import Singleton
 from selenium import webdriver
 from app import app
 from sys import platform
 
 # check platform type
-# since hosts differ from platform to platform 
-if platform != "linux": # FK YOU OLEG REEEEEEEEEEE
-    HOST = "127.0.0.1"    
+# since hosts differ from platform to platform
+if platform != "linux":  # FK YOU OLEG REEEEEEEEEEE
+    HOST = "127.0.0.1"
 else:
     HOST = "0.0.0.0"
 
@@ -73,3 +75,79 @@ def ff_browser():
     )
     yield ff_driver
     ff_driver.close()
+
+
+DB_NAME = "database.db"
+
+
+@pytest.fixture
+def fill_db():
+    with sqlite3.connect(DB_NAME) as con:
+        # setup
+        con.execute("DELETE FROM Faculties")
+        con.execute("DELETE FROM Institutions")
+        con.execute("DELETE FROM Lecturers")
+        con.execute("DELETE FROM Courses")
+        con.execute("DELETE FROM FacIn")
+        # 1)
+        con.execute("INSERT INTO Institutions VALUES (?, ?)", (1, "A"))
+        con.execute("INSERT INTO Faculties VALUES (?, ?)", (11, "math"))
+
+        con.execute("INSERT INTO Lecturers VALUES (?, ?, ?, ?)", (1111, "Moshe", 11, 1))
+        con.execute(
+            "INSERT INTO Courses VALUES (?, ?, ?, ?)", (111, "Calculus", 1111, 2021)
+        )
+        con.execute("INSERT INTO FacIn VALUES (?, ?)", (1, 11))
+        con.execute(
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                1,
+                "Yosi",
+                "F1.txt",
+                "title-math",
+                "special number",
+                "1.1.2021",
+                "1.1.2021",
+                1,
+                11,
+                111,
+            ),
+        )
+        # 2)
+        con.execute("INSERT INTO Faculties VALUES (?, ?)", (22, "art"))
+        con.execute("INSERT INTO Institutions VALUES (?, ?)", (2, "B"))
+        con.execute("INSERT INTO Lecturers VALUES (?, ?, ?, ?)", (2222, "Sarah", 22, 2))
+        con.execute(
+            "INSERT INTO Courses VALUES (?, ?, ?, ?)",
+            (222, "study of drawing", 2222, 2021),
+        )
+        con.execute("INSERT INTO FacIn VALUES (?, ?)", (2, 22))
+        con.execute(
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                2,
+                "Moshe",
+                "F2.txt",
+                "titile-sokal",
+                "sokal-affair",
+                "1.1.2021",
+                "1.1.2021",
+                2,
+                22,
+                222,
+            ),
+        )
+    yield
+    # Teardown :
+    with sqlite3.connect(DB_NAME) as con:
+        con.execute("DELETE FROM Faculties")
+        con.execute("DELETE FROM Institutions")
+        con.execute("DELETE FROM Lecturers")
+        con.execute("DELETE FROM Courses")
+        con.execute("DELETE FROM FacIn")
+        con.execute("DELETE FROM Files")
+
+
+@pytest.fixture
+def reset_singletons():
+    Singleton._instances = {}

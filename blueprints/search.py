@@ -1,7 +1,7 @@
 """Search api module."""
 from flask import Blueprint, render_template, request, jsonify
 from modules.selection import Selections
-from modules.search import SearchEngine
+from modules.search import search, init_search
 
 DB_NAME = "database.db"
 
@@ -11,6 +11,7 @@ search_options_bp = Blueprint(
 )
 
 selections = Selections(DB_NAME)
+term_frequencies = init_search(DB_NAME)
 
 
 @search_blueprint.route("/search", methods=["GET"])
@@ -25,15 +26,10 @@ def search_route():
     years = request.args.get("years", default=None, type=str)
     freetext = request.args.get("freetextsearch", default=None, type=str)
 
-    search_res = {"files": None}
-
-    if institutions or faculties or lecturers or courses or years or freetext:
-        search_res = SearchEngine(None).search(
-            institutions, faculties, lecturers, courses, years, freetext
-        )
-    return render_template(
-        "search.html", **initial_selections, search_res=search_res["files"]
+    search_res = search(
+        DB_NAME, institutions, faculties, lecturers, courses, years, freetext
     )
+    return render_template("search.html", **initial_selections, search_res=search_res)
 
 
 @search_options_bp.route("/search/fetch/selection", methods=["POST"])

@@ -11,7 +11,9 @@ pipeline {
             steps {
                 sh '''
                 # install wget and firefox 
-                apk --no-cache add wget firefox build-base
+                apk --no-cache add wget firefox 
+                # cryptography dependencies
+                apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
                 # download geckodriver.tar.gz
                 wget https://github.com/mozilla/geckodriver/releases/download/v0.29.0/geckodriver-v0.29.0-linux64.tar.gz
                 # extract geckodriver 

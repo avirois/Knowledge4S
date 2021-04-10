@@ -2,9 +2,10 @@ from flask import Blueprint, render_template,request,current_app,session, redire
 from werkzeug.utils import secure_filename
 import sqlite3,base64,os,datetime
 from datetime import datetime
-from modules.search import SearchEngine
+from  modules.search import add_document,extract_text_from_document
 import os
 
+DB_NAME = "database.db"
 upload_blueprint = Blueprint("upload_blueprint", __name__, template_folder="templates")
 UPLOAD_FOLDER ='storage/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -39,7 +40,7 @@ def db_update(filename,file):
     file_id = add_file_info_to_db(add_query,values)
     file_extension = filename.rsplit('.', 1)[1].lower()
     file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], "{}.{}".format(file_id,file_extension)))
-    SearchEngine(None).add_document(file_id, request.form["Description"], filename, request.form["Title"])
+    add_document(file_id, extract_text_from_document(DB_NAME, file_id))
     
 
 @upload_blueprint.route("/upload",methods = ['GET', 'POST'])

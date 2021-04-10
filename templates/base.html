@@ -22,6 +22,7 @@
                 <a class="navItem" href="/controlpanel" name="control_panel_link">Control Panel</a>
             {% endif %}
             {% if session['username'] %}
+                <a class="navItem" href="/user/{{ session['username'] }}" name="user_link">My Profile</a>    
                 <a class="navItem" href="/upload">Upload</a>
                 <a class="navItem" href="/logout" name="logout_link">Logout</a>
             {% else %}
