@@ -29,6 +29,8 @@ modules.
             ,User name         #   9   #  int
             )
         ]
+    -> default_search_for_user: get db name and username preform acording 
+                                to user's current year, institution and faculty.  
 """
 import sys
 import sqlite3
@@ -148,3 +150,20 @@ def search(
         sorted_ids = order_by_similarity_to(freetext, ids)
         db_search_res.sort(key=lambda x: sorted_ids.index(str(x[5])))
     return db_search_res
+
+
+def default_search_for_user(database_name: str, username:str) -> list[Any]:
+    """Default search for username."""
+    institute : str 
+    faculty : str
+    study_year : int
+    with sqlite3.connect(database_name) as con:
+        cur = con.execute("""
+                          SELECT Institutions.InstitutionName,Faculties.FacultyName,User.StudyYear 
+                          FROM Users,Institutions,Faculties
+                          WHERE Users.UserName == ?
+                                AND Institutions.InstitutionID == User.InstitutelID
+                                AND Faculties.facultyID == User.FacultyID
+                          """, username)
+        (institute, faculty, study_year) = cur.fetchone()
+    return search(database_name, institute, faculty, 'all', 'all', str(study_year), "")
