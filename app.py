@@ -7,7 +7,8 @@ from blueprints.index import index_blueprint
 from blueprints.manageFaculty import fac_manage_blueprint
 from blueprints.manageInstitution import inst_manage_blueprint
 from blueprints.search import search_blueprint, search_options_bp
-from blueprints.uploads import upload_blueprint, UPLOAD_FOLDER
+from blueprints.uploads import upload_blueprint,UPLOAD_FOLDER
+from blueprints.manageCourse import cour_manage_blueprint
 
 
 app = Flask(__name__)
@@ -20,6 +21,7 @@ app.register_blueprint(controlpanel_blueprint)
 app.register_blueprint(user_blueprint)
 app.register_blueprint(inst_manage_blueprint)
 app.register_blueprint(fac_manage_blueprint)
+app.register_blueprint(cour_manage_blueprint)
 app.config["DB_NAME"] = "database.db"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.secret_key = b"\xf5\xe4\xabr\x89\xd9#^D@0\xae[R1\xcf"

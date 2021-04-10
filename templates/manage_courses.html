@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+.buttonFacEdit { width: 400px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonFacCreate { width: 700px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonHover { background-color: #555555; color: white; border: 2px solid #555555; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonHover:hover { background-color: white; color: black; }
+</style>
+
+<h1>{{ operation }} Manage Courses:</h1>
+<p>
+    {{ massage }}
+    <div>
+        <select name="course" id="cour" style="height:3.5em; width: 300px;"> 
+            <option value="">Select Course!</option>
+            {% for cour in courses %}
+                <option value="{{cour[0]}}">{{cour[1]}}</option>
+            {% endfor %}
+        </select>
+        <a href="" id="editBtn"><button class="buttonCourEdit buttonHover">Edit</button></a>
+    </div>
+    </br>
+    <div>
+        <a href="/create_course" id="courCreate"><button class="buttonCourCreate buttonHover">Create New Course</button></a>
+    </div>
+</p>
+<script>
+    course_select = document.getElementById('cour');
+    edit_btn = document.getElementById('editBtn');
+
+    course_select.onchange = function() {
+        cour = course_select.value;
+        edit_btn.setAttribute('href', "/edit_course/" + cour);
+    }
+</script>
+{% endblock %}
+
+
