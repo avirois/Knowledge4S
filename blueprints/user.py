@@ -194,3 +194,10 @@ def chaneg_pass(name):
     # Method get
     else:
         return render_template("change_password.html", data = name)
+
+@user_blueprint.route("/admins_info",methods=['GET'])
+def admins_info():
+    # Get information about all admins in the system
+    lstAdmins = getAdminsInfo()
+
+    return render_template("admins_page.html", admins = lstAdmins)
