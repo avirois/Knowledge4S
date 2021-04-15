@@ -13,6 +13,7 @@ institution_test = "SCE_Test"
 faculty_test = "Chemistry_Test"
 instID = 0
 facID = 0
+email = "aaa@aaa.com"
 
 @pytest.fixture
 def db_prepare_register():
@@ -226,8 +227,8 @@ def db_prepare_login():
     
     # If user does not exists create it
     if record == None:
-        sqtInsertUser = "INSERT INTO Users VALUES (?,?, ?, ?, ?, ?, ?, 0, 0)"
-        con.execute(sqtInsertUser, (username_test, "test1", "test1", encryptPassword(password_test), instID, facID, 2))
+        sqtInsertUser = "INSERT INTO Users VALUES (?,?, ?, ?, ?, ?, ?, 0, 0, ?)"
+        con.execute(sqtInsertUser, (username_test, "test1", "test1", encryptPassword(password_test), instID, facID, 2, email))
     
     # Commit the changes in users table
     con.commit()
@@ -325,7 +326,7 @@ class TestIntegrationLogin:
         btnSubmit.click()
 
         # Get the welocme message element
-        welcomeMsg = ff_browser.find_element_by_xpath("/html/body/div[1]/div[2]/b")
+        welcomeMsg = ff_browser.find_element_by_name("welcome_message")
         
         assert welcomeMsg.text == ("Welcome " + username_test + "!")
     
