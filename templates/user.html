@@ -1,7 +1,27 @@
 {% extends 'base.html' %}
-{% block content %} 
+{% block content %}
+<style>
+.button { width: 200px; background-color: #008CBA; border: none; color: #008CBA; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.button1 { background-color: #008CBA; color: white; border: 2px solid #008CBA; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.button1:hover { background-color: white; color: black; }
+</style>
+
     <p>
-        <h1>{{ data }}'s profile</h1>
+        <h1 name="profileHeader">{{ data }}'s profile</h1>
         user profile page
     </p>
+    <div name="userInfo">
+        <p><b>Username:</b> {{user.getUsername()}}</p>
+        <p><b>First name:</b> {{user.getFName()}}</p>
+        <p><b>Last name:</b> {{user.getLName()}}</p>
+        <p><b>Email:</b> {{user.getEmail()}}</p>
+        <p><b>Institution:</b> {{user.getInstitutionName()}}</p>
+        <p><b>Faculty:</b> {{user.getFacultyName()}}</p>
+        <p><b>Study year:</b> {{user.getStudyYear()}}</p>
+    </div>
+    <div>
+        <a href="/edit_bio/{{data}}" id="editBioBtn"><button class="button button1" name="editBioBtn">Edit My Bio</button></a>
+        <a href="/change_pass/{{data}}" id="changePassBtn"><button class="button button1" name="changePassBtn">Change Password</button></a>
+        <a href="" id="ViewFilesBtn"><button class="button button1">View My Files</button></a>
+    </div>
 {% endblock %}
