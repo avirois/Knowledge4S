@@ -45,17 +45,14 @@
     <input type="submit" value="Search" name="send"/>
 </form>
 {% for res in search_res %}
-<div class="fileitem">
-  {{res[0]}}|
-  {{res[1]}}|
-  {{res[2]}}|
-  {{res[3]}}|
-  {{res[4]}}|
-  {{res[5]}}|
-  {{res[6]}}|
-  {{res[7]}}|
-  {{res[8]}}
-<div>
+{% if loop.index % 2 == 0 %}
+<div class="fileitem" style="background:#F6F7F2;">
+{% else %}
+<div class="fileitem" style="background:#EDF9FF;">
+{%endif%}
+  <span id="FileTitle"><a href="/view?id={{res[5]}}" style="color:#1b1b1b;">{{res[8]}}</a></span> <span id="FileDesc">{{res[7]}} / {{res[4]}} / {{res[0]}}</span><br />
+  <p>{{res[3]}}</p> 
+</div>
 {% endfor %}                                              
 
 <script>
