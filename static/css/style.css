@@ -42,6 +42,50 @@ body{
     margin:30px auto;
 }
 
+
+
+.fileitem{
+    padding:10px;
+}
+
+#FileTitle{
+    font-size:32px;
+    font-weight:800;
+    text-decoration:underline;
+}
+#FileDesc{
+    background:#BADEB2;
+    border-radius:5px;
+    padding:5px;
+    vertical-align:2.5px;
+}
+#FileDate{
+    background:#FF6766;
+    border-radius:5px;
+    padding:5px;
+    vertical-align:2.5px;
+}
+#FileUser{
+    background:#F3D89F;
+    border-radius:5px;
+    padding:5px;
+    vertical-align:2.5px;
+}
+#comment{
+    padding:5px;
+    margin-bottom:5px;
+    border-left:3px solid #83D6DE;
+}
+
+#flat_button{
+    padding:5px;
+    font-family: 'Inter', sans-serif;
+    color:#1b1b1b;
+    font-size:16px;
+    background:#fff;
+    border:1px solid #1b1b1b;
+    border-radius:5px;
+}
 .clear {
     overflow: auto;
 }
