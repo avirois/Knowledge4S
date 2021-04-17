@@ -8,7 +8,6 @@
 
     <p>
         <h1 name="profileHeader">{{ data }}'s profile</h1>
-        user profile page
     </p>
     <div name="userInfo">
         <p><b>Username:</b> {{user.getUsername()}}</p>
@@ -19,9 +18,11 @@
         <p><b>Faculty:</b> {{user.getFacultyName()}}</p>
         <p><b>Study year:</b> {{user.getStudyYear()}}</p>
     </div>
-    <div>
-        <a href="/edit_bio/{{data}}" id="editBioBtn"><button class="button button1" name="editBioBtn">Edit My Bio</button></a>
-        <a href="/change_pass/{{data}}" id="changePassBtn"><button class="button button1" name="changePassBtn">Change Password</button></a>
-        <a href="" id="ViewFilesBtn"><button class="button button1">View My Files</button></a>
-    </div>
+    {% if session['username'] == data %}
+        <div>
+            <a href="/edit_bio/{{data}}" id="editBioBtn"><button class="button button1" name="editBioBtn">Edit My Bio</button></a>
+            <a href="/change_pass/{{data}}" id="changePassBtn"><button class="button button1" name="changePassBtn">Change Password</button></a>
+            <a href="" id="ViewFilesBtn"><button class="button button1">View My Files</button></a>
+        </div>
+    {% endif %}
 {% endblock %}
