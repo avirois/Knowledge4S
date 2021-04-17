@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<p>    
+<h1>Information about admins</h1>
+    <p>
+    {% for admin in admins %}
+        <p>
+            <p>Admin {{loop.index}}:</p>
+            <p>Name: {{ admin.getFName()}} {{ admin.getLName()}}</p>
+            <p>Email: {{ admin.getEmail()}}</p>
+            <p>Institution: {{ admin.getInstitutionName() }}</p>
+            <p>Faculty: {{ admin.getFacultyName() }}</p>
+            </br>
+        </P>
+    {% endfor %}   
+    </p>   
+</p>
+{% endblock %}
