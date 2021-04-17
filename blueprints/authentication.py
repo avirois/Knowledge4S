@@ -26,7 +26,7 @@ def login():
         if (record != None):
             
             # Create user object for current selected username
-            usrLogin = User(record[0], record[1], record[2], decryptPassword(record[3]), record[4], record[5], record[6], record[8])
+            usrLogin = User(record[0], record[1], record[2], decryptPassword(record[3]), record[4], record[5], record[6], record[8], email=record[9])
             
             # Check if password is correct and user is not banned
             if (usrLogin.validatePassword(request.form["password"])):
@@ -96,7 +96,8 @@ def register():
                         request.form["password"],
                         request.form["institution"],
                         request.form["faculty"],
-                        request.form["year"])
+                        request.form["year"],
+                        email = request.form["email"])
         
         # Check if the user is not already registered!
         if (record == None):
@@ -111,14 +112,15 @@ def register():
                 return render_template('register.html', massage = valMessage, institutions = institutions)
 
             # Insert the user into the table of users
-            sqlQueryRegister = "INSERT INTO Users VALUES (?,?, ?, ?, ?, ?, ?, 0, 0)"
+            sqlQueryRegister = "INSERT INTO Users VALUES (?,?, ?, ?, ?, ?, ?, 0, 0, ?)"
             con.execute(sqlQueryRegister, (newUser.getUsername(),
                                             newUser.getFName(),
                                             newUser.getLName(),
                                             encryptPassword(newUser.getPassword()),
                                             newUser.getInstitutionID(),
                                             newUser.getFacultyID(),
-                                            newUser.getStudyYear()))
+                                            newUser.getStudyYear(),
+                                            newUser.getEmail()))
 
             # Commit the changes in users table
             con.commit()

@@ -3,6 +3,8 @@ from selenium import webdriver
 from flask import current_app
 import sqlite3
 from time import sleep
+from static.classes.User import User, encryptPassword, decryptPassword
+
 #globals
 t_username = 'testUsername29475'
 t_password = 'kjdfvi4kjvsd4'
@@ -87,8 +89,8 @@ class TestNavbar:
         connection = sqlite3.connect(DB_NAME)
 
         #insert normal user
-        cur = connection.execute("INSERT INTO Users VALUES (?,?,?,?,?,?,?,?,?)",
-            (t_username,t_firstname,t_lastname,t_password,1,1,1,0,0,)
+        cur = connection.execute("INSERT INTO Users VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (t_username,t_firstname,t_lastname,encryptPassword(t_password),1,1,1,0,0,"")
         )
 
         connection.commit()
@@ -119,8 +121,8 @@ class TestNavbar:
         connection = sqlite3.connect(DB_NAME)
 
         #insert admin user
-        cur = connection.execute("INSERT INTO Users VALUES (?,?,?,?,?,?,?,?,?)",
-            (t_username,t_firstname,t_lastname,t_password,1,1,1,1,0,)
+        cur = connection.execute("INSERT INTO Users VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (t_username,t_firstname,t_lastname,encryptPassword(t_password),1,1,1,1,0,"")
         )
 
         connection.commit()
@@ -146,8 +148,8 @@ class TestNavbar:
         connection = sqlite3.connect(DB_NAME)
 
         #insert admin user
-        cur = connection.execute("INSERT INTO Users VALUES (?,?,?,?,?,?,?,?,?)",
-            (t_username,t_firstname,t_lastname,t_password,1,1,1,1,0,)
+        cur = connection.execute("INSERT INTO Users VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (t_username,t_firstname,t_lastname,encryptPassword(t_password),1,1,1,1,0,"")
         )
 
         connection.commit()
