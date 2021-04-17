@@ -26,7 +26,7 @@ def getInstitutions():
 
     return (institutions)
 
-def getUserInfo():
+def getUserInfo(name):
     # Connect to database and check if user exists
     con = sqlite3.connect(current_app.config['DB_NAME'])
 
@@ -34,23 +34,23 @@ def getUserInfo():
     sqlQury = "SELECT * FROM Users WHERE username = (?)"
 
     # Run the query to get user data
-    sqlRes = con.execute(sqlQury,(session.get('username'),))
+    sqlRes = con.execute(sqlQury,(name,))
 
     # Fetch the result
     record = sqlRes.fetchone()
 
     # Create user object for current selected username
-    loggedUser = None
+    infoUser = None
 
     # Check if user exists
     if (record != None):
         # Create user object for current selected username
-        loggedUser = User(record[0], record[1], record[2], None, record[4], record[5], record[6], record[8], email=record[9])
+        infoUser = User(record[0], record[1], record[2], None, record[4], record[5], record[6], record[8], email=record[9])
 
     # Close the connection to the database
     con.close()
 
-    return (loggedUser)
+    return (infoUser)
 
 def getAdminsInfo():
     # Set admin role
@@ -116,7 +116,7 @@ def updateUserBio(userUpdate):
 def index(name):
     
     # Load current user data
-    usr = getUserInfo()
+    usr = getUserInfo(name)
     
     return render_template("user.html", data = name, user = usr)
 
@@ -126,11 +126,15 @@ def edit_bio(name):
     if ('username' not in session):
         return redirect('/')
 
+    # Check if editing not current user
+    if (session.get('username') != name):
+        return redirect('/')
+
     # Get institutions
     institutions = getInstitutions()
 
     # Load current user data
-    usr = getUserInfo()
+    usr = getUserInfo(name)
 
     # Check if post method selected therfore need to login the user
     if (request.method == "POST"):
@@ -161,13 +165,17 @@ def edit_bio(name):
         return render_template("edit_bio.html", data = name, user = usr, institutions = institutions)
 
 @user_blueprint.route("/change_pass/<name>",methods=['POST','GET'])
-def chaneg_pass(name):
+def change_pass(name):
     # Check if user already logged in
     if ('username' not in session):
         return redirect('/')
+
+    # Check if editing not current user
+    if (session.get('username') != name):
+        return redirect('/')
     
     # Load current user data
-    usr = getUserInfo()
+    usr = getUserInfo(name)
 
     # Check if post method selected therfore need to login the user
     if (request.method == "POST"):
