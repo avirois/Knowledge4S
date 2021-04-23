@@ -38,3 +38,36 @@ def manage_user():
         return redirect('/')
 
     return render_template('manage_users.html', users = getUsersInfo())
+
+@user_manage_blueprint.route('/ban_unban/<user>', methods=['GET'])
+def ban_unban_user(user):
+    # If user is not admin redirect him back to main page
+    if (session.get("admin") == None):
+        return redirect('/')
+
+    # Connect to database
+    con = sqlite3.connect(current_app.config['DB_NAME'])
+
+    # Check if user exists in Users table
+    sqlQueryCheckExist = "SELECT * FROM Users WHERE UserName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (user,))
+    record = sqlRes.fetchone()
+    
+    # If user exists ban or unban him
+    if (record != None):
+        # Get user is banned status
+        isBanned = record[8]
+
+        # Change banned status
+        ban_unban = (isBanned + 1) % 2
+
+        sqlBanUser = "UPDATE Users SET IsBanned = (?)  WHERE UserName = (?)"
+        con.execute(sqlBanUser, (ban_unban, user))
+    
+    # Commit the changes in users table
+    con.commit()
+    
+    # Close database
+    con.close()
+
+    return redirect('/manage_users')
