@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+.buttonRedEdit { width: 100px; height: 50px; background-color: #C70039; border: none; border-radius:50%; color: #C70039; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonRedHover { background-color: #C70039; color: white; border: 2px solid #C70039; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonRedHover:hover { background-color: white; color: black; }
+.buttonGreenEdit { width: 100px; height: 50px; background-color: #5F9EA0; border: none; border-radius:50%; color: #5F9EA0; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonGreenHover { background-color: #5F9EA0; color: white; border: 2px solid #5F9EA0; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonGreenHover:hover { background-color: white; color: black; }
+th { text-align: center; }
+tr { text-align: center; }
+</style>
+<h1 name="titleManageUsers">Manage Users:</h1>
+<p>
+    {{ massage }}
+    <div>
+    <table style="width:100%">
+        <tr>
+            <th>Username</th>
+            <th>Is banned?</th>
+            <th>Role</th>
+            <th>Ban/Unban</th>
+            <th>Grant/Revoke admin</th>
+        </tr>
+        {% for user in users %}                     
+            <tr>
+                <td>{{user.getUsername()}}</td>
+                {% if user.getIsBanned() == 0 %}
+                    <td>False</td>
+                {% else %}
+                    <td>True</td>
+                {% endif %}
+                <td>{{user.isAdmin()}}</td>
+                {% if user.getIsBanned() == 0 %}
+                    <td><a href="/ban_unban/{{user.getUsername()}}" id="{{user.getUsername()}}_banBtn"><button class="buttonRedEdit buttonRedHover">Ban</button></a></td>
+                {% else %}
+                    <td><a href="/ban_unban/{{user.getUsername()}}" id="{{user.getUsername()}}_unbanBtn"><button class="buttonGreenEdit buttonGreenHover">Unban</button></a></td>
+                {% endif %}
+                {% if user.isAdmin() %}
+                    <td><a href="/grant_revoke_admin/{{user.getUsername()}}" id="{{user.getUsername()}}_revokeBtn"><button class="buttonGreenEdit buttonGreenHover">Revoke</button></a></td>
+                {% else %}
+                    <td><a href="/grant_revoke_admin/{{user.getUsername()}}" id="{{user.getUsername()}}_grantBtn"><button class="buttonRedEdit buttonRedHover">Grant</button></a></td>
+                {% endif %}
+            </tr>
+        {% endfor %} 
+        </table>
+    </div>
+</p>
+{% endblock %}
