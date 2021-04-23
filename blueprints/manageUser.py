@@ -71,3 +71,36 @@ def ban_unban_user(user):
     con.close()
 
     return redirect('/manage_users')
+
+@user_manage_blueprint.route('/grant_revoke_admin/<user>', methods=['GET'])
+def grant_revoke_admin(user):
+    # If user is not admin redirect him back to main page
+    if (session.get("admin") == None):
+        return redirect('/')
+
+    # Connect to database
+    con = sqlite3.connect(current_app.config['DB_NAME'])
+
+    # Check if user exists in Users table
+    sqlQueryCheckExist = "SELECT * FROM Users WHERE UserName = (?)"
+    sqlRes = con.execute(sqlQueryCheckExist, (user,))
+    record = sqlRes.fetchone()
+    
+    # If user exists grant or revoke admin role
+    if (record != None):
+        # Get user is banned status
+        isAdmin = record[7]
+
+        # Change banned status
+        grant_revoke = (isAdmin + 1) % 2
+
+        sqlBanUser = "UPDATE Users SET Role = (?)  WHERE UserName = (?)"
+        con.execute(sqlBanUser, (grant_revoke, user))
+    
+    # Commit the changes in users table
+    con.commit()
+    
+    # Close database
+    con.close()
+
+    return redirect('/manage_users')
