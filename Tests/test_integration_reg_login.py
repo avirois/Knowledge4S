@@ -117,6 +117,9 @@ def db_prepare_register():
 class TestIntegrationRegister:
 
     def test_register_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_register):
+        # Run logout to clean session
+        ff_browser.get(application + "/logout")
+
         # Opening main page
         ff_browser.get(application)
 
@@ -135,6 +138,9 @@ class TestIntegrationRegister:
         assert (strMsg == "Register")
     
     def test_register_success(self, application: str, ff_browser: webdriver.Firefox, db_prepare_register):
+        # Run logout to clean session
+        ff_browser.get(application + "/logout")
+
         # Opening register page.
         ff_browser.get(application + "/register")
         
