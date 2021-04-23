@@ -55,6 +55,5 @@ class TestEditBio:
         usr = User(username, "aaa", "aaa", "Aa123456!", 1, 1, 1)
         usr.setPassword("aaaaa")
         assert usr.validateUser() != ""
-
   
     
