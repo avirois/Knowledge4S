@@ -175,6 +175,18 @@ class TestEditBio:
         profHeader = ff_browser.find_element_by_name("profileHeader")
 
         assert (profHeader.text == username_test + "'s profile")
+    
+    def test_user_info_of_other_user_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
+        # Run logout to clean session
+        ff_browser.get(application + "/logout")
+
+        # Open the control panel page
+        ff_browser.get(application + "/user/" + username_test)
+
+        # Get header Object
+        profHeader = ff_browser.find_element_by_name("profileHeader")
+
+        assert (profHeader.text == username_test + "'s profile")
 
     def test_edit_bio_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
         # Run logout to clean session
