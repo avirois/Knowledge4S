@@ -6,6 +6,7 @@ pytest.fixtures that are session wide setup here.
 current fixtures:
     - app_init : starting flask server for all test
     - driver_init :
+    - fill_db()
 """
 import os
 import threading
@@ -14,7 +15,6 @@ import urllib.request
 import urllib.error
 import sqlite3
 import pytest
-from modules.util import Singleton
 from selenium import webdriver
 from app import app
 from sys import platform
@@ -146,8 +146,3 @@ def fill_db():
         con.execute("DELETE FROM Courses")
         con.execute("DELETE FROM FacIn")
         con.execute("DELETE FROM Files")
-
-
-@pytest.fixture
-def reset_singletons():
-    Singleton._instances = {}

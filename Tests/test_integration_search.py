@@ -44,9 +44,10 @@ class TestSearchIntegration:
         )
         submit.click()
 
-        res: webdriver.firefox.webdriver.FirefoxWebElement = (
-            ff_browser.find_element_by_class_name("fileitem")
-        )
+        res: list[
+            webdriver.firefox.webdriver.FirefoxWebElement
+        ] = ff_browser.find_elements_by_class_name("fileitem")
+        print(res)
 
-        assert "Calculus" in res.text
-        assert "study of drawing" in res.text
+        assert "Calculus" in res[0].text
+        assert "study of drawing" in res[1].text
