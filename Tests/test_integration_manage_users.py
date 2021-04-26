@@ -13,12 +13,10 @@ institution_test = "SCE_Test"
 faculty_test = "Chemistry_Test"
 instID = 0
 facID = 0
-
-# Create new institution test
-newInstTest = "BGU_Test"
+email = "aaa@aaa.com"
 
 @pytest.fixture
-def db_prepare_edit_bio():
+def db_prepare_manage_users():
     global instID, facID
 
     # Prepare the institution
@@ -72,7 +70,7 @@ def db_prepare_edit_bio():
     # If user does not exists create it
     if record == None:
         sqtInsertUser = "INSERT INTO Users VALUES (?,?, ?, ?, ?, ?, ?, 1, 0, ?)"
-        con.execute(sqtInsertUser, (username_test, "test1", "test1", encryptPassword(password_test), instID, facID, 2, ""))
+        con.execute(sqtInsertUser, (username_test, "test1", "test1", encryptPassword(password_test), instID, facID, 2, email))
     
     # Commit the changes in users table
     con.commit()
@@ -100,16 +98,6 @@ def db_prepare_edit_bio():
         sqtDelInstFac = "DELETE FROM FacIn WHERE InstitutionID = (?) AND FacultyID = (?)"
         con.execute(sqtDelInstFac, (instID, facID))
 
-    # Check if institution and faculty exists in FacIn table
-    sqlQueryCheckExist = "SELECT * FROM FacIn WHERE InstitutionID = (SELECT InstitutionID FROM Institutions WHERE InstitutionName = (?)) AND FacultyID = (?)"
-    sqlRes = con.execute(sqlQueryCheckExist, (newInstTest, facID))
-    record = sqlRes.fetchone()
-
-    # If faculty in institution exists delete it
-    if record != None:
-        sqtDelInstFac = "DELETE FROM FacIn WHERE InstitutionID = (?) AND FacultyID = (?)"
-        con.execute(sqtDelInstFac, (record[0], facID))
-
     # Check if faculty exists
     sqlQueryCheckExist = "SELECT * FROM Faculties WHERE FacultyName = (?)"
     sqlRes = con.execute(sqlQueryCheckExist, (faculty_test,))
@@ -130,65 +118,16 @@ def db_prepare_edit_bio():
         sqtDelInst = "DELETE FROM Institutions WHERE InstitutionID = (?)"
         con.execute(sqtDelInst, (instID,))
 
-    # Check if additional institution exists
-    sqlQueryCheckExist = "SELECT * FROM Institutions WHERE InstitutionName = (?)"
-    sqlRes = con.execute(sqlQueryCheckExist, (newInstTest,))
-    record = sqlRes.fetchone()
-    
-    # If institution exists create it
-    if record != None:
-        sqtDelInst = "DELETE FROM Institutions WHERE InstitutionID = (?)"
-        con.execute(sqtDelInst, (record[0],))
-
     # Commit the changes in users table
     con.commit()
 
     # CLose connection to DB
     con.close()
 
-class TestEditBio:
-    def test_user_info_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
-        # Run logout to clean session
-        ff_browser.get(application + "/logout")
-        
-        # Open the login page
-        ff_browser.get(application + "/login")
-
-        # Get username and password elements on page
-        username = ff_browser.find_element_by_name("username")
-        password = ff_browser.find_element_by_name("password")
-
-        # Get submit button element
-        btnSubmit = ff_browser.find_element_by_xpath("/html/body/div[2]/form/input")
-
-        # Inject username and password of test user
-        username.send_keys(username_test)
-        password.send_keys(password_test)
-
-        # Click on submit button
-        btnSubmit.click()
-
-        # Open the control panel page
-        ff_browser.get(application + "/user/" + username_test)
-
-        # Get header Object
-        profHeader = ff_browser.find_element_by_name("profileHeader")
-
-        assert (profHeader.text == username_test + "'s profile")
+class TestIntegrationManageUsers:
     
-    def test_user_info_of_other_user_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
-        # Run logout to clean session
-        ff_browser.get(application + "/logout")
-
-        # Open the control panel page
-        ff_browser.get(application + "/user/" + username_test)
-
-        # Get header Object
-        profHeader = ff_browser.find_element_by_name("profileHeader")
-
-        assert (profHeader.text == username_test + "'s profile")
-
-    def test_edit_bio_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
+    def test_manage_users_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_manage_users):
+        
         # Run logout to clean session
         ff_browser.get(application + "/logout")
         
@@ -208,22 +147,23 @@ class TestEditBio:
 
         # Click on submit button
         btnSubmit.click()
-        
+
         # Open the control panel page
-        ff_browser.get(application + "/user/" + username_test)
+        ff_browser.get(application + "/controlpanel")
 
-        # Get header Object
-        btnEditBio = ff_browser.find_element_by_xpath("/html/body/div[2]/div[2]/a[1]/button")
+        # Get manage users button
+        btnManageUsers = ff_browser.find_element_by_name("usersManage")
 
-        # Click button
-        btnEditBio.click()
+        # Click the manage users button
+        btnManageUsers.click()
 
-        # Get the header in edit bio page
-        editBioHeader = ff_browser.find_element_by_xpath("/html/body/div[2]/h1")
+        # Get manage institution title
+        manageUsersTitle = ff_browser.find_element_by_name("titleManageUsers")
 
-        assert (editBioHeader.text == "Change bio of " + username_test + "'s user")
+        assert (manageUsersTitle.text == "Manage Users:")
 
-    def test_change_pass_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
+    def test_ban_user(self, application: str, ff_browser: webdriver.Firefox, db_prepare_manage_users):
+        
         # Run logout to clean session
         ff_browser.get(application + "/logout")
         
@@ -243,22 +183,43 @@ class TestEditBio:
 
         # Click on submit button
         btnSubmit.click()
+
+        # Open the manage users page
+        ff_browser.get(application + "/manage_users")
+
+        # Get ban test user button
+        btnBanTestUser = ff_browser.find_element_by_id(username_test + "_banBtn")
+
+        # Click the manage users button
+        btnBanTestUser.click()
+
+        # Run logout to clean session
+        ff_browser.get(application + "/logout")
+
+        # Open the login page
+        ff_browser.get(application + "/login")
+
+        # Get username and password elements on page
+        username = ff_browser.find_element_by_name("username")
+        password = ff_browser.find_element_by_name("password")
+
+        # Get submit button element
+        btnSubmit = ff_browser.find_element_by_xpath("/html/body/div[2]/form/input")
+
+        # Inject username and password of test user
+        username.send_keys(username_test)
+        password.send_keys(password_test)
+
+        # Click on submit button
+        btnSubmit.click()
+
+        # Get the banned message element
+        bannedMsg = ff_browser.find_element_by_xpath("/html/body/div[2]/b")
         
-        # Open the control panel page
-        ff_browser.get(application + "/user/" + username_test)
+        assert bannedMsg.text == ("Your user is banned!")
 
-        # Get header Object
-        btnChangePass = ff_browser.find_element_by_xpath("/html/body/div[2]/div[2]/a[2]/button")
-
-        # Click button
-        btnChangePass.click()
-
-        # Get the header in edit bio page
-        changePassHeader = ff_browser.find_element_by_xpath("/html/body/div[2]/h1")
-
-        assert (changePassHeader.text == "Change password of " + username_test)
-
-    def test_change_pass_of_user(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
+    def test_unban_user(self, application: str, ff_browser: webdriver.Firefox, db_prepare_manage_users):
+        
         # Run logout to clean session
         ff_browser.get(application + "/logout")
         
@@ -278,31 +239,105 @@ class TestEditBio:
 
         # Click on submit button
         btnSubmit.click()
-        
-        # Open the control panel page
-        ff_browser.get(application + "/user/" + username_test)
 
-        # Get header Object
-        btnChangePass = ff_browser.find_element_by_xpath("/html/body/div[2]/div[2]/a[2]/button")
+        # Open the manage users page
+        ff_browser.get(application + "/manage_users")
 
-        # Click button
-        btnChangePass.click()
+        # Get ban test user button
+        btnBanTestUser = ff_browser.find_element_by_id(username_test + "_banBtn")
 
-        # Send password
+        # Click the ban user button
+        btnBanTestUser.click()
+
+        # Get unban test user button
+        btnUnbanTestUser = ff_browser.find_element_by_id(username_test + "_unbanBtn")
+
+        # Click the unban user button
+        btnUnbanTestUser.click()
+
+        # Run logout to clean session
+        ff_browser.get(application + "/logout")
+
+        # Open the login page
+        ff_browser.get(application + "/login")
+
+        # Get username and password elements on page
+        username = ff_browser.find_element_by_name("username")
         password = ff_browser.find_element_by_name("password")
-        passwordConfirm = ff_browser.find_element_by_name("confirmPass")
 
         # Get submit button element
-        btnSave = ff_browser.find_element_by_xpath("/html/body/div[2]/form/input")
+        btnSubmit = ff_browser.find_element_by_xpath("/html/body/div[2]/form/input")
 
-        # Inject password and confirm
-        password.send_keys(password_test + "!")
-        passwordConfirm.send_keys(password_test + "!")
+        # Inject username and password of test user
+        username.send_keys(username_test)
+        password.send_keys(password_test)
 
-        # Click save buttoon
-        btnSave.click()
+        # Click on submit button
+        btnSubmit.click()
 
-        # Get header Object
-        profHeader = ff_browser.find_element_by_name("profileHeader")
+        # Get the welocme message element
+        welcomeMsg = ff_browser.find_element_by_name("welcome_message")
+        
+        assert welcomeMsg.text == ("Welcome " + username_test + "!")
 
-        assert (profHeader.text == username_test + "'s profile")
+    def test_add_admin(self, application: str, ff_browser: webdriver.Firefox, db_prepare_manage_users):
+        
+        # Run logout to clean session
+        ff_browser.get(application + "/logout")
+        
+        # Open the login page
+        ff_browser.get(application + "/login")
+
+        # Get username and password elements on page
+        username = ff_browser.find_element_by_name("username")
+        password = ff_browser.find_element_by_name("password")
+
+        # Get submit button element
+        btnSubmit = ff_browser.find_element_by_xpath("/html/body/div[2]/form/input")
+
+        # Inject username and password of test user
+        username.send_keys(username_test)
+        password.send_keys(password_test)
+
+        # Click on submit button
+        btnSubmit.click()
+
+        # Open the manage users page
+        ff_browser.get(application + "/manage_users")
+
+        # Get revoke admin test user button
+        btnRevokeAdmin = ff_browser.find_element_by_id(username_test + "_revokeBtn")
+
+        # Click the revoke admin
+        btnRevokeAdmin.click()
+
+        # Get grant admin test user button
+        btnGrantAdmin = ff_browser.find_element_by_id(username_test + "_grantBtn")
+
+        # Click the grant admin
+        btnGrantAdmin.click()
+
+        # Run logout to clean session
+        ff_browser.get(application + "/logout")
+
+        # Open the login page
+        ff_browser.get(application + "/login")
+
+        # Get username and password elements on page
+        username = ff_browser.find_element_by_name("username")
+        password = ff_browser.find_element_by_name("password")
+
+        # Get submit button element
+        btnSubmit = ff_browser.find_element_by_xpath("/html/body/div[2]/form/input")
+
+        # Inject username and password of test user
+        username.send_keys(username_test)
+        password.send_keys(password_test)
+
+        # Click on submit button
+        btnSubmit.click()
+
+        # Get control panel button
+        controlPanelBtn = ff_browser.find_element_by_name("control_panel_link")
+        
+        assert controlPanelBtn.text == ("Control Panel")
