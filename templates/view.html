@@ -22,7 +22,13 @@
         {% endif %}
         <p>
             {% for row in data['comments'] %}
-                <div id="comment"><span id="FileUser"> <a href="user/{{row[0]}}">{{row[0]}}</a> || {{row[1]}}</span> <br/>{{row[2]}}</div>
+                <div id="comment">
+                    <span id="FileUser"> <a href="user/{{row[0]}}">{{row[0]}}</a> || {{row[1]}}
+                        {% if session['admin'] %} 
+                        || <a href="delete_comment/{{row[3]}}?post={{data['id']}}">[Delete]</a>
+                        {% endif %}
+                    </span>
+                <br/>{{row[2]}}</div>
             {% endfor%}
         </p>
 
