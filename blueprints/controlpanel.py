@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, session, redirect, current_app
+from flask import Blueprint, render_template, session, redirect, current_app, request
 import sqlite3
 
 controlpanel_blueprint = Blueprint("controlpanel_blueprint", __name__, template_folder="templates")
-
+controlpanel_approve_blueprint = Blueprint("controlpanel_approve_blueprint", __name__, template_folder="templates")
+controlpanel_reject_blueprint = Blueprint("controlpanel_reject_blueprint", __name__, template_folder="templates")
 
 @controlpanel_blueprint.route("/controlpanel")
 def controlpanel():
@@ -28,5 +29,37 @@ def controlpanel():
         print(e)
     finally:
         con.close()
-    print(data)
     return render_template("controlpanel.html",data = data)
+
+
+@controlpanel_approve_blueprint.route("/controlpanel/approve")
+def controlpanel_approve():
+    # If user is not admin redirect him back to main page
+    if (session.get("admin") == None):
+        return redirect('/')
+    file_id = request.args.get("file_id")
+    try:
+        con = sqlite3.connect(current_app.config['DB_NAME'])
+        con.execute("UPDATE Files SET Approved = 1 WHERE FileID = ?",(file_id,))
+        con.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        con.close()
+        return redirect("/controlpanel")
+
+@controlpanel_reject_blueprint.route("/controlpanel/reject")
+def controlpanel_reject():
+    if (session.get("admin") == None):
+        return redirect('/')
+    file_id = request.args.get("file_id")
+    try:
+        con = sqlite3.connect(current_app.config['DB_NAME'])
+        con.execute("DELETE FROM Files WHERE FileID = ?",(file_id,))
+        con.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        con.close()
+        return redirect("/controlpanel")
+    return redirect("/controlpanel")

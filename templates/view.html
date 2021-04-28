@@ -6,6 +6,14 @@
         <span id="FileDate">{{data['date']}}</span>
         <span id="FileUser"><a href="/user/{{data['username']}}">{{data['username']}}</a></span>
         <p>{{data['desc']}}</p>
+
+        {% if session['admin'] and data['preapproved'] == 0 %} 
+            <div id="approve_reject">
+                <p>Please review the file and select an option:</p>
+                <a href="/controlpanel/approve?file_id={{data['id']}}" id="FileApprove">Approve</a>
+                <a href="/controlpanel/reject?file_id={{data['id']}}" id="FileReject">Reject</a>
+            </div>
+        {% endif %}
     </p>
 
     <iframe src="storage/{{data['id']}}.{{data['type']}}" style="width:100%;height:500px;"> </iframe>
