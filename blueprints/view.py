@@ -46,10 +46,10 @@ def view():
             data['course'] = tmp[0]
 
             # get comments
-            cur = con.execute("SELECT UserName,Date,Comment FROM Comments WHERE FileID = ?",(data['id'],))
+            cur = con.execute("SELECT UserName,Date,Comment,ID FROM Comments WHERE FileID = ?",(data['id'],))
             data['comments'] = []
             for row in cur:
-                tmp = (row[0],parse_file_time(row[1]),row[2])
+                tmp = (row[0],parse_file_time(row[1]),row[2],row[3])
                 data['comments'].append(tmp)
 
         except Exception as e:
