@@ -3,7 +3,7 @@ import sqlite3
 from datetime import datetime
 
 view_blueprint = Blueprint("view_blueprint", __name__, template_folder="templates")
-
+delete_comment_blueprint = Blueprint("delete_comment_blueprint", __name__, template_folder="templates")
 
 @view_blueprint.route("/view",methods = ['POST','GET'])
 def view():
@@ -75,6 +75,26 @@ def view():
                     con.close()
             return redirect('/view?id={}'.format(file_id))
     
+
+@delete_comment_blueprint.route("/delete_comment/<id>",methods = ['GET'])
+def delete_comment(id):
+    #check admin session 
+    if (session.get("admin") == None):
+        return redirect('/')
+    #delete the comment
+    try: 
+        con = sqlite3.connect(current_app.config["DB_NAME"])
+        con.execute("DELETE FROM Comments WHERE ID = ?",(id,))
+        con.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        con.close()
+    post_id = request.args.get("post")
+    return redirect('/view?id={}'.format(post_id))
+
+
+
 
 
 def parse_file_time(string):
