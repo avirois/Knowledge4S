@@ -17,4 +17,18 @@
         <a href="/manage_courses" id="manageCourses"><button class="button button1">Manage Courses</button></a>
         <a href="/manage_users" id="usersManage" name="usersManage"><button class="button button1">Manage Users</button></a>
     </div>
+    <!-- Pre approved files -->
+    <div>
+        <p><h1>Preapproved file</h1></p>
+        {% for res in data %}
+            {% if loop.index % 2 == 0 %}
+            <div class="fileitem" style="background:#F6F7F2;">
+            {% else %}
+            <div class="fileitem" style="background:#EDF9FF;">
+            {%endif%}
+            <span id="FileTitle"><a href="/view?id={{res[0]}}" style="color:#1b1b1b;">{{res[3]}}</a></span> <span id="FileDesc">{{res[5]}} / {{res[6]}} / {{res[7]}}</span><br />
+            <p>{{res[3]}}</p> 
+            </div> 
+        {% endfor %}
+    </div>
 {% endblock %}
