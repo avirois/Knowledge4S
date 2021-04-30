@@ -1,1 +1,91 @@
-body{color:#444;font-size:18px;line-height:1.6;margin:40px auto;max-width:650px;padding:0 10px}h1,h2,h3{line-height:1.2}
+body{
+    font-family: 'Inter', sans-serif;
+    color:#1b1b1b;
+    font-size:16px;
+    line-height:1.6;
+    margin:0px auto;
+    max-width:100%;
+    background:#f7f7f7;
+}
+
+#header{
+    background:#fff;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    grid-gap: 20px;
+    padding:15px;
+}
+
+#logo{
+    margin-right:50px;
+    padding:10px;
+}
+#menu{
+    margin-left:50px;
+    padding:15px;
+    text-align:right;
+}
+#menu a{
+    color:#1b1b1b;
+    text-decoration:none;
+    padding:15px;
+}
+#menu a:hover{
+    color:#3273dc;
+}
+
+#content{
+    width:800px;
+    padding:15px;
+    background:#fff;
+    border: 1px solid #ddd;
+    margin:30px auto;
+}
+
+
+
+.fileitem{
+    padding:10px;
+}
+
+#FileTitle{
+    font-size:32px;
+    font-weight:800;
+    text-decoration:underline;
+}
+#FileDesc{
+    background:#BADEB2;
+    border-radius:5px;
+    padding:5px;
+    vertical-align:2.5px;
+}
+#FileDate{
+    background:#FF6766;
+    border-radius:5px;
+    padding:5px;
+    vertical-align:2.5px;
+}
+#FileUser{
+    background:#F3D89F;
+    border-radius:5px;
+    padding:5px;
+    vertical-align:2.5px;
+}
+#comment{
+    padding:5px;
+    margin-bottom:5px;
+    border-left:3px solid #83D6DE;
+}
+
+#flat_button{
+    padding:5px;
+    font-family: 'Inter', sans-serif;
+    color:#1b1b1b;
+    font-size:16px;
+    background:#fff;
+    border:1px solid #1b1b1b;
+    border-radius:5px;
+}
+.clear {
+    overflow: auto;
+}

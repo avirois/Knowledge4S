@@ -1,10 +1,39 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>hello</title>
+    <title>Knowledge4S</title>
     <link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet"> 
 </head>
 <body>
+    <div id="header">
+        <div id="logo">
+            <img src="../static/logo/logo.png" style="height:30px;"/>
+        </div>
+        <div id="menu">
+            {% if session['username'] %} 
+                <b class="navItem" name="welcome_message">Welcome {{ session['username'] }}!</b>
+            {% endif %}
+            <a class="navItem" href="/" name="home_link">Home</a>
+            <a class="navItem" href="/search" name="search_link">Search</a>
+            <a class="navItem" href="/" name="about_link">About</a>
+            <a class="navItem" href="/admins_info" name="admins_link">Admins info</a>
+            {% if session['admin'] %}
+                <a class="navItem" href="/controlpanel" name="control_panel_link">Control Panel</a>
+            {% endif %}
+            {% if session['username'] %}
+                <a class="navItem" href="/user/{{ session['username'] }}" name="user_link">My Profile</a>    
+                <a class="navItem" href="/upload">Upload</a>
+                <a class="navItem" href="/logout" name="logout_link">Logout</a>
+            {% else %}
+                <a class="navItem" href="/login" name="login_link">Login</a>
+                <a class="navItem" href="/register" name="register_link">Register</a>
+            {% endif %}
+        </div>
+    </div>
+    <div id="content">
     {% block content %} {% endblock %}
+    </div>
 </body>
 </html>

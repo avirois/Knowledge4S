@@ -1,18 +1,39 @@
 pipeline {
-    agent { docker { image 'python:3.9.2-alpine3.12' } }
+    agent {
+        docker {
+            image 'python:3.9.2-alpine3.12'
+            args '-u root:root'
+        }
+    }
+
     stages {
         stage('build') {
             steps {
                 sh '''
-                    python -m venv venv
-                    source venv/bin/activate
-                    pip install -r requirements.txt
-                    '''
+                # install wget and firefox 
+                apk --no-cache add wget firefox 
+                # cryptography dependencies
+                apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
+                # download geckodriver.tar.gz
+                wget https://github.com/mozilla/geckodriver/releases/download/v0.29.0/geckodriver-v0.29.0-linux64.tar.gz
+                # extract geckodriver 
+                tar -xf geckodriver-v0.29.0-linux64.tar.gz  
+                # create python venv
+                python -m venv venv
+                # install requirements.txt
+                source venv/bin/activate
+                pip install -r requirements.txt
+                '''
             }
         }
         stage('test') {
             steps {
-                sh 'source venv/bin/activate && pytest'
+                sh '''
+                # create GECKODRIVER_PATH env variable
+                export GECKODRIVER_PATH=$(pwd)'/geckodriver'
+                # run test
+                source venv/bin/activate && pytest
+                '''
             }   
         }
     }
