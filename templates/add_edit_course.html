@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+.buttonFacSave { width: 200px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonHover { background-color: #555555; color: white; border: 2px solid #555555; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonHover:hover { background-color: white; color: black; }
+</style>
+
+<h1>{{ operation }} Course:</h1>
+<p>
+    {{ massage }}
+    <form action="" method="POST">
+        <p>Course name: <input type="text" name="courName" value={{ course }}></p>
+        <p>Year: <input type="number" name="year" min="1" max="4" value={{year}}></p>
+        <p>Lecturer: <select name="lecturer" id="lect"> 
+            <option value="">Select Lecturer!</option>
+            {% for lecturer in lecturers %}
+                {% if lecturer[0] == lect %}
+                    <option value="{{lecturer[0]}}" selected>{{lecturer[1]}}</option>
+                {% else %}
+                    <option value="{{lecturer[0]}}">{{lecturer[1]}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        </p>
+        <input type="submit" value="Save" class="buttonCourSave buttonHover"/>
+    </form>
+</p>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+.buttonInstEdit { width: 200px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonInstCreate { width: 700px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonHover { background-color: #555555; color: white; border: 2px solid #555555; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonHover:hover { background-color: white; color: black; }
+</style>
+
+<h1>{{ operation }} Manage Faculties in Institutions:</h1>
+<p>
+    {{ message }}
+    <div>
+        <form action="" id="formAddFac" method="POST">
+            <select name="faculty" id="faculty" style="height:3.5em; width: 300px;"> 
+                <option value="">Select Faculty!</option>
+                {% for faculty in facultiesNotReg %}
+                    <option value="{{faculty[0]}}">{{faculty[1]}}</option>
+                {% endfor %}  
+            </select>
+            <input type="submit" class="buttonInstEdit buttonHover" value="Add">
+        </form>
+    </div>
+    </br>
+    <div id="facIn">
+    </div>
+</p>
+<script>
+    faculty_btn = document.getElementById('listFac');
+    faculty_list = document.getElementById('facIn');
+    faculty_add_form = document.getElementById('formAddFac');
+
+    // Set the url for the form
+    faculty_add_form.action =  "/register_faculty/" + {{instID}}
+
+    window.onload = function loadFaculties(){
+        inst = {{ instID }};
+        fetch('/faculties/' + inst).then(function(response) {
+            response.json().then(function(data){
+                facultyList = "<h2>Faculties:</h2>"
+
+                countRow = 1;
+
+                for (fac of data.facInst) {
+                    facultyList += '<p>' + countRow + '. '+ fac.facName + '</p>';
+                    countRow += 1;
+                }
+
+                faculty_list.innerHTML = facultyList
+            });
+        });
+    }
+</script>
+
+{% endblock %}
