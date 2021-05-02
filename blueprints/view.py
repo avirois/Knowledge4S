@@ -29,6 +29,7 @@ def view():
             data['facu'] = tmp[8]
             data['course'] = tmp[9]
             data['date'] = parse_file_time(tmp[5])
+            data['preapproved'] = tmp[10]
             
             # get instetution name
             cur = con.execute("SELECT InstitutionName FROM Institutions WHERE InstitutionID = ?",(data['inst'],))

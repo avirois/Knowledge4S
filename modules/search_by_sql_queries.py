@@ -131,6 +131,7 @@ def search_by_sql_queries(
         AND Files.FacultyID == Faculties.FacultyID
         AND Files.CourseID == Courses.CourseID
         AND Courses.LecturerID == Lecturers.LecturerID
+        AND Approved == 1
         """
         if institutions != "all":
             where = where + " AND Institutions.InstitutionName == ?  "
