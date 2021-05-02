@@ -1,7 +1,7 @@
 """Main module from here the app starts."""
 from flask import Flask
 from blueprints.authentication import authentication_blueprint
-from blueprints.controlpanel import controlpanel_blueprint
+from blueprints.controlpanel import controlpanel_blueprint,controlpanel_approve_blueprint,controlpanel_reject_blueprint
 from blueprints.user import user_blueprint
 from blueprints.index import index_blueprint
 from blueprints.manageFaculty import fac_manage_blueprint
@@ -29,6 +29,8 @@ app.register_blueprint(view_blueprint)
 app.register_blueprint(serve_blueprint)
 app.register_blueprint(user_manage_blueprint)
 app.register_blueprint(delete_comment_blueprint)
+app.register_blueprint(controlpanel_approve_blueprint)
+app.register_blueprint(controlpanel_reject_blueprint)
 
 app.config["DB_NAME"] = "database.db"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
