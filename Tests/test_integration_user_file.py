@@ -147,7 +147,7 @@ def db_prepare_edit_bio():
     con.close()
 
 class TestUserFiles:
-    def Test_user_files_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
+    def test_user_files_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
         # Run logout to clean session
         ff_browser.get(application + "/logout")
         
@@ -176,7 +176,7 @@ class TestUserFiles:
 
         assert (profHeader.text == username_test + "'s profile")
     
-    def Test_user_files_from_profile_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
+    def test_user_files_from_profile_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
         # Run logout to clean session
         ff_browser.get(application + "/logout")
 
@@ -188,7 +188,7 @@ class TestUserFiles:
 
         assert (profHeader.text == username_test + "'s profile")
 
-    def Test_user_files_with_approved(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
+    def test_user_files_with_approved(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
         # Run logout to clean session
         ff_browser.get(application + "/logout")
         
@@ -223,7 +223,7 @@ class TestUserFiles:
 
         assert (editBioHeader.text == "Change bio of " + username_test + "'s user")
 
-    def Test_uesr_files_panding(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
+    def test_uesr_files_panding(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
         # Run logout to clean session
         ff_browser.get(application + "/logout")
         
@@ -258,7 +258,7 @@ class TestUserFiles:
 
         assert (changePassHeader.text == "Change password of " + username_test)
 
-    def Test_user_files_mixed(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
+    def test_user_files_mixed(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
         # Run logout to clean session
         ff_browser.get(application + "/logout")
         
