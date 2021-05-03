@@ -99,7 +99,7 @@ def fill_db():
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (1, 11))
         con.execute(
-            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 1,
                 "Yosi",
@@ -111,6 +111,7 @@ def fill_db():
                 1,
                 11,
                 111,
+                1,
             ),
         )
         # 2)
@@ -123,7 +124,7 @@ def fill_db():
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (2, 22))
         con.execute(
-            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 2,
                 "Moshe",
@@ -135,6 +136,7 @@ def fill_db():
                 2,
                 22,
                 222,
+                1,
             ),
         )
     yield
