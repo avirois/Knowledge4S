@@ -1,14 +1,11 @@
 """Search api module."""
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, session
+from modules.search import search, default_search_for_user
 from modules.selection import Selections
-from modules.search import search, default_search_for_user  # , init_search
 
 DB_NAME = "database.db"
 
 search_blueprint = Blueprint("search_blueprint", __name__, template_folder="templates")
-search_options_bp = Blueprint(
-    "search_options_bp", __name__, template_folder="templates"
-)
 
 selections = Selections(DB_NAME)
 
@@ -46,10 +43,3 @@ def search_route():
     return render_template(
         "search.html", **initial_selections, freetext=freetext, search_res=search_res
     )
-
-
-@search_options_bp.route("/search/fetch/selection", methods=["POST"])
-def search_options_route():
-    current_selection = request.json
-    next_selections = selections.get_selections(**current_selection)
-    return jsonify(next_selections)

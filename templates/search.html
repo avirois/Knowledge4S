@@ -90,7 +90,7 @@ async function updateSelecions() {
     years: selectors.years.options[selectors.years.selectedIndex].value,
   };
 
-  let response = await fetch("/search/fetch/selection", {
+  let response = await fetch("/fetch/selection", {
     method: "POST",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
