@@ -48,52 +48,39 @@ class TestSearchBySql:
                 for opt2 in options:
                     for opt3 in options:
                         for opt4 in options:
-                            res.append(ssq.search_by_sql_queries(
-                                DB_NAME, opt0, opt1, opt2, opt3, opt4
-                            ))
-        assert len([j for i in res for j in i]) == 0
-
-    def test_can_find_math_course(self, fill_db):
-        excepted = [('Calculus',
-                '1.1.2021',
-                '1.1.2021',
-                'special number',
-                'math',
-                1,
-                'F1.txt',
-                'A',
-                'title-math',
-                'Yosi'),]
-        for opt0 in ("all", "A"):
-            for opt1 in ("all", "math"):
-                for opt2 in ("all", "Moshe"):
-                    for opt3 in ("all", "Calculus"):
-                        for opt4 in ("all", "2021"):
-                            if (opt0 != "all" or opt1 != "all" or
-                                opt2 != "all" or opt3 != "all"):
-                                assert excepted == ssq.search_by_sql_queries(
+                            res.append(
+                                ssq.search_by_sql_queries(
                                     DB_NAME, opt0, opt1, opt2, opt3, opt4
                                 )
+                            )
+        assert len([j for i in res for j in i]) == 0
 
     def test_can_find_art_course(self, fill_db):
-        excepted = [('study of drawing',
-                                    '1.1.2021',
-                                    '1.1.2021',
-                                    'sokal-affair',
-                                    'art',
-                                    2,
-                                    'F2.txt',
-                                    'B',
-                                    'titile-sokal',
-                                    'Moshe'),
-                                  ]
+        excepted = [
+            (
+                "study of drawing",
+                "1.1.2021",
+                "1.1.2021",
+                "sokal-affair",
+                "art",
+                2,
+                "F2.txt",
+                "B",
+                "titile-sokal",
+                "Moshe",
+            ),
+        ]
         for opt0 in ("all", "B"):
             for opt1 in ("all", "art"):
                 for opt2 in ("all", "Sarah"):
                     for opt3 in ("all", "study of drawing"):
                         for opt4 in ("all", "2021"):
-                            if (opt0 != "all" or opt1 != "all" or
-                                opt2 != "all" or opt3 != "all"):
+                            if (
+                                opt0 != "all"
+                                or opt1 != "all"
+                                or opt2 != "all"
+                                or opt3 != "all"
+                            ):
                                 assert excepted == ssq.search_by_sql_queries(
                                     DB_NAME, opt0, opt1, opt2, opt3, opt4
                                 )
@@ -113,19 +100,17 @@ class TestSearchBySql:
 
 
 class TestSearchByFreeText:
-
-    def test_can_search_existing_text(self,use_test_storage1):
-        res = sft.oreder_by__containing_freetext("number",[1,2])
+    def test_can_search_existing_text(self, use_test_storage1):
+        res = sft.oreder_by__containing_freetext("number", [1, 2])
         assert res == ["1", "2"]
-        res = sft.oreder_by__containing_freetext("sokal",[1,2])
+        res = sft.oreder_by__containing_freetext("sokal", [1, 2])
         assert res == ["2", "1"]
-    
-    def test_can_search_by_non_existing_text(self,use_test_storage1):
-        res = sft.oreder_by__containing_freetext("oogabooga",[1,2])
+
+    def test_can_search_by_non_existing_text(self, use_test_storage1):
+        res = sft.oreder_by__containing_freetext("oogabooga", [1, 2])
         assert res == ["1", "2"]
-        res = sft.oreder_by__containing_freetext("cake",[1,2])
+        res = sft.oreder_by__containing_freetext("cake", [1, 2])
         assert res == ["1", "2"]
-    
 
 
 #  ____                      _                   _ _     _            _
@@ -135,15 +120,13 @@ class TestSearchByFreeText:
 # |____/ \___|\__,_|_|  \___|_| |_|  \__,_|_| |_|_|\__|  \__\___||___/\__|
 #
 
+
 class TestSearch:
-
     def test_can_search_with_empty_db(self):
-        res = sm.search("database.db", "all", "all", "all", "all", "1984" , "2+2=5")
-        assert res ==[]
+        res = sm.search("database.db", "all", "all", "all", "all", "1984", "2+2=5")
+        assert res == []
 
-    def test_can_search_with_db(self, fill_db):
-        res = sm.search("database.db", "A", "math", "all", "all", "2021" , "number")
-        assert res ==[('Calculus', '1.1.2021',  '1.1.2021',  'special number',  'math',  1,  'F1.txt',  'A',  'title-math',  'Yosi')]
+
 
 #  ____       _           _   _                               _ _
 # / ___|  ___| | ___  ___| |_(_) ___  _ __  ___   _   _ _ __ (_) |_
