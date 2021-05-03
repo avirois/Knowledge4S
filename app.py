@@ -12,6 +12,7 @@ from blueprints.manageCourse import cour_manage_blueprint
 from blueprints.view import view_blueprint,delete_comment_blueprint
 from blueprints.serve_file import serve_blueprint
 from blueprints.manageUser import user_manage_blueprint
+from blueprints.user_files import user_files_blueprint
 
 
 app = Flask(__name__)
@@ -29,6 +30,7 @@ app.register_blueprint(view_blueprint)
 app.register_blueprint(serve_blueprint)
 app.register_blueprint(user_manage_blueprint)
 app.register_blueprint(delete_comment_blueprint)
+app.register_blueprint(user_files_blueprint)
 app.register_blueprint(controlpanel_approve_blueprint)
 app.register_blueprint(controlpanel_reject_blueprint)
 
