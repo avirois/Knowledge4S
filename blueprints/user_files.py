@@ -6,15 +6,13 @@ user_files_blueprint = Blueprint("user_files_blueprint", __name__, template_fold
 def getFiles():
     files = []
     con = sqlite3.connect(current_app.config['DB_NAME'])
-    sqlQueryFiles = "SELECT FileID, FileName,DateUpload,DateModified FROM Files WHERE UserName = (?)"
+    sqlQueryFiles = "SELECT FileID, FileName,DateUpload,DateModified,Approved FROM Files WHERE UserName = (?)"
     sqlRes = con.execute(sqlQueryFiles, (session.get('username'),))
     for line in sqlRes:
-        files.append([line[0],line[1],line[2],line[3]])
+        files.append([line[0],line[1],line[2],line[3],line[4]])
     con.close()
     return files
-
-
-
+ 
 @user_files_blueprint.route("/user_files",methods = ['GET', 'POST'])
 def user_files_page():
     if (session.get('username') == None):
