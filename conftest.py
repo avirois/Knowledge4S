@@ -2,22 +2,89 @@
 Global configuration for pytest.
 
 In this file we setup stuff that relate to more than one test.
-pytest.fixtures that are session wide setup here.
-current fixtures:
-    - app_init : starting flask server for all test
-    - driver_init :
-    - fill_db()
+* fixtures that are session wide setup here.
+* fixtures that used in more that one test module setup here.
+
+FIXTURES:
+    -> application : starting flask server for all test
+    -> ff_driver : starting fire fox browser headless
+    -> copy_test_storage_1_to_storage : init storage folder with contents from
+        test/storage1 folder.
+    -> fill_db : add the following record:
+        * Courses
+        CourseID | CourseName         | LecturerID | Year
+        ----------------------------------------------------
+        |    111 | "Calculus"         | 1111       | 2021 |
+        |    222 | "study of drawing" | 2222       | 2021 |
+
+        * FacIn
+        InstitutionID | FacultyID
+        -------------------------
+        |        1    |    11   |
+        |        2    |    22   |
+
+        * Faculties
+        FacultyID | FacultyName
+        ------------------------
+        |    11   |     "math" |
+        |    22   |     "art"  |
+
+        * Files
+        FileID | UserName | FileName | Title          | Description
+        ----------------------------------------------------------------->>>-
+        |    1 | "Yosi"   | "F1.txt" | "title-math"   | "special number"
+        |    2 | "Moshe"  | "F2.txt" | "titile-sokal" | "sokal-affair"
+
+        | DateUpload | DateModified | InstituteID | FacultyID | CourseID |
+    ->>>------------------------------------------------------------------
+        | "1.1.2021" | "1.1.2021"   |          1  |       11  |     111  |
+        | "1.1.2021" | "1.1.2021"   |          2  |       22  |     222  |
+
+        * Institutions
+        InstitutionID | InstitutionName
+        --------------------------------
+        |          1  |          "A"   |
+        |          2  |          "B"   |
+
+        * Lecturers
+        LecturerID | LecturerName | FacultyID | InstitutionID |
+        -------------------------------------------------------
+        |    1111  |      "Moshe" |        11 |          1    |
+        |    2222  |      "Sarah" |        22 |          2    |
+
+
+        * Lecturers
+        LecturerID | LecturerName | FacultyID | InstitutionID |
+        -------------------------------------------------------
+        |    1111  |      "Moshe" |        11 |          1    |
+        |    2222  |      "Sarah" |        22 |          2    |
+
+        * Users
+        UserName | FirstName | LastName |           Password        |
+        -------------------------------------------------------------->>>-
+         admin   |  nadmin   |  ladmin  |  encryptPassword(admin)   |
+         user1   |  userone  |  ulnone  |  encryptPassword(userone) |
+         user2   |  usertwo  |  ulntwo  |  encryptPassword(usertwo) |
+
+         InstitutelID | FacultyID  | StudyYear | Role | IsBanned | Email      |
+    ->>>-----------------------------------------------------------------------
+         1    |       11   |    2021   |   1  |      0   |  admin@admin.admin |
+         1    |       11   |    2021   |   0  |      0   |  user1@user1.user1 |
+         2    |       22   |    2021   |   0  |      0   |  user2@user2.user2 |
 """
 import os
-import threading
-from time import sleep
-import urllib.request
-import urllib.error
-import sqlite3
 import pytest
-from selenium import webdriver
+import shutil
+import sqlite3
+import threading
+import urllib.error
+import urllib.request
 from app import app
+from pathlib import Path
+from selenium import webdriver
 from sys import platform
+from time import sleep
+from static.classes.User import encryptPassword
 
 # check platform type
 # since hosts differ from platform to platform
@@ -98,21 +165,6 @@ def fill_db():
             "INSERT INTO Courses VALUES (?, ?, ?, ?)", (111, "Calculus", 1111, 2021)
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (1, 11))
-        con.execute(
-            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (
-                1,
-                "Yosi",
-                "F1.txt",
-                "title-math",
-                "special number",
-                "1.1.2021",
-                "1.1.2021",
-                1,
-                11,
-                111,
-            ),
-        )
         # 2)
         con.execute("INSERT INTO Faculties VALUES (?, ?)", (22, "art"))
         con.execute("INSERT INTO Institutions VALUES (?, ?)", (2, "B"))
@@ -137,6 +189,53 @@ def fill_db():
                 222,
             ),
         )
+
+        con.execute(
+            "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "admin",
+                "nadmin",
+                "ladmin",
+                encryptPassword("admin"),
+                1,
+                11,
+                2021,
+                1,
+                0,
+                "admin@admin.admin",
+            ),
+        )
+        con.execute(
+            "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "user1",
+                "userone",
+                "ulnone",
+                encryptPassword("userone"),
+                1,
+                11,
+                2021,
+                0,
+                0,
+                "user1@user1.user1",
+            ),
+        )
+        con.execute(
+            "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "user2",
+                "usertwo",
+                "ulntwo",
+                encryptPassword("usertwo"),
+                2,
+                22,
+                2021,
+                0,
+                0,
+                "user2@user2.user2",
+            ),
+        )
+
     yield
     # Teardown :
     with sqlite3.connect(DB_NAME) as con:
@@ -146,3 +245,23 @@ def fill_db():
         con.execute("DELETE FROM Courses")
         con.execute("DELETE FROM FacIn")
         con.execute("DELETE FROM Files")
+        con.execute("DELETE FROM Users")
+
+
+def rmdir(directory):
+    directory = Path(directory)
+    for item in directory.iterdir():
+        if item.is_dir():
+            rmdir(item)
+        else:
+            item.unlink()
+    directory.rmdir()
+
+
+@pytest.fixture
+def copy_test_storage_1_to_storage():
+    os.mkdir("storage")
+    shutil.copy("Tests/test_storage_1/1.txt", "storage/1.txt")
+    shutil.copy("Tests/test_storage_1/2.txt", "storage/2.txt")
+    yield
+    rmdir(Path("storage/"))
