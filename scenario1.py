@@ -1,7 +1,75 @@
+"""
+Setup or teardown scenario1.
+
+Copy storage1 to sotorage and setup database acoriding to this scenario:
+
+        * Courses
+        CourseID | CourseName         | LecturerID | Year
+        ----------------------------------------------------
+        |    111 | "Calculus"         | 1111       | 2021 |
+        |    222 | "study of drawing" | 2222       | 2021 |
+
+        * FacIn
+        InstitutionID | FacultyID
+        -------------------------
+        |        1    |    11   |
+        |        2    |    22   |
+
+        * Faculties
+        FacultyID | FacultyName
+        ------------------------
+        |    11   |     "math" |
+        |    22   |     "art"  |
+
+        * Files
+        FileID | UserName | FileName | Title          | Description
+        ----------------------------------------------------------------->>>-
+        |    1 | "Yosi"   | "F1.txt" | "title-math"   | "special number"
+        |    2 | "Moshe"  | "F2.txt" | "titile-sokal" | "sokal-affair"
+
+        | DateUpload | DateModified | InstituteID | FacultyID | CourseID |
+    ->>>------------------------------------------------------------------
+        | "1.1.2021" | "1.1.2021"   |          1  |       11  |     111  |
+        | "1.1.2021" | "1.1.2021"   |          2  |       22  |     222  |
+
+        * Institutions
+        InstitutionID | InstitutionName
+        --------------------------------
+        |          1  |          "A"   |
+        |          2  |          "B"   |
+
+        * Lecturers
+        LecturerID | LecturerName | FacultyID | InstitutionID |
+        -------------------------------------------------------
+        |    1111  |      "Moshe" |        11 |          1    |
+        |    2222  |      "Sarah" |        22 |          2    |
+
+
+        * Lecturers
+        LecturerID | LecturerName | FacultyID | InstitutionID |
+        -------------------------------------------------------
+        |    1111  |      "Moshe" |        11 |          1    |
+        |    2222  |      "Sarah" |        22 |          2    |
+
+        * Users
+        UserName | FirstName | LastName |           Password        |
+        -------------------------------------------------------------->>>-
+         admin   |  nadmin   |  ladmin  |  encryptPassword(admin)   |
+         user1   |  userone  |  ulnone  |  encryptPassword(userone) |
+         user2   |  usertwo  |  ulntwo  |  encryptPassword(usertwo) |
+
+         InstitutelID | FacultyID  | StudyYear | Role | IsBanned | Email      |
+    ->>>-----------------------------------------------------------------------
+         1    |       11   |    2021   |   1  |      0   |  admin@admin.admin |
+         1    |       11   |    2021   |   0  |      0   |  user1@user1.user1 |
+         2    |       22   |    2021   |   0  |      0   |  user2@user2.user2 |
+
+"""
 import os
 import shutil
 from pathlib import Path
 import sqlite3
+from static.classes.User import encryptPassword
 
 DB_NAME = "database.db"
 TEST_STORAGE_1 = "Tests/test_storage_1"
@@ -25,6 +93,7 @@ def init():
         con.execute("DELETE FROM Lecturers")
         con.execute("DELETE FROM Courses")
         con.execute("DELETE FROM FacIn")
+        con.execute("DELETE FROM Users")
         # 1)
         con.execute("INSERT INTO Institutions VALUES (?, ?)", (1, "A"))
         con.execute("INSERT INTO Faculties VALUES (?, ?)", (11, "math"))
@@ -73,6 +142,51 @@ def init():
                 222,
             ),
         )
+        con.execute(
+            "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "admin",
+                "nadmin",
+                "ladmin",
+                encryptPassword("admin"),
+                1,
+                11,
+                2021,
+                1,
+                0,
+                "admin@admin.admin",
+            ),
+        )
+        con.execute(
+            "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "user1",
+                "userone",
+                "ulnone",
+                encryptPassword("userone"),
+                1,
+                11,
+                2021,
+                0,
+                0,
+                "user1@user1.user1",
+            ),
+        )
+        con.execute(
+            "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "user2",
+                "usertwo",
+                "ulntwo",
+                encryptPassword("usertwo"),
+                2,
+                22,
+                2021,
+                0,
+                0,
+                "user2@user2.user2",
+            ),
+        )
 
     os.mkdir("storage")
     shutil.copy("Tests/test_storage_1/1.txt", "storage/1.txt")
@@ -87,6 +201,7 @@ def tear_down():
         con.execute("DELETE FROM Courses")
         con.execute("DELETE FROM FacIn")
         con.execute("DELETE FROM Files")
+        con.execute("DELETE FROM Users")
     rmdir(Path("storage/"))
 
 
