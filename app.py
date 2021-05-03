@@ -7,8 +7,10 @@ from blueprints.index import index_blueprint
 from blueprints.manageCourse import cour_manage_blueprint
 from blueprints.manageFaculty import fac_manage_blueprint
 from blueprints.manageInstitution import inst_manage_blueprint
+from blueprints.manageLecturers import manage_lecturers, add_lecturer, remove_lecturer
 from blueprints.manageUser import user_manage_blueprint
-from blueprints.search import search_blueprint, search_options_bp
+from blueprints.search import search_blueprint
+from blueprints.selections import selections_bp
 from blueprints.serve_file import serve_blueprint
 from blueprints.uploads import upload_blueprint, UPLOAD_FOLDER
 from blueprints.user import user_blueprint
@@ -16,14 +18,17 @@ from blueprints.view import view_blueprint
 
 app = Flask(__name__)
 app.register_blueprint(about_bp)
+app.register_blueprint(add_lecturer)
 app.register_blueprint(authentication_blueprint)
 app.register_blueprint(controlpanel_blueprint)
 app.register_blueprint(cour_manage_blueprint)
 app.register_blueprint(fac_manage_blueprint)
 app.register_blueprint(index_blueprint)
 app.register_blueprint(inst_manage_blueprint)
+app.register_blueprint(manage_lecturers)
+app.register_blueprint(remove_lecturer)
 app.register_blueprint(search_blueprint)
-app.register_blueprint(search_options_bp)
+app.register_blueprint(selections_bp)
 app.register_blueprint(serve_blueprint)
 app.register_blueprint(upload_blueprint)
 app.register_blueprint(user_blueprint)
