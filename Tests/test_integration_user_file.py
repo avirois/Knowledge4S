@@ -146,7 +146,7 @@ def db_prepare_edit_bio():
     # CLose connection to DB
     con.close()
 
-class TestEditBio:
+class TestUserFiles:
     def Test_user_files_page(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
         # Run logout to clean session
         ff_browser.get(application + "/logout")
