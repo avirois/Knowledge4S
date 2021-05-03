@@ -83,7 +83,7 @@ def checkAddInput(lecturername: str, institution: str, faculty: str) -> bool:
     return True
 
 
-def checkRemoveInput(name, institution: str, faculty) -> bool:
+def checkRemoveInput(name: str, institution: str, faculty) -> bool:
     with sqlite3.connect(DB_NAME) as con:
         facultyID: int
         institutionID: int
