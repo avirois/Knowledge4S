@@ -18,7 +18,7 @@
     </select>
     </p>
     <p>Name: <input type="text" name="Lecturers Name" value="" /></p>
-    <input type="submit" value="add" name="send"/>
+    <input type="submit" value="add" name="send_add"/>
 </form>
 <form name="remove" action="/remove_lecturer" method="POST">
     <p>Institutions:
@@ -45,7 +45,7 @@
         {% endfor %}                                              
     </select>
     </p>
-    <input type="submit" value="remove" name="send"/>
+    <input type="submit" value="remove" name="send_remove"/>
 </form>
 {% if success == "success" %}
   <p> success
