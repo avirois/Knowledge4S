@@ -8,3 +8,4 @@ geckodriver.zip
 geckodriver
 geckodriver-v0.29.0-linux64.tar.gz
 geckodriver.log
+tmp.py
