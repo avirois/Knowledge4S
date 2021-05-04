@@ -206,6 +206,7 @@ def tear_down():
         con.execute("DELETE FROM FacIn")
         con.execute("DELETE FROM Files")
         con.execute("DELETE FROM Users")
+        con.execute("DELETE FROM Comments")
     rmdir(Path("storage/"))
 
 
