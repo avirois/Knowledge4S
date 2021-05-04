@@ -85,6 +85,7 @@ from selenium import webdriver
 from sys import platform
 from time import sleep
 from static.classes.User import encryptPassword
+from datetime import date
 
 # check platform type
 # since hosts differ from platform to platform
@@ -173,8 +174,8 @@ def fill_db():
                 "F1.txt",
                 "title-math",
                 "special number",
-                "1.1.2021",
-                "1.1.2021",
+                date(2021,1,1),
+                date(2021,1,1),
                 1,
                 11,
                 111,
@@ -198,8 +199,8 @@ def fill_db():
                 "F2.txt",
                 "titile-sokal",
                 "sokal-affair",
-                "1.1.2021",
-                "1.1.2021",
+                date(2021,1,1),
+                date(2021,1,1),
                 2,
                 22,
                 222,

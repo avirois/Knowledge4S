@@ -55,35 +55,6 @@ class TestSearchBySql:
                             )
         assert len([j for i in res for j in i]) == 0
 
-    def test_can_find_art_course(self, fill_db):
-        excepted = [
-            (
-                "study of drawing",
-                "1.1.2021",
-                "1.1.2021",
-                "sokal-affair",
-                "art",
-                2,
-                "F2.txt",
-                "B",
-                "titile-sokal",
-                "Moshe",
-            ),
-        ]
-        for opt0 in ("all", "B"):
-            for opt1 in ("all", "art"):
-                for opt2 in ("all", "Sarah"):
-                    for opt3 in ("all", "study of drawing"):
-                        for opt4 in ("all", "2021"):
-                            if (
-                                opt0 != "all"
-                                or opt1 != "all"
-                                or opt2 != "all"
-                                or opt3 != "all"
-                            ):
-                                assert excepted == ssq.search_by_sql_queries(
-                                    DB_NAME, opt0, opt1, opt2, opt3, opt4
-                                )
 
 
 #  ____                      _       _              __
