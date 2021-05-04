@@ -17,10 +17,11 @@ from blueprints.modification import modification_blueprint
 from blueprints.search import search_blueprint
 from blueprints.selections import selections_bp
 from blueprints.serve_file import serve_blueprint
-from blueprints.uploads import upload_blueprint, UPLOAD_FOLDER
+from blueprints.uploads import upload_blueprint, UPLOAD_FOLDER, type_list
 from blueprints.user_files import user_files_blueprint
 from blueprints.user import user_blueprint
 from blueprints.view import view_blueprint, delete_comment_blueprint
+from blueprints.manageTypes import manage_types_blueprint
 
 app = Flask(__name__)
 
@@ -46,6 +47,9 @@ app.register_blueprint(user_blueprint)
 app.register_blueprint(user_files_blueprint)
 app.register_blueprint(user_manage_blueprint)
 app.register_blueprint(view_blueprint)
+app.register_blueprint(manage_types_blueprint)
+app.register_blueprint(type_list)
+
 app.config["DB_NAME"] = "database.db"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.secret_key = b"\xf5\xe4\xabr\x89\xd9#^D@0\xae[R1\xcf"

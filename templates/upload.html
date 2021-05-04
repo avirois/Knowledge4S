@@ -18,6 +18,9 @@
         <select name="CourseID" id="course">
                 <option value="">Select Course!</option>
         </select>
+        <select name="FileType" id="file_type">
+            <option value="">Select File Type!</option>
+        </select>
           <input type = "submit" value="Upload Now"/>
    </form>
    {{data['msg']}}
@@ -58,5 +61,19 @@
                 });
             });  
         }
+        </script>
+        <script>
+            // *************************
+            // Fetch possible file types
+            // *************************
+            type_select = document.getElementById('file_type');
+            
+            fetch('/upload/types')
+            .then((data) => { return data.json(); })  
+            .then((data) =>{
+                for (t of data.types) {
+                    type_select.innerHTML += '<option value="' + t + '">' + t + '</option>'
+                } 
+            })
         </script>
 {% endblock %}

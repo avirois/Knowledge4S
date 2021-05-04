@@ -48,6 +48,7 @@ def search(
     lecturers: str,
     courses: str,
     years: str,
+    types: str,
     freetext: str,
 ) -> list[Any]:
     """
@@ -57,7 +58,7 @@ def search(
     search logic (see freetext docs).
     """
     db_search_res = search_by_sql_queries(
-        database_name, institutions, faculties, lecturers, courses, years
+        database_name, institutions, faculties, lecturers, courses, years, types
     )
     if freetext not in ("", None):
         ids = [res[5] for res in db_search_res]
@@ -83,4 +84,4 @@ def default_search_for_user(database_name: str, username: str) -> list[Any]:
         )
         (institute, faculty) = cur.fetchone()
 
-    return search(database_name, institute, faculty, "all", "all", "all", "")
+    return search(database_name, institute, faculty, "all", "all", "all", "all", "")
