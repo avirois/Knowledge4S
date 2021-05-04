@@ -72,6 +72,7 @@ def search_by_sql_queries(
     lecturer: Union[str, None],
     course: Union[str, None],
     year: Union[str, None],
+    types: Union[str, None]
 ) -> list[Any]:
     """
     Perform Search according to given parameters.
@@ -97,7 +98,7 @@ def search_by_sql_queries(
             )
         ]
     """
-    if is_not_selected(institutions, faculties, lecturer, course, year):
+    if is_not_selected(institutions, faculties, lecturer, course, year, types):
         return list()
 
     # from here institutions, faculties, lecturer, course, year are only str
@@ -106,6 +107,7 @@ def search_by_sql_queries(
     lecturer = cast(str, lecturer)
     course = cast(str, course)
     year = cast(str, year)
+    types = cast(str, types)
 
     with sqlite3.connect(database_name) as con:
         args: list[Union[str, int]] = []
@@ -148,5 +150,8 @@ def search_by_sql_queries(
         if year != "all":
             where = where + " AND Courses.Year == ?  "
             args.append(int(year))
+        if types != "all":
+            where = where + " AND Files.Type == ?  "
+            args.append(types)
         cur = con.execute(select + from_ + where, args)
         return cur.fetchall()

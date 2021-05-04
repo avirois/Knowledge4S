@@ -106,7 +106,7 @@ def init():
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (1, 11))
         con.execute(
-            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 1,
                 "Yosi",
@@ -119,6 +119,7 @@ def init():
                 11,
                 111,
                 1,
+                "Lecture",
             ),
         )
         # 2)
@@ -131,7 +132,7 @@ def init():
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (2, 22))
         con.execute(
-            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 2,
                 "Moshe",
@@ -144,6 +145,7 @@ def init():
                 22,
                 222,
                 1,
+                "Lecture",
             ),
         )
         con.execute(
@@ -191,6 +193,9 @@ def init():
                 "user2@user2.user2",
             ),
         )
+        con.execute("INSERT INTO Types(Type) VALUES (?) ",("Lecture",))
+        con.execute("INSERT INTO Types(Type) VALUES (?) ",("Lab",))
+        con.execute("INSERT INTO Types(Type) VALUES (?) ",("Exam",))
 
     os.mkdir("storage")
     shutil.copy("Tests/test_storage_1/1.txt", "storage/1.txt")

@@ -16,6 +16,7 @@ import os
 
 DB_NAME = "database.db"
 upload_blueprint = Blueprint("upload_blueprint", __name__, template_folder="templates")
+type_list = Blueprint("type_list", __name__, template_folder="templates")
 UPLOAD_FOLDER = "storage/"
 ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg", "gif"}
 
@@ -37,7 +38,7 @@ def add_file_info_to_db(sql_query, values):
 def db_update(filename, file):
     now = datetime.now()
     current_date = "{}/{}/{}".format(now.date().day, now.date().month, now.date().year)
-    add_query = "INSERT INTO Files (UserName,FileName,Title,Description,DateUpload,DateModified,InstituteID,FacultyID,CourseID) VALUES (?,?,?,?,?,?,?,?,?)"
+    add_query = "INSERT INTO Files (UserName,FileName,Title,Description,DateUpload,DateModified,InstituteID,FacultyID,CourseID,Type) VALUES (?,?,?,?,?,?,?,?,?,?)"
     values = (
         session["username"],
         filename,
@@ -48,6 +49,7 @@ def db_update(filename, file):
         request.form["InstituteID"],
         request.form["FacultyID"],
         request.form["CourseID"],
+        request.form["FileType"],
     )
     file_id = add_file_info_to_db(add_query, values)
     file_extension = filename.rsplit(".", 1)[1].lower()
@@ -123,3 +125,18 @@ def courseByfaculty(facul_ID):
 
     # Create json from the result list
     return jsonify({"courInst": coursInfac})
+
+
+@type_list.route("/upload/types")
+def getTypes():
+    data = { 'types': [] }
+    try:
+        con = sqlite3.connect(current_app.config['DB_NAME'])
+        cur = con.execute("SELECT Type FROM Types")
+        for row in cur:
+            data['types'].append(row[0])
+    except Exception as e:
+        print(e)
+    finally:
+        con.close()
+    return jsonify(data)

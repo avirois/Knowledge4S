@@ -17,7 +17,7 @@ from blueprints.modification import modification_blueprint
 from blueprints.search import search_blueprint
 from blueprints.selections import selections_bp
 from blueprints.serve_file import serve_blueprint
-from blueprints.uploads import upload_blueprint, UPLOAD_FOLDER
+from blueprints.uploads import upload_blueprint, UPLOAD_FOLDER, type_list
 from blueprints.user_files import user_files_blueprint
 from blueprints.user import user_blueprint
 from blueprints.view import view_blueprint, delete_comment_blueprint
@@ -48,6 +48,7 @@ app.register_blueprint(user_files_blueprint)
 app.register_blueprint(user_manage_blueprint)
 app.register_blueprint(view_blueprint)
 app.register_blueprint(manage_types_blueprint)
+app.register_blueprint(type_list)
 
 app.config["DB_NAME"] = "database.db"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER

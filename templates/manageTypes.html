@@ -17,7 +17,7 @@
             <input type="submit" value="add" onclick="add()">
         </p>
         {% for i in data %}
-            <p>{{i[0]}} | {{i[1]}}</p>
+            <p>{{i[1]}} | <a href="/manage_types?delete={{i[0]}}">Delete</a></p>
         {%endfor%}
     </p>
 {% endblock %}

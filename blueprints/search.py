@@ -20,6 +20,7 @@ def search_route():
     lecturers = request.args.get("lecturers", default=None, type=str)
     courses = request.args.get("courses", default=None, type=str)
     years = request.args.get("years", default=None, type=str)
+    types = request.args.get("types", default=None, type=str)
     freetext = request.args.get("freetextsearch", default=None, type=str)
 
     if (
@@ -37,7 +38,7 @@ def search_route():
         )
 
     search_res = search(
-        DB_NAME, institutions, faculties, lecturers, courses, years, freetext
+        DB_NAME, institutions, faculties, lecturers, courses, years, types, freetext
     )
 
     return render_template(

@@ -28,8 +28,8 @@ def manage_types():
     elif(delete != None):
         try:
             con = sqlite3.connect(current_app.config["DB_NAME"])
-            #cur = con.execute("SELECT * FROM Types")
-
+            cur = con.execute("DELETE FROM Types WHERE ID = ?",(delete,))
+            con.commit()
         except Exception as e:
             print(e)
         finally:

@@ -41,6 +41,11 @@
         {% endfor %}                                              
     </select>
     </p>
+    <p>File Type:
+      <select name="types" id="types" >
+          <option value="all">all</option>                                       
+      </select>
+    </p>
     <p>Search: <input type="text" name="freetextsearch" value="{{freetext}}" /></p>
     <input type="submit" value="Search" name="send"/>
 
@@ -130,5 +135,19 @@ function onSelection() {
     resolve();
   });
 }
+</script>
+
+<script>
+  
+  type_select = document.getElementById('types');
+            
+    fetch('/upload/types')
+    .then((data) => { return data.json(); })  
+    .then((data) =>{
+        for (t of data.types) {
+            type_select.innerHTML += '<option value="' + t + '">' + t + '</option>'
+        } 
+    })
+
 </script>
 {% endblock %}
