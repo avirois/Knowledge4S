@@ -35,10 +35,10 @@ FIXTURES:
         |    1 | "Yosi"   | "F1.txt" | "title-math"   | "special number"
         |    2 | "Moshe"  | "F2.txt" | "titile-sokal" | "sokal-affair"
 
-        | DateUpload | DateModified | InstituteID | FacultyID | CourseID |
-    ->>>------------------------------------------------------------------
-        | "1.1.2021" | "1.1.2021"   |          1  |       11  |     111  |
-        | "1.1.2021" | "1.1.2021"   |          2  |       22  |     222  |
+        | DateUpload | DateModified | InstituteID | FacultyID | CourseID | Approved
+    ->>>---------------------------------------------------------------------------
+        | "1.1.2021" | "1.1.2021"   |          1  |       11  |     111  |     1
+        | "1.1.2021" | "1.1.2021"   |          2  |       22  |     222  |     1
 
         * Institutions
         InstitutionID | InstitutionName
@@ -165,6 +165,22 @@ def fill_db():
             "INSERT INTO Courses VALUES (?, ?, ?, ?)", (111, "Calculus", 1111, 2021)
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (1, 11))
+        con.execute(
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                1,
+                "Yosi",
+                "F1.txt",
+                "title-math",
+                "special number",
+                "1.1.2021",
+                "1.1.2021",
+                1,
+                11,
+                111,
+                1,
+            ),
+        )
         # 2)
         con.execute("INSERT INTO Faculties VALUES (?, ?)", (22, "art"))
         con.execute("INSERT INTO Institutions VALUES (?, ?)", (2, "B"))
@@ -175,7 +191,7 @@ def fill_db():
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (2, 22))
         con.execute(
-            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 2,
                 "Moshe",
@@ -187,6 +203,7 @@ def fill_db():
                 2,
                 22,
                 222,
+                1,
             ),
         )
 

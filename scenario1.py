@@ -27,10 +27,11 @@ Copy storage1 to sotorage and setup database acoriding to this scenario:
         |    1 | "Yosi"   | "F1.txt" | "title-math"   | "special number"
         |    2 | "Moshe"  | "F2.txt" | "titile-sokal" | "sokal-affair"
 
-        | DateUpload | DateModified | InstituteID | FacultyID | CourseID |
-    ->>>------------------------------------------------------------------
-        | "1.1.2021" | "1.1.2021"   |          1  |       11  |     111  |
-        | "1.1.2021" | "1.1.2021"   |          2  |       22  |     222  |
+        | DateUpload | DateModified | InstituteID | FacultyID | CourseID |  Approved
+    ->>>----------------------------------------------------------------------------
+        | "1.1.2021" | "1.1.2021"   |          1  |       11  |     111  |       1
+        | "1.1.2021" | "1.1.2021"   |          2  |       22  |     222  |       1
+
 
         * Institutions
         InstitutionID | InstitutionName
@@ -104,7 +105,7 @@ def init():
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (1, 11))
         con.execute(
-            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 1,
                 "Yosi",
@@ -116,6 +117,7 @@ def init():
                 1,
                 11,
                 111,
+                1,
             ),
         )
         # 2)
@@ -128,7 +130,7 @@ def init():
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (2, 22))
         con.execute(
-            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 2,
                 "Moshe",
@@ -140,6 +142,7 @@ def init():
                 2,
                 22,
                 222,
+                1,
             ),
         )
         con.execute(

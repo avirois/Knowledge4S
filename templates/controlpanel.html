@@ -20,5 +20,18 @@
     </br>
     <div>
         <a href="/manage_lecturers" id="manageLecturers"><button class="button button1">Manage Lecturers</button></a>
+    <!-- Pre approved files -->
+    <div>
+        <p><h1>Preapproved file</h1></p>
+        {% for res in data %}
+            {% if loop.index % 2 == 0 %}
+            <div class="fileitem" style="background:#F6F7F2;">
+            {% else %}
+            <div class="fileitem" style="background:#EDF9FF;">
+            {%endif%}
+            <span id="FileTitle"><a href="/view?id={{res[0]}}" style="color:#1b1b1b;">{{res[2]}}</a></span> <span id="FileDesc"> {{res[5]}} / {{res[6]}} / {{res[7]}}</span><br />
+            <p>{{res[3]}}</p> 
+            </div> 
+        {% endfor %}
     </div>
 {% endblock %}

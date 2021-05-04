@@ -15,7 +15,7 @@ class TestSearchIntegration:
         elm: webdriver.firefox.webdriver.FirefoxWebElement = (
             ff_browser.find_element_by_name("freetextsearch")
         )
-        elm.send_keys("sokal")
+        elm.send_keys("number")
 
         submit: webdriver.firefox.webdriver.FirefoxWebElement = (
             ff_browser.find_element_by_name("send")
@@ -26,4 +26,4 @@ class TestSearchIntegration:
             webdriver.firefox.webdriver.FirefoxWebElement
         ] = ff_browser.find_elements_by_class_name("fileitem")
 
-        assert "study of drawing" in res[0].text
+        assert "number" in res[0].text
