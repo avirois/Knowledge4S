@@ -68,6 +68,7 @@ Copy storage1 to sotorage and setup database acoriding to this scenario:
 """
 import os
 import shutil
+from datetime import date
 from pathlib import Path
 import sqlite3
 from static.classes.User import encryptPassword
@@ -112,8 +113,8 @@ def init():
                 "F1.txt",
                 "title-math",
                 "special number",
-                "1.1.2021",
-                "1.1.2021",
+                date(2021,1,1),
+                date(2021,1,1),
                 1,
                 11,
                 111,
@@ -137,8 +138,8 @@ def init():
                 "F2.txt",
                 "titile-sokal",
                 "sokal-affair",
-                "1.1.2021",
-                "1.1.2021",
+                date(2021,1,1),
+                date(2021,1,1),
                 2,
                 22,
                 222,
