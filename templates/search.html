@@ -41,8 +41,9 @@
         {% endfor %}                                              
     </select>
     </p>
-    <p>Search: <input type="text" name="freetextsearch"/></p>
+    <p>Search: <input type="text" name="freetextsearch" value="{{freetext}}" /></p>
     <input type="submit" value="Search" name="send"/>
+
 </form>
 {% for res in search_res %}
 {% if loop.index % 2 == 0 %}
@@ -89,7 +90,7 @@ async function updateSelecions() {
     years: selectors.years.options[selectors.years.selectedIndex].value,
   };
 
-  let response = await fetch("/search/fetch/selection", {
+  let response = await fetch("/fetch/selection", {
     method: "POST",
     headers: {
       "Content-Type": "application/json;charset=utf-8",

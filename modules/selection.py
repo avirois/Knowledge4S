@@ -2,6 +2,8 @@
 import sqlite3
 from typing import Any
 
+DEFAULT = ("all", "select")
+
 
 class Option:
     """Option hold data about this connection and its connection."""
@@ -277,11 +279,12 @@ class Selections:
     ) -> tuple[bool, bool, bool, bool, bool]:
         """Map given selection to where it is indeed seleced and where not."""
         return (
-            "institutions" in slections.keys() and slections["institutions"] != "all",
-            "faculties" in slections.keys() and slections["faculties"] != "all",
-            "lecturers" in slections.keys() and slections["lecturers"] != "all",
-            "courses" in slections.keys() and slections["courses"] != "all",
-            "years" in slections.keys() and slections["years"] != "all",
+            "institutions" in slections.keys()
+            and slections["institutions"] not in DEFAULT,
+            "faculties" in slections.keys() and slections["faculties"] not in DEFAULT,
+            "lecturers" in slections.keys() and slections["lecturers"] not in DEFAULT,
+            "courses" in slections.keys() and slections["courses"] not in DEFAULT,
+            "years" in slections.keys() and slections["years"] not in DEFAULT,
         )
 
     def __get_next_selection(
