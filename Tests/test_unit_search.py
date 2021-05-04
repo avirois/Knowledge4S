@@ -31,13 +31,13 @@ def use_test_storage1():
 
 class TestSearchBySql:
     def test_can_search_with_empty_db(self):
-        a = ssq.search_by_sql_queries(DB_NAME, "A", "math", "all", "all", "all")
-        b = ssq.search_by_sql_queries(DB_NAME, "", "", "", "", "all")
+        a = ssq.search_by_sql_queries(DB_NAME, "A", "math", "all", "all", "all", "all")
+        b = ssq.search_by_sql_queries(DB_NAME, "", "", "", "", "all","all")
         assert isinstance(a, list)
         assert isinstance(b, list)
 
     def test_can_search_with_db(self, fill_db):
-        a = ssq.search_by_sql_queries(DB_NAME, "all", "all", "all", "all", "all")
+        a = ssq.search_by_sql_queries(DB_NAME, "all", "all", "all", "all", "all", "all")
         assert len(a) > 0
 
     def test_bad_input(self, fill_db):
@@ -48,11 +48,12 @@ class TestSearchBySql:
                 for opt2 in options:
                     for opt3 in options:
                         for opt4 in options:
-                            res.append(
-                                ssq.search_by_sql_queries(
-                                    DB_NAME, opt0, opt1, opt2, opt3, opt4
+                            for opt5 in options:
+                                res.append(
+                                    ssq.search_by_sql_queries(
+                                        DB_NAME, opt0, opt1, opt2, opt3, opt4, opt5
+                                    )
                                 )
-                            )
         assert len([j for i in res for j in i]) == 0
 
 
@@ -94,7 +95,7 @@ class TestSearchByFreeText:
 
 class TestSearch:
     def test_can_search_with_empty_db(self):
-        res = sm.search("database.db", "all", "all", "all", "all", "1984", "2+2=5")
+        res = sm.search("database.db", "all", "all", "all", "all", "1984", "all", "2+2=5")
         assert res == []
 
 
