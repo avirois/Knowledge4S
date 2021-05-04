@@ -207,6 +207,8 @@ def tear_down():
         con.execute("DELETE FROM Files")
         con.execute("DELETE FROM Users")
         con.execute("DELETE FROM Comments")
+        con.execute("DELETE FROM Types")
+        con.execute("DELETE FROM sqlite_sequence")
     rmdir(Path("storage/"))
 
 

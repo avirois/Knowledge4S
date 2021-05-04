@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %} 
+    <script>
+        function add() {
+            let a = document.getElementById("new_type").value;
+            console.log(a)
+            if(a != ''){
+                window.location.href = "/manage_types?add=" + a;
+                console.log("got here")
+            }
+        }
+    </script>
+    <p>
+        <h1>Manage File Types</h1>
+        <p>
+            <input type="text" id="new_type" length="30"/>
+            <input type="submit" value="add" onclick="add()">
+        </p>
+        {% for i in data %}
+            <p>{{i[0]}} | {{i[1]}}</p>
+        {%endfor%}
+    </p>
+{% endblock %}
