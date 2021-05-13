@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect , current_app, session
 import sqlite3
 from datetime import datetime
+from static.classes.File import File
 
 view_blueprint = Blueprint("view_blueprint", __name__, template_folder="templates")
 delete_comment_blueprint = Blueprint("delete_comment_blueprint", __name__, template_folder="templates")
@@ -96,8 +97,6 @@ def delete_comment(id):
 
 
 
-
-
 def parse_file_time(string):
     tmp = string.split(" ")
     date = tmp[0]
@@ -105,3 +104,56 @@ def parse_file_time(string):
     date = date.split("-")
     time = time.split(":")
     return "{}/{}/{} - {}:{}".format(date[2],date[1],date[0],time[0],time[1])
+
+def editTitleDB(fileUpdt):
+    # Connect to database
+    con = sqlite3.connect(current_app.config['DB_NAME'])
+
+    # Prepare the query
+    sqlQueryUpdateFile = "UPDATE Files SET Title = (?) WHERE FileID = (?)"
+    con.execute(sqlQueryUpdateFile, (fileUpdt.getTitle(), fileUpdt.getFileID()))
+
+    # Commit the changes
+    con.commit()
+
+    # Close the connection to the database
+    con.close()
+
+@delete_comment_blueprint.route("/edit_title/<id>",methods = ['GET', 'POST'])
+def edit_title(id):
+    # connect to db
+    con = sqlite3.connect(current_app.config['DB_NAME'])
+
+    # Preprare query
+    queryUser = "SELECT UserName FROM Files WHERE FileID = (?)"
+
+    res = con.execute(queryUser, (int(id),))
+
+    # Fetch the result
+    record = res.fetchone()
+
+    # Close the connection to the database
+    con.close()
+
+    #check admin session 
+    if ((session.get("admin") == None) and (session.get("username") != record[0])):
+        return redirect('/')
+
+    # If method post selected then need to edit the title
+    if (request.method == "POST"):
+        # connect to db
+        con = sqlite3.connect(current_app.config['DB_NAME'])
+
+        # Save the ID of the file
+        fileID = int(id)
+
+        # Get new file title from the form
+        newFileTitle = request.form["title"]
+
+        # Create file object
+        newFile = File(fileID, Title = newFileTitle)
+        
+        # Update the title to the new one
+        editTitleDB(newFile)
+
+    return redirect('/view?id=' + str(fileID))
