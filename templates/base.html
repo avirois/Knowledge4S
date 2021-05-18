@@ -9,7 +9,7 @@
 <body>
     <div id="header">
         <div id="logo">
-            <img src="../static/logo/logo.png" style="height:30px;"/>
+            <a href="/"><img src="../static/logo/logo.png" style="height:30px;"/></a>
         </div>
         <div id="menu">
             {% if session['username'] %} 
@@ -19,6 +19,7 @@
             <a class="navItem" href="/search" name="search_link">Search</a>
             <a class="navItem" href="/about" name="about_link">About</a>
             <a class="navItem" href="/admins_info" name="admins_link">Admins info</a>
+            <a class="navItem" href="/forum" name="forum_link">Forum</a>
             {% if session['admin'] %}
                 <a class="navItem" href="/controlpanel" name="control_panel_link">Control Panel</a>
             {% endif %}
