@@ -1,27 +1,37 @@
 {% extends 'base.html' %}
-{% block content %} 
+{% block content %}
+<style>
+.button { width: 200px; height: 50px; background-color: #536162; border: none; color: #536162; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonHover { background-color: #536162; color: white; border: 2px solid #536162; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonHover:hover { background-color: white; color: black; }
+.selectStyle {height:2.5em; width: 200px;}
+</style>
     <p>
       <form action = "/upload" method = "POST" 
-        enctype = "multipart/form-data">
-        <input type = "file" name = "file" />
-        <p>Title: <input type="text" name="Title" size="20"/></p>
-        <p>Description: <input type="text" name="Description" size="20"/></p>
-        <select name="InstituteID" id="institution"> 
+        enctype = "multipart/form-data" id="formUploadFile">
+        <p>Choose file: <input type = "file" name = "file" /></p>
+        <p><span id="validTitle" style="color:red; visibility:hidden;">* </span>Title: <input type="text" id="Title" name="Title" size="20"/></p>
+        <p><span id="validDesc" style="color:red; visibility:hidden;">* </span>Description: <input type="text" id="Desc" name="Description" size="20"/></p>
+        <p><span id="validInst" style="color:red; visibility:hidden;">* </span>Institution:
+        <select name="InstituteID" id="institution" class="selectStyle"> 
               <option value="">Select Institution!</option>
               {% for istitution in institutions %}
                       <option value="{{istitution[0]}}">{{istitution[1]}}</option>
               {% endfor %}   
-        </select>
-        <select name="FacultyID" id="faculty">
+        </select></p>
+        </p><span id="validFac" style="color:red; visibility:hidden;">* </span>Faculty:
+        <select name="FacultyID" id="faculty" class="selectStyle">
             <option value="">Select Faculty!</option>
-        </select> 
-        <select name="CourseID" id="course">
+        </select></p>
+        <p><span id="validCourse" style="color:red; visibility:hidden;">* </span>Course:
+        <select name="CourseID" id="course" class="selectStyle">
                 <option value="">Select Course!</option>
-        </select>
-        <select name="FileType" id="file_type">
+        </select></p>
+        <p><span id="validFileType" style="color:red; visibility:hidden;">* </span>File type:
+        <select name="FileType" id="file_type" class="selectStyle">
             <option value="">Select File Type!</option>
-        </select>
-          <input type = "submit" value="Upload Now"/>
+        </select></p>
+        <input type = "button" onclick="validateForm()" value="Upload Now" class="button buttonHover"/>
    </form>
    {{data['msg']}}
     </p>
@@ -75,5 +85,67 @@
                     type_select.innerHTML += '<option value="' + t + '">' + t + '</option>'
                 } 
             })
+
+            function validateForm() {
+                title = document.getElementById("Title").value
+                desc = document.getElementById("Desc").value
+                institution_select = document.getElementById('institution');
+                faculty_select = document.getElementById('faculty');
+                couse_select = document.getElementById('course');
+                type_select = document.getElementById('file_type');
+                validForm = true;
+
+                if (title == "") {
+                    document.getElementById('validTitle').style.visibility = 'visible';
+                    validForm = false;
+                }
+                else { 
+                    document.getElementById('validTitle').style.visibility = 'hidden';
+                }
+
+                if (desc == "") {
+                    document.getElementById('validDesc').style.visibility = 'visible';
+                    validForm = false;
+                }
+                else { 
+                    document.getElementById('validDesc').style.visibility = 'hidden';
+                }
+
+                if (institution_select.value == "") {
+                    document.getElementById('validInst').style.visibility = 'visible';
+                    validForm = false;
+                }
+                else { 
+                    document.getElementById('validInst').style.visibility = 'hidden';
+                }
+
+                if (faculty_select.value == "") {
+                    document.getElementById('validFac').style.visibility = 'visible';
+                    validForm = false;
+                }
+                else { 
+                    document.getElementById('validFac').style.visibility = 'hidden';
+                }
+
+                if (course_select.value == "") {
+                    document.getElementById('validCourse').style.visibility = 'visible';
+                    validForm = false;
+                }
+                else { 
+                    document.getElementById('validCourse').style.visibility = 'hidden';
+                }
+
+                if (type_select.value == "") {
+                    document.getElementById('validFileType').style.visibility = 'visible';
+                    validForm = false;
+                }
+                else { 
+                    document.getElementById('validFileType').style.visibility = 'hidden';
+                }
+
+                if (validForm == true) {
+                    document.getElementById('formUploadFile').submit();
+                }
+                }
         </script>
 {% endblock %}

@@ -32,6 +32,10 @@ def view():
             data['date'] = parse_file_time(tmp[5])
             data['preapproved'] = tmp[10]
             
+            # Check if file not approved yet move the user if not admin to main page
+            if (session.get("admin") == None and data['preapproved'] == 0):
+                return redirect('/')
+
             # get instetution name
             cur = con.execute("SELECT InstitutionName FROM Institutions WHERE InstitutionID = ?",(data['inst'],))
             tmp = cur.fetchone()

@@ -73,7 +73,7 @@
     <p>
         <span id="FileTitle">{{data['title']}}</span>
         {% if session['admin'] or session['username'] == data['username'] %}
-            <button id="FileTitleEdit" onclick="openFormEditTitle()">Edit</button>
+            <button id="FileTitleEdit" name="editTitle" onclick="openFormEditTitle()">Edit</button>
         {% endif %}
         <span id="FileDesc">{{data['inst']}} / {{data['facu']}} / {{data['course']}}</span>
         <span id="FileDate">{{data['date']}}</span>
@@ -118,13 +118,13 @@
 
     <div class="form-popup" id="formEditTitle">
     <form action="/edit_title/{{data['id']}}" class="form-container" method="POST">
-        <h1>Edit Title</h1>
+        <h1 name="titleEditTitle">Edit Title</h1>
 
         <label for="title"><b>Title</b></label>
         <input type="text" value={{data['title']}} name="title" id="title" required>
         
-        <button type="submit" class="btn">Save</button>
-        <button type="button" class="btn cancel" onclick="closeFormEditTitle()">Close</button>
+        <button type="submit" class="btn" name="btnSaveTitle" >Save</button>
+        <button type="button" class="btn cancel" name="btnClose" onclick="closeFormEditTitle()">Close</button>
     </form>
     </div>
 
