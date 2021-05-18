@@ -123,7 +123,7 @@
                         {% endif %}
                         {% if session['admin'] or session['username'] == row.getUserName() %} 
                             <td><button id="btnEditMessage" onclick="openFormEditMessage('{{row.getMessage()}}','{{row.getID()}}')" class="btnEdits">Edit</button></td>
-                            
+                            <td><a href="/delete_message/{{row.getID()}}?courseID={{courseID}}"><button id="btnDeleteMessage" class="btnEdits">Delete</button></a></td>
                         {% endif %}
                     </div>
                     </tr>
