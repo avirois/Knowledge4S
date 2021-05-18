@@ -97,6 +97,26 @@ def forumOfCourse(courID):
 
             return redirect('/course_forum/' + courID)
 
+@forum_blueprint.route("/delete_message/<id>", methods = ['GET'])
+def delete_message(id):
+    # Get coures id from paramters
+    courseID = request.args.get("courseID")
+
+    # Create temp course to delete the message
+    curCourse = Course(courseID)
+    
+    # Get username info of the current comment
+    username = curCourse.getSpecificMessageForum(id).getUserName()
+
+    # check admin session 
+    if ((session.get("admin") == None) and (session.get("username") != username)):
+        return redirect('/')
+    
+    # delete the message
+    curCourse.deleteMessageForum(id)
+
+    return redirect('/course_forum/{}'.format(courseID))
+
 @forum_blueprint.route("/edit_forum_message/<id>", methods = ['POST'])
 def edit_forum_message(id):
     # Get coures id from paramters
