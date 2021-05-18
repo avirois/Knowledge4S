@@ -38,7 +38,13 @@ def add_file_info_to_db(sql_query, values):
 def db_update(filename, file):
     now = datetime.now()
     current_date = "{}/{}/{}".format(now.date().day, now.date().month, now.date().year)
-    add_query = "INSERT INTO Files (UserName,FileName,Title,Description,DateUpload,DateModified,InstituteID,FacultyID,CourseID,Type) VALUES (?,?,?,?,?,?,?,?,?,?)"
+    
+    # check if admin user then the files approved without need of approve
+    if (session.get('admin')):
+        add_query = "INSERT INTO Files (UserName,FileName,Title,Description,DateUpload,DateModified,InstituteID,FacultyID,CourseID,Approved,Type) VALUES (?,?,?,?,?,?,?,?,?,1,?)"
+    else:    
+        add_query = "INSERT INTO Files (UserName,FileName,Title,Description,DateUpload,DateModified,InstituteID,FacultyID,CourseID,Type) VALUES (?,?,?,?,?,?,?,?,?,?)"
+
     values = (
         session["username"],
         filename,

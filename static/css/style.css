@@ -42,8 +42,6 @@ body{
     margin:30px auto;
 }
 
-
-
 .fileitem{
     padding:10px;
 }
@@ -52,6 +50,12 @@ body{
     font-size:32px;
     font-weight:800;
     text-decoration:underline;
+}
+#FileTitleEdit{
+    background:#8dd4f5;
+    border-radius:5px;
+    padding:5px;
+    vertical-align:2.5px;
 }
 #FileDesc{
     background:#BADEB2;
@@ -107,6 +111,11 @@ body{
     background:#fff;
     border:1px solid #1b1b1b;
     border-radius:5px;
+}
+#courseForumTitle{
+    font-size:15px;
+    font-weight:800;
+    text-decoration:underline;
 }
 .clear {
     overflow: auto;
