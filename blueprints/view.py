@@ -161,3 +161,57 @@ def edit_title(id):
         editTitleDB(newFile)
 
     return redirect('/view?id=' + str(fileID))
+
+def editDescriptionDB(fileUpdt):
+    # Connect to database
+    con = sqlite3.connect(current_app.config['DB_NAME'])
+
+    # Prepare the query
+    sqlQueryUpdateFile = "UPDATE Files SET Description = (?) WHERE FileID = (?)"
+    con.execute(sqlQueryUpdateFile, (fileUpdt.getDescription(), fileUpdt.getFileID()))
+
+    # Commit the changes
+    con.commit()
+
+    # Close the connection to the database
+    con.close()
+
+@delete_comment_blueprint.route("/edit_description/<id>",methods = ['GET', 'POST'])
+def edit_description(id):
+    # connect to db
+    con = sqlite3.connect(current_app.config['DB_NAME'])
+
+    # Preprare query
+    queryUser = "SELECT UserName FROM Files WHERE FileID = (?)"
+
+    res = con.execute(queryUser, (int(id),))
+
+    # Fetch the result
+    record = res.fetchone()
+
+    # Close the connection to the database
+    con.close()
+
+    #check admin session 
+    if ((session.get("admin") == None) and (session.get("username") != record[0])):
+        return redirect('/')
+
+    # If method post selected then need to edit the description
+    if (request.method == "POST"):
+        # connect to db
+        con = sqlite3.connect(current_app.config['DB_NAME'])
+
+        # Save the ID of the file
+        fileID = int(id)
+
+        # Get new file description from the form
+        newFileDesc = request.form["description"]
+
+        # Create file object
+        newFile = File(fileID, Description = newFileDesc)
+        print(newFileDesc)
+        
+        # Update the description to the new one
+        editDescriptionDB(newFile)
+
+    return redirect('/view?id=' + str(fileID))
