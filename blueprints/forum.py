@@ -78,3 +78,21 @@ def dataForAllInst():
 
     # Create json from the result list
     return (institutions)
+
+@forum_blueprint.route('/course_forum/<courID>', methods=['GET', 'POST'])
+def forumOfCourse(courID):
+    curCourse = Course(courID)
+
+    # Check if get method selected or post for update
+    if request.method == 'GET':
+        return render_template('course_forum.html', course = curCourse.courseNameByID(), courseID = courID, messages = curCourse.getMessagesOfCourse())
+    else:
+        forumComment = request.form['forumComment']
+        preMessageID = request.form['preMessage']
+        
+        # Check if entered comment
+        if forumComment != "":
+            # Create the comment in the DB
+            curCourse.addMessageToCourse(forumComment, session.get("username"), preMessageID)
+
+            return redirect('/course_forum/' + courID)
