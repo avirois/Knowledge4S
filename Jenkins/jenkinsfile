@@ -32,7 +32,14 @@ pipeline {
                 # create GECKODRIVER_PATH env variable
                 export GECKODRIVER_PATH=$(pwd)'/geckodriver'
                 # run test
-                source venv/bin/activate && pytest
+                source venv/bin/activate && pytest --junitxml=out_report.xml
+                '''
+            }   
+        }
+        stage('report') {
+            steps {
+                sh '''
+                source venv/bin/activate && python xml_report.py
                 '''
             }   
         }
