@@ -121,12 +121,17 @@ def parse_file_time(string):
     return "{}/{}/{} - {}:{}".format(date[2],date[1],date[0],time[0],time[1])
 
 def getNotifications(name):
-    data = []
+    data = {
+        'data': [],
+        'new' : 0
+    }
     try:
         con = sqlite3.connect(current_app.config['DB_NAME'])
-        cur = con.execute("SELECT Date,MSG FROM Notification WHERE User = ? ORDER BY Date DESC LIMIT 20",(name,))
+        cur = con.execute("SELECT Date,MSG,Viewed FROM Notification WHERE User = ? ORDER BY Date DESC LIMIT 20",(name,))
         for row in cur:
-            data.append((parse_file_time(row[0]),row[1]))
+            data['data'].append((parse_file_time(row[0]),row[1]))
+            if row[2] == 0:
+                data['new'] = data['new'] + 1
 
         con.execute("UPDATE Notification SET Viewed = 1 WHERE User = ?",(name,))
         con.commit()

@@ -9,8 +9,8 @@
 
     {% if session['username'] == data%}
     <div style="text-align: center;">
-        
-        <button id="toggleDisplay" class="button button1" onclick="toggle()">View notifications</button>
+        <input type="text" value="{{notifications['new']}}" id="length" hidden>
+        <button id="toggleDisplay" class="button button1" onclick="toggle()">View notifications({{notifications['new']}})</button>
     </div>
     {% endif %}
     <div id="userInfoDiv" style="display:block;">
@@ -36,7 +36,7 @@
 
     </div>
     <div id="userNotification" style="display:none;">
-        {% for x in notifications:%}
+        {% for x in notifications['data']:%}
             <p>{{x[0]}} - {{x[1]}}</p>
         {% endfor %}
     </div>
@@ -44,14 +44,15 @@
 
     <script>
         function toggle(){
+
             let massage = document.getElementById("toggleDisplay");
             let userdata = document.getElementById("userInfoDiv");
             let notif = document.getElementById("userNotification");
-    
-            if (massage.innerText == 'View notifications') {
+            let len = document.getElementById("length").value;
+            if (massage.innerText[5] == 'n') {
                 massage.innerText = 'View user data';
             } else {
-                massage.innerText = 'View notifications';
+                massage.innerText = 'View notifications(' + len + ')';
             }
 
             if (userdata.style.display == "block")
