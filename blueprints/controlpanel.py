@@ -55,8 +55,6 @@ def controlpanel_reject():
         return redirect('/')
     file_id = request.args.get("file_id")
     msg  = request.args.get("msg")
-    title = request.args.get("title")
-    msg = "File named '" + title + "' was rejected! reason: " + msg
     try:
         con = sqlite3.connect(current_app.config['DB_NAME'])
         cur = con.execute("SELECT UserName FROM Files WHERE FileID = ?",(file_id,))

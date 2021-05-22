@@ -176,9 +176,9 @@
     <script>
         function reject(){
             let id = document.getElementById("rejectFormId").value;
-            let msg = document.getElementById("rejectFormMsg").value;
-            let title = document.getElementById("rejectFormTitle").value;
-            window.location.replace("/controlpanel/reject?file_id=" + id + "&msg=" + msg + "&title=" + title);
+            let msg = "File named '" + document.getElementById("rejectFormTitle").value + 
+            "' was rejected! reason:" + document.getElementById("rejectFormMsg").value;
+            window.location.replace("/controlpanel/reject?file_id=" + id + "&msg=" + msg);
         }
     </script>
 {% endblock %}
