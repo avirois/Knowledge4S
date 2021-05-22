@@ -6,24 +6,62 @@
 .button1:hover { background-color: white; color: black; }
 </style>
 
-    <p>
-        <h1 name="profileHeader">{{ data }}'s profile</h1>
-    </p>
-    <div name="userInfo">
-        <p><b>Username:</b> {{user.getUsername()}}</p>
-        <p><b>First name:</b> {{user.getFName()}}</p>
-        <p><b>Last name:</b> {{user.getLName()}}</p>
-        <p><b>Email:</b> {{user.getEmail()}}</p>
-        <p><b>Institution:</b> {{user.getInstitutionName()}}</p>
-        <p><b>Faculty:</b> {{user.getFacultyName()}}</p>
-        <p><b>Study year:</b> {{user.getStudyYear()}}</p>
+
+    {% if session['username'] == data%}
+    <div style="text-align: center;">
+        <span id="toggleDisplay" onclick="toggle()">View notifications</span>
     </div>
-    {% if session['username'] == data %}
-        <div>
-            <a href="/edit_bio/{{data}}" id="editBioBtn"><button class="button button1" name="editBioBtn">Edit My Bio</button></a>
-            <a href="/change_pass/{{data}}" id="changePassBtn"><button class="button button1" name="changePassBtn">Change Password</button></a>
-            <a href="/user_files" id="ViewFilesBtn"><button class="button button1">View My Files</button></a>
-        </div>
     {% endif %}
+    <div id="userInfoDiv" style="display:block;">
+        <p>
+            <h1 name="profileHeader">{{ data }}'s profile</h1>
+        </p>
+        <div name="userInfo">
+            <p><b>Username:</b> {{user.getUsername()}}</p>
+            <p><b>First name:</b> {{user.getFName()}}</p>
+            <p><b>Last name:</b> {{user.getLName()}}</p>
+            <p><b>Email:</b> {{user.getEmail()}}</p>
+            <p><b>Institution:</b> {{user.getInstitutionName()}}</p>
+            <p><b>Faculty:</b> {{user.getFacultyName()}}</p>
+            <p><b>Study year:</b> {{user.getStudyYear()}}</p>
+        </div>
+        {% if session['username'] == data %}
+            <div>
+                <a href="/edit_bio/{{data}}" id="editBioBtn"><button class="button button1" name="editBioBtn">Edit My Bio</button></a>
+                <a href="/change_pass/{{data}}" id="changePassBtn"><button class="button button1" name="changePassBtn">Change Password</button></a>
+                <a href="/user_files" id="ViewFilesBtn"><button class="button button1">View My Files</button></a>
+            </div>
+        {% endif %}
+
+    </div>
+    <div id="userNotification" style="display:none;">
+        test
+    </div>
+
+
+    <script>
+        function toggle(){
+            let massage = document.getElementById("toggleDisplay");
+            let userdata = document.getElementById("userInfoDiv");
+            let notif = document.getElementById("userNotification");
+    
+            if (massage.innerHTML == 'View notifications') {
+                massage.innerHTML = 'View user data';
+            } else {
+                massage.innerHTML = 'View notifications';
+            }
+
+            if (userdata.style.display == "block")
+                userdata.style.display = "none";
+            else
+                userdata.style.display = "block";
+            
+            if (notif.style.display == "block")
+                notif.style.display = "none";
+            else
+                notif.style.display = "block";
+        } 
+        
+    </script>
 {% endblock %}
 
