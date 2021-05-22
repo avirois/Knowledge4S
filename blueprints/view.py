@@ -60,6 +60,7 @@ def view():
 
         except Exception as e:
             print(e)
+            con.close()
             return redirect("/")
         finally:
             con.close()
