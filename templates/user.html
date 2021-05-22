@@ -9,7 +9,8 @@
 
     {% if session['username'] == data%}
     <div style="text-align: center;">
-        <span id="toggleDisplay" onclick="toggle()">View notifications</span>
+        
+        <button id="toggleDisplay" class="button button1" onclick="toggle()">View notifications</button>
     </div>
     {% endif %}
     <div id="userInfoDiv" style="display:block;">
@@ -35,7 +36,9 @@
 
     </div>
     <div id="userNotification" style="display:none;">
-        test
+        {% for x in notifications:%}
+            <p>{{x[0]}} - {{x[1]}}</p>
+        {% endfor %}
     </div>
 
 
@@ -45,10 +48,10 @@
             let userdata = document.getElementById("userInfoDiv");
             let notif = document.getElementById("userNotification");
     
-            if (massage.innerHTML == 'View notifications') {
-                massage.innerHTML = 'View user data';
+            if (massage.innerText == 'View notifications') {
+                massage.innerText = 'View user data';
             } else {
-                massage.innerHTML = 'View notifications';
+                massage.innerText = 'View notifications';
             }
 
             if (userdata.style.display == "block")

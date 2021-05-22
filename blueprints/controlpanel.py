@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, current_app, request
 import sqlite3
+from datetime import datetime
 
 controlpanel_blueprint = Blueprint("controlpanel_blueprint", __name__, template_folder="templates")
 controlpanel_approve_blueprint = Blueprint("controlpanel_approve_blueprint", __name__, template_folder="templates")
@@ -53,9 +54,20 @@ def controlpanel_reject():
     if (session.get("admin") == None):
         return redirect('/')
     file_id = request.args.get("file_id")
+    msg  = request.args.get("msg")
+    title = request.args.get("title")
+    msg = "File named '" + title + "' was rejected! reason: " + msg
     try:
         con = sqlite3.connect(current_app.config['DB_NAME'])
+        cur = con.execute("SELECT UserName FROM Files WHERE FileID = ?",(file_id,))
+        name = cur.fetchone()[0]
         con.execute("DELETE FROM Files WHERE FileID = ?",(file_id,))
+        con.execute("Insert INTO Notification (User,Date,MSG) VALUES (?,?,?)",(
+            name,
+            datetime.now(),
+            msg,
+            ))
+
         con.commit()
     except Exception as e:
         print(e)
