@@ -60,6 +60,8 @@ def view():
 
         except Exception as e:
             print(e)
+            con.close()
+            return redirect("/")
         finally:
             con.close()
         return render_template("view.html",data = data)
@@ -209,7 +211,6 @@ def edit_description(id):
 
         # Create file object
         newFile = File(fileID, Description = newFileDesc)
-        print(newFileDesc)
         
         # Update the description to the new one
         editDescriptionDB(newFile)
