@@ -200,8 +200,8 @@ def fill_db():
                 "F2.txt",
                 "titile-sokal",
                 "sokal-affair",
-                date(2021,1,1),
-                date(2021,1,1),
+                "2021-05-13 11:47:49.612809",
+                "2021-05-13 11:47:49.612809",
                 2,
                 22,
                 222,
@@ -266,7 +266,6 @@ def fill_db():
         con.execute("DELETE FROM FacIn")
         con.execute("DELETE FROM Files")
         con.execute("DELETE FROM Users")
-
 
 def rmdir(directory):
     directory = Path(directory)
