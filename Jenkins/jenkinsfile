@@ -40,12 +40,14 @@ pipeline {
         }
         stage('integration-test') {
             steps {
-                sh '''
-                # create GECKODRIVER_PATH env variable
-                export GECKODRIVER_PATH=$(pwd)'/geckodriver'
-                # run test
-                source venv/bin/activate && pytest --junitxml=out_report_integration.xml -k "test_integration"
-                '''
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sh '''
+                    # create GECKODRIVER_PATH env variable
+                    export GECKODRIVER_PATH=$(pwd)'/geckodriver'
+                    # run test
+                    source venv/bin/activate && pytest --junitxml=out_report_integration.xml -k "test_integration"
+                    '''
+                }
             }   
         }
         stage('report') {
