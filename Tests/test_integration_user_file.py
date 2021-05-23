@@ -256,7 +256,7 @@ class TestUserFiles:
         # Get the header in edit bio page
         changePassHeader = ff_browser.find_element_by_xpath("/html/body/div[2]/h1")
 
-        assert (changePassHeader.text == "Change password of 2" + username_test)
+        assert (changePassHeader.text == "Change password of " + username_test)
 
     def test_user_files_mixed(self, application: str, ff_browser: webdriver.Firefox, db_prepare_edit_bio):
         # Run logout to clean session

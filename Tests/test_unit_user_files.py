@@ -18,4 +18,4 @@ class TestUserFile:
         username = "t1"
         password = "Aa123"
         usr = User(username, "aaa", "aaa", "Aa123456!", 1, 1, 1, 1)
-        assert (usr.getIsBanned() == 0)
+        assert (usr.getIsBanned() == 1)
