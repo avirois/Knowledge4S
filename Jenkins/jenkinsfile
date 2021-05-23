@@ -35,7 +35,7 @@ pipeline {
                 source venv/bin/activate && pytest --junitxml=out_report_unit.xml -k "test_unit"
                 '''
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    sh "exit 1"
+                    currentBuild.result = "FAILURE"
                 }
             }   
         }
