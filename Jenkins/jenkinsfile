@@ -28,14 +28,13 @@ pipeline {
         }
         stage('unit-test') {
             steps {
-                sh '''
-                # create GECKODRIVER_PATH env variable
-                export GECKODRIVER_PATH=$(pwd)'/geckodriver'
-                # run test
-                source venv/bin/activate && pytest --junitxml=out_report_unit.xml -k "test_unit"
-                '''
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    echo "I need to run every time"
+                    sh '''
+                    # create GECKODRIVER_PATH env variable
+                    export GECKODRIVER_PATH=$(pwd)'/geckodriver'
+                    # run test
+                    source venv/bin/activate && pytest --junitxml=out_report_unit.xml -k "test_unit"
+                    '''
                 }
             }   
         }
