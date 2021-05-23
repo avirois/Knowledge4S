@@ -28,7 +28,7 @@ pipeline {
         }
         stage('unit-test') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     sh '''
                     # create GECKODRIVER_PATH env variable
                     export GECKODRIVER_PATH=$(pwd)'/geckodriver'
@@ -40,7 +40,7 @@ pipeline {
         }
         stage('integration-test') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     sh '''
                     # create GECKODRIVER_PATH env variable
                     export GECKODRIVER_PATH=$(pwd)'/geckodriver'

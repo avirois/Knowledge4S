@@ -147,7 +147,7 @@ totalMeasure = "Total Report:\n" + measurements
 print(totalMeasure)
 
 # Prepare the total message
-testValues = "Total Tests - " + str(nTotalTests) + "\nSuccess Tests - " + str(nTotalSuccess) + "\nFailed Tests - " + str(nTotalFailed) + "\nError Tests - " + str(nTotalFailed) + "\n\nMeasurements:\n"
+testValues = "Total Tests - " + str(nTotalTests) + "\nSuccess Tests - " + str(nTotalSuccess) + "\nFailed Tests - " + str(nTotalFailed) + "\nError Tests - " + str(nTotalError) + "\n\nMeasurements:\n"
 totalMeasure = "Total Report:\n" + testValues + "" + measurements
 
 # Prepare the mail report
