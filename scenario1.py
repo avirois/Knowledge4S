@@ -96,6 +96,7 @@ def init():
         con.execute("DELETE FROM Courses")
         con.execute("DELETE FROM FacIn")
         con.execute("DELETE FROM Users")
+        con.execute("DELETE FROM Notification")
         # 1)
         con.execute("INSERT INTO Institutions VALUES (?, ?)", (1, "A"))
         con.execute("INSERT INTO Faculties VALUES (?, ?)", (11, "math"))
@@ -213,6 +214,7 @@ def tear_down():
         con.execute("DELETE FROM Users")
         con.execute("DELETE FROM Comments")
         con.execute("DELETE FROM Types")
+        con.execute("DELETE FROM Notification")
         con.execute("DELETE FROM sqlite_sequence")
     rmdir(Path("storage/"))
 

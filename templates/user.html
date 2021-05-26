@@ -6,24 +6,66 @@
 .button1:hover { background-color: white; color: black; }
 </style>
 
-    <p>
-        <h1 name="profileHeader">{{ data }}'s profile</h1>
-    </p>
-    <div name="userInfo">
-        <p><b>Username:</b> {{user.getUsername()}}</p>
-        <p><b>First name:</b> {{user.getFName()}}</p>
-        <p><b>Last name:</b> {{user.getLName()}}</p>
-        <p><b>Email:</b> {{user.getEmail()}}</p>
-        <p><b>Institution:</b> {{user.getInstitutionName()}}</p>
-        <p><b>Faculty:</b> {{user.getFacultyName()}}</p>
-        <p><b>Study year:</b> {{user.getStudyYear()}}</p>
+
+    {% if session['username'] == data%}
+    <div style="text-align: center;">
+        <input type="text" value="{{notifications['new']}}" id="length" hidden>
+        <button id="toggleDisplay" class="button button1" onclick="toggle()">View notifications({{notifications['new']}})</button>
     </div>
-    {% if session['username'] == data %}
-        <div>
-            <a href="/edit_bio/{{data}}" id="editBioBtn"><button class="button button1" name="editBioBtn">Edit My Bio</button></a>
-            <a href="/change_pass/{{data}}" id="changePassBtn"><button class="button button1" name="changePassBtn">Change Password</button></a>
-            <a href="/user_files" id="ViewFilesBtn"><button class="button button1">View My Files</button></a>
-        </div>
     {% endif %}
+    <div id="userInfoDiv" style="display:block;">
+        <p>
+            <h1 name="profileHeader">{{ data }}'s profile</h1>
+        </p>
+        <div name="userInfo">
+            <p><b>Username:</b> {{user.getUsername()}}</p>
+            <p><b>First name:</b> {{user.getFName()}}</p>
+            <p><b>Last name:</b> {{user.getLName()}}</p>
+            <p><b>Email:</b> {{user.getEmail()}}</p>
+            <p><b>Institution:</b> {{user.getInstitutionName()}}</p>
+            <p><b>Faculty:</b> {{user.getFacultyName()}}</p>
+            <p><b>Study year:</b> {{user.getStudyYear()}}</p>
+        </div>
+        {% if session['username'] == data %}
+            <div>
+                <a href="/edit_bio/{{data}}" id="editBioBtn"><button class="button button1" name="editBioBtn">Edit My Bio</button></a>
+                <a href="/change_pass/{{data}}" id="changePassBtn"><button class="button button1" name="changePassBtn">Change Password</button></a>
+                <a href="/user_files" id="ViewFilesBtn"><button class="button button1">View My Files</button></a>
+            </div>
+        {% endif %}
+
+    </div>
+    <div id="userNotification" style="display:none;">
+        {% for x in notifications['data']:%}
+            <p>{{x[0]}} - {{x[1]}}</p>
+        {% endfor %}
+    </div>
+
+
+    <script>
+        function toggle(){
+
+            let massage = document.getElementById("toggleDisplay");
+            let userdata = document.getElementById("userInfoDiv");
+            let notif = document.getElementById("userNotification");
+            let len = document.getElementById("length").value;
+            if (massage.innerText[5] == 'n') {
+                massage.innerText = 'View user data';
+            } else {
+                massage.innerText = 'View notifications(' + len + ')';
+            }
+
+            if (userdata.style.display == "block")
+                userdata.style.display = "none";
+            else
+                userdata.style.display = "block";
+            
+            if (notif.style.display == "block")
+                notif.style.display = "none";
+            else
+                notif.style.display = "block";
+        } 
+        
+    </script>
 {% endblock %}
 
