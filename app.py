@@ -23,6 +23,7 @@ from blueprints.user import user_blueprint
 from blueprints.view import view_blueprint, delete_comment_blueprint
 from blueprints.manageTypes import manage_types_blueprint
 from blueprints.forum import forum_blueprint
+from blueprints.lastUpdates import last_updates_blueprint
 
 app = Flask(__name__)
 
@@ -51,6 +52,7 @@ app.register_blueprint(view_blueprint)
 app.register_blueprint(manage_types_blueprint)
 app.register_blueprint(type_list)
 app.register_blueprint(forum_blueprint)
+app.register_blueprint(last_updates_blueprint)
 
 app.config["DB_NAME"] = "database.db"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
