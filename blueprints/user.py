@@ -112,13 +112,43 @@ def updateUserBio(userUpdate):
     # Close the connection to the database
     con.close()
 
+def parse_file_time(string):
+    tmp = string.split(" ")
+    date = tmp[0]
+    time = tmp[1]
+    date = date.split("-")
+    time = time.split(":")
+    return "{}/{}/{} - {}:{}".format(date[2],date[1],date[0],time[0],time[1])
+
+def getNotifications(name):
+    data = {
+        'data': [],
+        'new' : 0
+    }
+    try:
+        con = sqlite3.connect(current_app.config['DB_NAME'])
+        cur = con.execute("SELECT Date,MSG,Viewed FROM Notification WHERE User = ? ORDER BY Date DESC LIMIT 20",(name,))
+        for row in cur:
+            data['data'].append((parse_file_time(row[0]),row[1]))
+            if row[2] == 0:
+                data['new'] = data['new'] + 1
+
+        con.execute("UPDATE Notification SET Viewed = 1 WHERE User = ?",(name,))
+        con.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        con.close()
+    return data
+
 @user_blueprint.route("/user/<name>")
 def index(name):
     
     # Load current user data
     usr = getUserInfo(name)
+    notifications = getNotifications(name)
     
-    return render_template("user.html", data = name, user = usr)
+    return render_template("user.html", data = name, user = usr, notifications = notifications)
 
 @user_blueprint.route("/edit_bio/<name>",methods=['POST','GET'])
 def edit_bio(name):
