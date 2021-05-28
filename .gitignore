@@ -3,7 +3,7 @@
 **.mypy_cache/
 **/.pytest_cache/
 **/__pycache__/
-**my-project-env/
+my-project-env/
 geckodriver.exe
 geckodriver.zip
 geckodriver
