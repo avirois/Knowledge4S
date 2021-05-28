@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %} 
+{% for res in search_res %}
+{% if loop.index % 2 == 0 %}
+<div class="fileitem" style="background:#F6F7F2;">
+{% else %}
+<div class="fileitem" style="background:#EDF9FF;">
+{%endif%}
+
+{% if res[1][1] == 1 %}
+<span id="FileTitle"><a href="/view?id={{res[5]}}" style="color:#1b1b1b;">{{res[8]}}</a></span> <span id="FileDesc">{{res[7]}} / {{res[4]}} / {{res[0]}} / {{res[1][0]}}</span><br />
+<p>{{res[3]}}</p> 
+</div>
+{%endif%}
+
+{% endfor %}   
+{% endblock %}
