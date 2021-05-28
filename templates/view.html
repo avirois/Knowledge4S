@@ -76,11 +76,15 @@
     padding:5px;
     vertical-align:2.5px;
     }
+
 </style>
     <p>
         <span id="FileTitle">{{data['title']}}</span>
         {% if session['admin'] or session['username'] == data['username'] %}
             <button id="FileTitleEdit" name="editTitle" onclick="openFormEditTitle()">Edit</button>
+        {% endif %}
+        {% if session['admin'] %}
+            <button id="FileDel" name="deleteFile" onclick="del()">Delete</button>
         {% endif %}
         <span id="FileDesc">{{data['inst']}} / {{data['facu']}} / {{data['course']}}</span>
         <span id="FileDate">{{data['date']}}</span>
@@ -180,5 +184,11 @@
             "' was rejected! reason:" + document.getElementById("rejectFormMsg").value;
             window.location.replace("/controlpanel/reject?file_id=" + id + "&msg=" + msg);
         }
+
+        function del(){
+            let id = document.getElementById("rejectFormId").value;
+            window.location.replace("/controlpanel/delete?file_id=" + id);
+        }
     </script>
+
 {% endblock %}
