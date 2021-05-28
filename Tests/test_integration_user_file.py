@@ -213,13 +213,14 @@ class TestUserFiles:
         ff_browser.get(application + "/user/" + username_test)
 
         # Get header Object
-        btnEditBio = ff_browser.find_element_by_xpath("/html/body/div[2]/div[2]/a[1]/button")
+        #btnEditBio = ff_browser.find_element_by_xpath("/html/body/div[2]/div[2]/a[1]/button")
+        btnEditBio = ff_browser.find_element_by_name("editBioBtn")
 
         # Click button
         btnEditBio.click()
 
         # Get the header in edit bio page
-        editBioHeader = ff_browser.find_element_by_xpath("/html/body/div[2]/h1")
+        editBioHeader = ff_browser.find_element_by_name("editBioHeader")
 
         assert (editBioHeader.text == "Change bio of " + username_test + "'s user")
 
@@ -248,13 +249,14 @@ class TestUserFiles:
         ff_browser.get(application + "/user/" + username_test)
 
         # Get header Object
-        btnChangePass = ff_browser.find_element_by_xpath("/html/body/div[2]/div[2]/a[2]/button")
+        #btnChangePass = ff_browser.find_element_by_xpath("/html/body/div[2]/div[2]/a[2]/button")
+        btnChangePass = ff_browser.find_element_by_name("changePassBtn")
 
         # Click button
         btnChangePass.click()
 
         # Get the header in edit bio page
-        changePassHeader = ff_browser.find_element_by_xpath("/html/body/div[2]/h1")
+        changePassHeader = ff_browser.find_element_by_name("ChangePasswordHeader")
 
         assert (changePassHeader.text == "Change password of " + username_test)
 
@@ -283,7 +285,8 @@ class TestUserFiles:
         ff_browser.get(application + "/user/" + username_test)
 
         # Get header Object
-        btnChangePass = ff_browser.find_element_by_xpath("/html/body/div[2]/div[2]/a[2]/button")
+        #btnChangePass = ff_browser.find_element_by_xpath("/html/body/div[2]/div[2]/a[2]/button")
+        btnChangePass = ff_browser.find_element_by_name("changePassBtn")
 
         # Click button
         btnChangePass.click()
