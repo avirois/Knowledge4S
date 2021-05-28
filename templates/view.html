@@ -84,7 +84,7 @@
             <button id="FileTitleEdit" name="editTitle" onclick="openFormEditTitle()">Edit</button>
         {% endif %}
         {% if session['admin'] %}
-            <button id="FileDel" name="deleteFile" onclick="del()">Delete</button>
+            <button id="FileReject" name="deleteFile" onclick="del()">Delete</button>
         {% endif %}
         <span id="FileDesc">{{data['inst']}} / {{data['facu']}} / {{data['course']}}</span>
         <span id="FileDate">{{data['date']}}</span>
@@ -186,7 +186,11 @@
         }
 
         function del(){
-            let id = document.getElementById("rejectFormId").value;
+            let vars = {};
+            let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                vars[key] = value;
+            });
+            let id = vars["id"];
             window.location.replace("/controlpanel/delete?file_id=" + id);
         }
     </script>
