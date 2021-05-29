@@ -86,13 +86,14 @@
         {% if session['admin'] %}
             <button id="FileReject" name="deleteFile" onclick="del()">Delete</button>
         {% endif %}
+        <button id="FileReport" name="file_report" onclick="openReportForm()">Report</button>
         <span id="FileDesc">{{data['inst']}} / {{data['facu']}} / {{data['course']}}</span>
         <span id="FileDate">{{data['date']}}</span>
         <span id="FileUser"><a href="/user/{{data['username']}}">{{data['username']}}</a></span>
-        <span id="FileDesc"><p name="fileDescription">{{data['desc']}}</p>
+        <p name="fileDescription">{{data['desc']}}</p>
         {% if session['admin'] or session['username'] == data['username'] %}
             <button id="FileDescEdit" name="editDesc" onclick="openFormEditDesc()">Edit Description</button>
-        {% endif %}</span>
+        {% endif %}
 
         {% if session['admin'] and data['preapproved'] == 0 %} 
             <div id="approve_reject">
@@ -157,6 +158,21 @@
     </form>
     </div>
 
+    <!-- Report div -->
+    <div class="form-popup" id="formReportFile">
+        <form action="/report_file" class="form-container" method="POST">
+            <h1 name="titleEditDesc">Report File</h1>
+    
+            <input type="text" value="{{data['id']}}" name="file_id" hidden>
+            
+            <label for="desc"><b>Reason for the report:</b></label>
+            <input type="text" name="desc" id="description" required>
+            
+            <button type="submit" class="btn" name="btnPostReport" >Report</button>
+            <button type="button" class="btn cancel" name="btnCloseDesc" onclick="closeReportForm()">Close</button>
+        </form>
+        </div>
+
     <script>
     function openFormEditTitle() {
     document.getElementById("formEditTitle").style.display = "block";
@@ -174,6 +190,14 @@
 
     function closeFormEditDesc() {
     document.getElementById("formEditDesc").style.display = "none";
+    }
+
+    function openReportForm(){
+        document.getElementById("formReportFile").style.display = "block";
+    }
+
+    function closeReportForm(){
+        document.getElementById("formReportFile").style.display = "none";
     }
     </script>
 
