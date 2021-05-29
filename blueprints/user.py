@@ -227,8 +227,8 @@ def change_pass(name):
         # Change password in DB
         updatePassword(usr)
 
-        # Update user password in DB  
-        return render_template("user.html", data = name, user = usr)
+        # Return to user page
+        return redirect('/user/' + name)
     # Method get
     else:
         return render_template("change_password.html", data = name)
