@@ -25,6 +25,7 @@ from blueprints.manageTypes import manage_types_blueprint
 from blueprints.forum import forum_blueprint
 from blueprints.lastUpdates import last_updates_blueprint
 from blueprints.delete import delete_blueprint
+from blueprints.report import report_file
 
 app = Flask(__name__)
 
@@ -55,6 +56,7 @@ app.register_blueprint(type_list)
 app.register_blueprint(forum_blueprint)
 app.register_blueprint(last_updates_blueprint)
 app.register_blueprint(delete_blueprint)
+app.register_blueprint(report_file)
 
 app.config["DB_NAME"] = "database.db"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER

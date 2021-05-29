@@ -160,11 +160,13 @@
 
     <!-- Report div -->
     <div class="form-popup" id="formReportFile">
-        <form action="" class="form-container" method="POST">
+        <form action="/report_file" class="form-container" method="POST">
             <h1 name="titleEditDesc">Report File</h1>
     
-            <label for="description"><b>Reason for the report:</b></label>
-            <input type="text" name="description" id="description" required>
+            <input type="text" value="{{data['id']}}" name="file_id" hidden>
+            
+            <label for="desc"><b>Reason for the report:</b></label>
+            <input type="text" name="desc" id="description" required>
             
             <button type="submit" class="btn" name="btnPostReport" >Report</button>
             <button type="button" class="btn cancel" name="btnCloseDesc" onclick="closeReportForm()">Close</button>

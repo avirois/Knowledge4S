@@ -13,7 +13,12 @@ def controlpanel():
         return redirect('/')
 
     # get all the preapproved files and display them
-    data = []
+    data = {
+        'data': [],
+        'data_length': 0,
+        'reports': [],
+        'reports_length': 0
+    }
     try:
         con = sqlite3.connect(current_app.config['DB_NAME'])
         cur = con.execute("SELECT FileID,UserName,Title,Description,DateUpload," +
@@ -25,7 +30,14 @@ def controlpanel():
         "AND Files.FacultyID = Faculties.FacultyID " + 
         "AND Files.CourseID = Courses.CourseID " )
         for row in cur:
-            data.append(row)
+            data['data'].append(row)
+        data['data_length'] = len(data['data'])
+
+        cur = con.execute("SELECT ID,FileId,Reporter,Date,Reason FROM Reports")
+        for row in cur:
+            data['reports'].append(row)
+        data['reports_length'] = len(data['reports'])
+
     except Exception as e:
         print(e)
     finally:
