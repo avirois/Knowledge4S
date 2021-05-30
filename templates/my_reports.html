@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3> My Reports:</h3>
+	{% for report in reports %}
+	<p> Date: {{report['date']}}  Content: {{report['report']}}
+    {% endfor %}   
+{% endblock %}
