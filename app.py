@@ -16,7 +16,7 @@ from blueprints.manageUser import user_manage_blueprint
 from blueprints.modification import modification_blueprint
 from blueprints.search import search_blueprint
 from blueprints.selections import selections_bp
-from blueprints.serve_file import serve_blueprint
+from blueprints.serve_file import serve_blueprint, serve_backup_blueprint
 from blueprints.uploads import upload_blueprint, UPLOAD_FOLDER, type_list
 from blueprints.user_files import user_files_blueprint
 from blueprints.user import user_blueprint
@@ -25,6 +25,10 @@ from blueprints.manageTypes import manage_types_blueprint
 from blueprints.forum import forum_blueprint
 from blueprints.lastUpdates import last_updates_blueprint
 from blueprints.delete import delete_blueprint
+from blueprints.delete_my_files import delete_my_file_blueprint
+from blueprints.update import update_my_file_blueprint
+from blueprints.view_backup import view_backup_blueprint
+from blueprints.report_status import my_reports_blueprint
 
 app = Flask(__name__)
 
@@ -55,6 +59,11 @@ app.register_blueprint(type_list)
 app.register_blueprint(forum_blueprint)
 app.register_blueprint(last_updates_blueprint)
 app.register_blueprint(delete_blueprint)
+app.register_blueprint(delete_my_file_blueprint)
+app.register_blueprint(update_my_file_blueprint)
+app.register_blueprint(view_backup_blueprint)
+app.register_blueprint(serve_backup_blueprint)
+app.register_blueprint(my_reports_blueprint)
 
 app.config["DB_NAME"] = "database.db"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER

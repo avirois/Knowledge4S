@@ -21,18 +21,6 @@ Copy storage1 to sotorage and setup database acoriding to this scenario:
         |    11   |     "math" |
         |    22   |     "art"  |
 
-        * Files
-        FileID | UserName | FileName | Title          | Description
-        ----------------------------------------------------------------->>>-
-        |    1 | "user1"   | "F1.txt" | "title-math"   | "special number"
-        |    2 | "Moshe"  | "F2.txt" | "titile-sokal" | "sokal-affair"
-
-        | DateUpload | DateModified | InstituteID | FacultyID | CourseID |  Approved
-    ->>>----------------------------------------------------------------------------
-        | "1.1.2021" | "1.1.2021"   |          1  |       11  |     111  |       1
-        | "1.1.2021" | "1.1.2021"   |          2  |       22  |     222  |       1
-
-
         * Institutions
         InstitutionID | InstitutionName
         --------------------------------
@@ -91,10 +79,10 @@ def init():
     with sqlite3.connect(DB_NAME) as con:
         # setup
         con.execute("DELETE FROM Faculties")
-        con.execute("DELETE FROM OldFiles")
         con.execute("DELETE FROM Institutions")
         con.execute("DELETE FROM Lecturers")
         con.execute("DELETE FROM Courses")
+        con.execute("DELETE FROM Files")
         con.execute("DELETE FROM Files")
         con.execute("DELETE FROM FacIn")
         con.execute("DELETE FROM Users")
@@ -108,23 +96,6 @@ def init():
             "INSERT INTO Courses VALUES (?, ?, ?, ?)", (111, "Calculus", 1111, 2021)
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (1, 11))
-        con.execute(
-            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (
-                1,
-                "user1",
-                "F1.txt",
-                "title-math",
-                "special number",
-                date(2021, 1, 1),
-                date(2021, 1, 1),
-                1,
-                11,
-                111,
-                1,
-                "Lecture",
-            ),
-        )
         # 2)
         con.execute("INSERT INTO Faculties VALUES (?, ?)", (22, "art"))
         con.execute("INSERT INTO Institutions VALUES (?, ?)", (2, "B"))
@@ -134,23 +105,6 @@ def init():
             (222, "study of drawing", 2222, 2021),
         )
         con.execute("INSERT INTO FacIn VALUES (?, ?)", (2, 22))
-        con.execute(
-            "INSERT INTO Files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (
-                2,
-                "Moshe",
-                "F2.txt",
-                "titile-sokal",
-                "sokal-affair",
-                date(2021, 1, 1),
-                date(2021, 1, 1),
-                2,
-                22,
-                222,
-                1,
-                "Lecture",
-            ),
-        )
         con.execute(
             "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
@@ -201,8 +155,7 @@ def init():
         con.execute("INSERT INTO Types(Type) VALUES (?) ", ("Exam",))
 
     os.mkdir("storage")
-    shutil.copy("Tests/test_storage_1/1.txt", "storage/1.txt")
-    shutil.copy("Tests/test_storage_1/2.txt", "storage/2.txt")
+    os.mkdir("storage/backup")
 
 
 def tear_down():
@@ -215,10 +168,11 @@ def tear_down():
         con.execute("DELETE FROM Files")
         con.execute("DELETE FROM Users")
         con.execute("DELETE FROM Comments")
-        con.execute("DELETE FROM OldFiles")
         con.execute("DELETE FROM Types")
+        con.execute("DELETE FROM OldFiles")
         con.execute("DELETE FROM Notification")
         con.execute("DELETE FROM sqlite_sequence")
+    rmdir(Path("storage/backup"))
     rmdir(Path("storage/"))
 
 
