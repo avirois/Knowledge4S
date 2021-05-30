@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 
-{% block content %} 
+{% block content %}
+<style>
+.button { width: 150px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonHover { background-color: #555555; color: white; border: 2px solid #555555; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonHover:hover { background-color: white; color: black; }
+</style>
 <p>    
 <h1>Login</h1>
     <b> {{ massage }} </b>
     <p>
     <form action="/login" method="POST">
-        <p>Username: <input type="text" name="username"/></p>
-        <p>Password: <input type="password" name="password"/></p>
-        <input type="submit" value="Send" name="submit" />
+        <p>Username: <input type="text" name="username" style="height:2em; width: 290px; margin-left: 15px;"/></p>
+        <p>Password: <input type="password" name="password" style="height:2em; width: 290px; margin-left: 15px;"/></p>
+        <input type="submit" value="Send" name="submit" class="button buttonHover" />
     </form>
     </p>   
 </p>
