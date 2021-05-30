@@ -3,18 +3,23 @@
 
 
 {% block content %} 
+<style>
+.button { width: 150px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonHover { background-color: #555555; color: white; border: 2px solid #555555; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonHover:hover { background-color: white; color: black; }
+</style>
 <p>    
     <h1>Register</h1>
     <b> {{ massage }} </b>
     <p>
     <form action="/register" method="POST">
-        <p><span style="color:red">*</span> Username: <input type="text" name="username" size="20"/></p>
-        <p><span style="color:red">*</span> First name: <input type="text" name="fName" size="20"/></p>
-        <p><span style="color:red">*</span> Last name: <input type="text" name="lName" size="20"/></p>
-        <p>Email: <input type="text" name="email" size="30"/></p>
-        <p><span style="color:red">*</span> Password: <input type="password" name="password" size="20"/></p>
+        <p><span style="color:red">*</span> Username: <input type="text" name="username" size="20" style="height:2em; width: 290px; margin-left: 20px;"/></p>
+        <p><span style="color:red">*</span> First name: <input type="text" name="fName" size="20" style="height:2em; width: 290px; margin-left: 20px;"/></p>
+        <p><span style="color:red">*</span> Last name: <input type="text" name="lName" size="20" style="height:2em; width: 290px; margin-left: 20px;"/></p>
+        <p>Email: <input type="text" name="email" size="30" style="height:2em; width: 290px; margin-left: 70px;"/></p>
+        <p><span style="color:red">*</span> Password: <input type="password" name="password" size="20" style="height:2em; width: 290px; margin-left: 22px;"/></p>
         <p><span style="color:red">*</span> Institution : 
-        <select name="institution" id="institution"> 
+        <select name="institution" id="institution" style="height:2em; width: 290px; margin-left: 20px;"> 
             <option value="">Select Institution!</option>
             {% for istitution in institutions %}
                 <option value="{{istitution[0]}}">{{istitution[1]}}</option>
@@ -22,12 +27,12 @@
         </select>
         </p>
         <p><span style="color:red">*</span> Faculty : 
-        <select name="faculty" id="faculty">
+        <select name="faculty" id="faculty" style="height:2em; width: 290px; margin-left: 37px;">
             <option value="">Select Faculty!</option>
         </select>
         </p>
-        <p><span style="color:red">*</span> Study year: <input type="number" name="year" min="1" max="10"></p>
-        <input type="submit" />
+        <p><span style="color:red">*</span> Study year: <input type="number" name="year" min="1" max="10" style="height:2em; width: 290px; margin-left: 15px;"></p>
+        <input type="submit" class="button buttonHover"/>
     </form>
     </p>
 </p>
