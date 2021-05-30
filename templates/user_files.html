@@ -30,6 +30,9 @@ tr { text-align: center; }
                 {% else %}
                     <td><div id="approved"><button class="buttonGreenEdit">Approved</button></div></td>
                 {% endif %}
+
+                <td><a href="/delete?id={{file[0]}}" id="delefile"><button>delete</button></a></td>
+                <td><a href="/update?id={{file[0]}}" id="upadefile"><button>update file</button></a></td>
             </tr>
         {% endfor %} 
         </table>

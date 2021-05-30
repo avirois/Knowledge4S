@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    <p>enter new file {{filename}}</p>
+    <p>
+      <form action = "/update" method = "POST" 
+        enctype = "multipart/form-data" id="formUploadFile">
+        <p>Choose file: <input type = "file" name = "file" /></p>
+        <input type="hidden" id="id" name="id" value="{{file_id }}">
+      <input type="submit" value="upload" name="upload"/>
+      </form>
+      <p> {{msg}} </p>
+      <td><a href="/user_files" id="back"><button>back to my files</button></a></td>
+   </p>
+{% endblock %}
