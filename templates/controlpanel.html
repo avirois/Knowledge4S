@@ -17,4 +17,42 @@
         <a href="/manage_courses" id="manageCourses"><button class="button button1">Manage Courses</button></a>
         <a href="/manage_users" id="usersManage" name="usersManage"><button class="button button1">Manage Users</button></a>
     </div>
+    </br>
+    <div>
+        <a href="/manage_lecturers" id="manageLecturers"><button class="button button1">Manage Lecturers</button></a>
+        <a href="/manage_types" id="manageTypes"><button class="button button1">Manage File Types</button></a>
+    <!-- Pre approved files -->
+    <div>
+        <p><h1>Preapproved file</h1></p>
+        {% if data['data_length'] != 0 %}
+            {% for res in data['data'] %}
+                {% if loop.index % 2 == 0 %}
+                <div class="fileitem" style="background:#F6F7F2;">
+                {% else %}
+                <div class="fileitem" style="background:#EDF9FF;">
+                {%endif%}
+                <span id="FileTitle"><a href="/view?id={{res[0]}}" style="color:#1b1b1b;">{{res[2]}}</a></span> <span id="FileDesc"> {{res[5]}} / {{res[6]}} / {{res[7]}}</span><br />
+                <p>{{res[3]}}</p> 
+                </div> 
+            {% endfor %}
+        {% else %}
+                <p>None</p>
+        {%endif%}
+    </div>
+    <div>
+        <p><h1>Recent Reports</h1></p>
+        {% if data['reports_length'] != 0 %}
+            {% for res in data['reports']%}
+                <p>
+                    <a href="/report_file?delete={{res[0]}}">Delete</a> | 
+                    <a href="/view?id={{res[1]}}">Goto File</a> | 
+                    file id: {{res[1]}} | 
+                    reporter: {{res[2]}} | 
+                    reason: {{res[4]}}
+                </p>
+            {% endfor %}
+        {%else%}
+                <p>None</p>
+        {%endif%}
+    </div>
 {% endblock %}

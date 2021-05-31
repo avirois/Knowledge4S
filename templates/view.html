@@ -1,15 +1,117 @@
 {% extends 'base.html' %}
-{% block content %} 
+{% block content %}
+<style>
+    body {font-family: Arial, Helvetica, sans-serif;}
+    * {box-sizing: border-box;}
+
+    /* Button used to open the contact form - fixed at the bottom of the page */
+    .open-button {
+    background-color: #555;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    opacity: 0.8;
+    position: fixed;
+    width: 50px;
+    }
+
+    /* The popup form - hidden by default */
+    .form-popup {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 15px;
+    border: 3px solid #f1f1f1;
+    z-index: 9;
+    }
+
+    /* Add styles to the form container */
+    .form-container {
+    max-width: 300px;
+    padding: 10px;
+    background-color: white;
+    }
+
+    /* Full-width input fields */
+    .form-container input[type=text], .form-container input[type=password] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: #f1f1f1;
+    }
+
+    /* When the inputs get focus, do something */
+    .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+    }
+
+    /* Set a style for the submit/login button */
+    .form-container .btn {
+    background-color: #04AA6D;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom:10px;
+    opacity: 0.8;
+    }
+
+    /* Add a red background color to the cancel button */
+    .form-container .cancel {
+    background-color: red;
+    }
+
+    /* Add some hover effects to buttons */
+    .form-container .btn:hover, .open-button:hover {
+    opacity: 1;
+    }
+
+    #FileDescEdit{
+    background:#8dd4f5;
+    border-radius:5px;
+    padding:5px;
+    vertical-align:2.5px;
+    }
+
+</style>
     <p>
-        <span id="FileTitle">{{data['title']}}</span> 
+        <span id="FileTitle">{{data['title']}}</span>
         <span id="FileDesc">{{data['inst']}} / {{data['facu']}} / {{data['course']}}</span>
         <span id="FileDate">{{data['date']}}</span>
         <span id="FileUser"><a href="/user/{{data['username']}}">{{data['username']}}</a></span>
-        <p>{{data['desc']}}</p>
+        <p name="fileDescription">{{data['desc']}}</p>
+        {% if session['admin'] or session['username'] == data['username'] %}
+            <button id="FileTitleEdit" name="editDesc" onclick="openFormEditDesc()">Edit Description</button>
+        {% endif %}
+
+        {% if session['admin'] or session['username'] == data['username'] %}
+        <button id="FileTitleEdit" name="editTitle" onclick="openFormEditTitle()">Edit</button>
+        {% endif %}
+        {% if session['admin'] %}
+            <button id="FileTitleEdit" name="deleteFile" onclick="del()">Delete</button>
+        {% endif %}
+        <button id="FileTitleEdit" name="file_report" onclick="openReportForm()">Report</button>
+
+        {% if session['admin'] and data['preapproved'] == 0 %} 
+            <div id="approve_reject">
+                <p>Please review the file and select an option:</p>
+                <input id="rejectFormId" value="{{data['id']}}" hidden>
+                <input id="rejectFormTitle" value="{{data['title']}}" hidden>
+                <input type="text" placeholder="rejection reason" size="50" id="rejectFormMsg"><br /><br />
+                <a href="/controlpanel/approve?file_id={{data['id']}}" id="FileApprove">Approve</a>
+                <a id="FileReject" onclick="reject()">Reject</a>
+            </div>
+        {% endif %}
     </p>
 
     <iframe src="storage/{{data['id']}}.{{data['type']}}" style="width:100%;height:500px;"> </iframe>
     <a href="storage/{{data['id']}}.{{data['type']}}" download>Download</a>
+    <a href="/view_backup?id={{data['id']}}" id="olderbtn">view older file</a>
+
 
     <p>
         <h1>Comments</h1>
@@ -33,4 +135,91 @@
         </p>
 
     </p>
+    <a href="/modification?file_id={{data['id']}}">View Modification</a>
+    
+    <div class="form-popup" id="formEditTitle">
+    <form action="/edit_title/{{data['id']}}" class="form-container" method="POST">
+        <h1 name="titleEditTitle">Edit Title</h1>
+
+        <label for="title"><b>Title</b></label>
+        <input type="text" value="{{data['title']}}" name="title" id="title" required>
+        
+        <button type="submit" class="btn" name="btnSaveTitle" >Save</button>
+        <button type="button" class="btn cancel" name="btnClose" onclick="closeFormEditTitle()">Close</button>
+    </form>
+    </div>
+
+    <div class="form-popup" id="formEditDesc">
+    <form action="/edit_description/{{data['id']}}" class="form-container" method="POST">
+        <h1 name="titleEditDesc">Edit Description</h1>
+
+        <label for="description"><b>Description</b></label>
+        <input type="text" value="{{data['desc']}}" name="description" id="description" required>
+        
+        <button type="submit" class="btn" name="btnSaveDesc" >Save</button>
+        <button type="button" class="btn cancel" name="btnCloseDesc" onclick="closeFormEditDesc()">Close</button>
+    </form>
+    </div>
+
+    <!-- Report div -->
+    <div class="form-popup" id="formReportFile">
+        <form action="/report_file" class="form-container" method="POST">
+            <h1 name="titleEditDesc">Report File</h1>
+    
+            <input type="text" value="{{data['id']}}" name="file_id" hidden>
+            
+            <label for="desc"><b>Reason for the report:</b></label>
+            <input type="text" name="desc" id="description" required>
+            
+            <button type="submit" class="btn" name="btnPostReport" >Report</button>
+            <button type="button" class="btn cancel" name="btnCloseDesc" onclick="closeReportForm()">Close</button>
+        </form>
+        </div>
+
+    <script>
+    function openFormEditTitle() {
+    document.getElementById("formEditTitle").style.display = "block";
+    document.getElementById("formEditDesc").style.display = "none";
+    }
+
+    function closeFormEditTitle() {
+    document.getElementById("formEditTitle").style.display = "none";
+    }
+
+    function openFormEditDesc() {
+    document.getElementById("formEditDesc").style.display = "block";
+    document.getElementById("formEditTitle").style.display = "none";
+    }
+
+    function closeFormEditDesc() {
+    document.getElementById("formEditDesc").style.display = "none";
+    }
+
+    function openReportForm(){
+        document.getElementById("formReportFile").style.display = "block";
+    }
+
+    function closeReportForm(){
+        document.getElementById("formReportFile").style.display = "none";
+    }
+    </script>
+
+    <script>
+        function reject(){
+            let id = document.getElementById("rejectFormId").value;
+            let msg = "File named '" + document.getElementById("rejectFormTitle").value + 
+            "' was rejected! reason:" + document.getElementById("rejectFormMsg").value;
+            window.location.replace("/controlpanel/reject?file_id=" + id + "&msg=" + msg);
+        }
+
+        function del(){
+            let vars = {};
+            let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                vars[key] = value;
+            });
+            let id = vars["id"];
+            window.location.replace("/controlpanel/delete?file_id=" + id);
+        }
+    </script>
+
 {% endblock %}

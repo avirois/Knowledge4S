@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+.button { width: 150px; height: 50px; background-color: #555555; border: none; color: #555555; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonHover { background-color: #555555; color: white; border: 2px solid #555555; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonHover:hover { background-color: white; color: black; }
+</style>
+<form name="add" action="/add_lecturer" method="POST">
+    <p>Institutions:
+    <select onchange="onAddSelection()" name="institutions" id="addinstitutions" style="height:2em; width: 290px; margin-left: 35px;">
+        <option value="select">select</option>
+        {% for opt in institutions%}
+        <option value="{{opt}}">{{opt}}</option>
+        {% endfor %}                                              
+    </select>
+    </p>
+    <p>Faculties:
+    <select onchange="onAddSelection()" name="faculties" id="addfaculties" style="height:2em; width: 290px; margin-left: 50px;">
+        <option value="select">select</option>
+        {% for opt in faculties%}
+        <option value="{{opt}}">{{opt}}</option>
+        {% endfor %}                                              
+    </select>
+    </p>
+    <p>Name: <input type="text" name="Lecturers Name" value="" style="height:2em; width: 290px; margin-left: 70px;" /></p>
+    <input type="submit" value="add" name="send_add" class="button buttonHover"/>
+</form>
+<form name="remove" action="/remove_lecturer" method="POST">
+    <p>Institutions:
+    <select onchange="onRemoveSelection()" name="institutions" id="removeinstitutions" style="height:2em; width: 290px; margin-left: 35px;">
+        <option value="select">select</option>
+        {% for opt in institutions%}
+        <option value="{{opt}}">{{opt}}</option>
+        {% endfor %}                                              
+    </select>
+    </p>
+    <p>Faculties:
+    <select onchange="onRemoveSelection()" name="faculties" id="removefaculties" style="height:2em; width: 290px; margin-left: 50px;">
+        <option value="select">select</option>
+        {% for opt in faculties%}
+        <option value="{{opt}}">{{opt}}</option>
+        {% endfor %}                                              
+    </select>
+    </p>
+    <p>Lecturers:
+    <select onchange="onRemoveSelection()" name="lecturers" id="removelecturers" style="height:2em; width: 290px; margin-left: 45px;">
+        <option value="select">select</option>
+        {% for opt in lecturers%}
+        <option value="{{opt}}">{{opt}}</option>
+        {% endfor %}                                              
+    </select>
+    </p>
+    <input type="submit" value="remove" name="send_remove" class="button buttonHover"/>
+</form>
+{% if success == "success" %}
+  <p> success
+{% elif success == "fail" %}
+  <p> fail
+{% else %}
+{% endif %}
+<script>
+"use strict";
+const addSelectors = {
+    institutions: document.getElementById("addinstitutions"),
+    faculties: document.getElementById("addfaculties"),
+};
+
+const removeSelectors = {
+    institutions: document.getElementById("removeinstitutions"),
+    faculties: document.getElementById("removefaculties"),
+    lecturers: document.getElementById("removelecturers"),
+};
+
+function createOption(text, value) {
+    let objOption = document.createElement("option");
+    objOption.text = text;
+    objOption.value = value;
+    return objOption;
+}
+
+function deleteOptions(selector) {
+    selector.options.length = 0;
+}
+
+async function updateSelecions(currentSelections, selectors){
+    let response = await fetch("/fetch/selection", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify(currentSelections),
+    });
+
+    let result = await response.json(); // read response body and parse as JSON
+
+    for (const sel in selectors) {
+        deleteOptions(selectors[sel]);
+    }
+
+    for (const sel in selectors) {
+        selectors[sel].options.add(createOption("select", "select"));
+    }
+
+    for (const sel in result) {
+        for (const option of result[sel]) {
+            if(selectors.hasOwnProperty(sel)){
+                selectors[sel].options.add(createOption(option, option));
+            }
+        }
+    }
+
+    for (const sel in selectors) {
+        let index = 0;
+        const to_select = currentSelections[sel];
+        for (const opt of selectors[sel].options) {
+            if (opt.value === to_select) index = opt.index;
+        }
+        selectors[sel].selectedIndex = index;
+    }
+}
+
+async function updateAddSelecions() {
+    const currentSelections = {
+        institutions: addSelectors.institutions.options[addSelectors.institutions.selectedIndex].value,
+        faculties: addSelectors.faculties.options[addSelectors.faculties.selectedIndex].value,
+    };
+    return await updateSelecions(currentSelections, addSelectors)
+}
+
+async function updateRemoveSelecions() {
+    const currentSelections = {
+        institutions: removeSelectors.institutions.options[removeSelectors.institutions.selectedIndex].value,
+        faculties: removeSelectors.faculties.options[removeSelectors.faculties.selectedIndex].value,
+        lecturers: removeSelectors.lecturers.options[removeSelectors.lecturers.selectedIndex].value,
+    };
+    return await updateSelecions(currentSelections, removeSelectors)
+}
+
+function onAddSelection() {
+    new Promise((resolve, reject) => {
+        updateAddSelecions();
+        resolve();
+    });
+}
+
+function onRemoveSelection() {
+    new Promise((resolve, reject) => {
+        updateRemoveSelecions();
+        resolve();
+    });
+}
+</script>
+{% endblock %}
+

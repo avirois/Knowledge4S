@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    {% if exist %}
+        <iframe src="storage/backup/{{filename}}" style="width:100%;height:500px;"> </iframe>
+    {% else %}
+        <p> no older version of this file exist </p>
+    {%endif%}
+    <a href="/view?id={{file_id}}" id="back">back</a>
+</div>
+
+{% endblock %}

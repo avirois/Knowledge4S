@@ -42,8 +42,6 @@ body{
     margin:30px auto;
 }
 
-
-
 .fileitem{
     padding:10px;
 }
@@ -52,6 +50,15 @@ body{
     font-size:32px;
     font-weight:800;
     text-decoration:underline;
+}
+#FileTitleEdit{
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    background: #C6F0DA;
+    border:0px;
+    border-radius:5px;
+    padding:5px;
+    vertical-align:2.5px;
 }
 #FileDesc{
     background:#BADEB2;
@@ -71,12 +78,34 @@ body{
     padding:5px;
     vertical-align:2.5px;
 }
+#FileUser a{
+    text-decoration:none;
+    color:#1b1b1b;
+}
+#approve_reject{
+    text-align:center;
+    padding:20px 20px 30px 20px;
+    background:#F6F7F2;
+}
+#FileApprove {
+    padding:10px;
+    
+    text-decoration:none;
+    background:#89cc7a;
+    color:#1b1b1b;
+}
+#FileReject {
+    padding:10px;
+    
+    text-decoration:none;
+    background:#df6868;
+    color:#1b1b1b;
+}
 #comment{
     padding:5px;
     margin-bottom:5px;
     border-left:3px solid #83D6DE;
 }
-
 #flat_button{
     padding:5px;
     font-family: 'Inter', sans-serif;
@@ -85,6 +114,11 @@ body{
     background:#fff;
     border:1px solid #1b1b1b;
     border-radius:5px;
+}
+#courseForumTitle{
+    font-size:15px;
+    font-weight:800;
+    text-decoration:underline;
 }
 .clear {
     overflow: auto;
