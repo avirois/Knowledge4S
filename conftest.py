@@ -279,7 +279,10 @@ def rmdir(directory):
 
 @pytest.fixture
 def copy_test_storage_1_to_storage():
-    os.mkdir("storage")
+    try:
+        os.mkdir("storage")
+    except FileExistsError as e:
+        pass
     shutil.copy("Tests/test_storage_1/1.txt", "storage/1.txt")
     shutil.copy("Tests/test_storage_1/2.txt", "storage/2.txt")
     yield
