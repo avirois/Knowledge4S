@@ -201,7 +201,16 @@ def init():
         con.execute("INSERT INTO Types(Type) VALUES (?) ", ("Lab",))
         con.execute("INSERT INTO Types(Type) VALUES (?) ", ("Exam",))
 
-    os.mkdir("storage")
+    try:
+        os.mkdir("storage")
+    except FileExistsError as e:
+        pass
+
+    try:
+        os.mkdir(os.path.join("storage","backup"))
+    except FileExistsError as e:
+        pass
+    
     shutil.copy("Tests/test_storage_1/1.txt", "storage/1.txt")
     shutil.copy("Tests/test_storage_1/2.txt", "storage/2.txt")
 

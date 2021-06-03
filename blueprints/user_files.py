@@ -11,6 +11,13 @@ user_files_blueprint = Blueprint(
     "user_files_blueprint", __name__, template_folder="templates"
 )
 
+def parse_file_time(string):
+    tmp = string.split(" ")
+    date = tmp[0]
+    time = tmp[1]
+    date = date.split("-")
+    time = time.split(":")
+    return "{}/{}/{} - {}:{}".format(date[2],date[1],date[0],time[0],time[1])
 
 def getFiles():
     dbname = current_app.config["DB_NAME"]
@@ -31,8 +38,8 @@ def getFiles():
                 [
                     line[0],
                     line[1],
-                    line[2],
-                    line[3],
+                    parse_file_time(line[2]),
+                    parse_file_time(line[3]),
                     line[4],
                 ]
             )

@@ -6,6 +6,22 @@
 
 th { text-align: center; }
 tr { text-align: center; }
+
+#content{
+    width:50%;
+    padding:15px;
+    background:#fff;
+    border: 1px solid #ddd;
+    margin:30px auto;
+    }
+
+.button{
+    background:#5F9EA0;
+    color: white;
+    border-radius:5px;
+    padding:5px;
+    vertical-align:2.5px;
+    }
 </style>
 <h1 name="titleFiles">Files:</h1>
 <p>
@@ -31,8 +47,8 @@ tr { text-align: center; }
                     <td><div id="approved"><button class="buttonGreenEdit">Approved</button></div></td>
                 {% endif %}
 
-                <td><a href="/delete?id={{file[0]}}" id="delefile"><button>delete</button></a></td>
-                <td><a href="/update?id={{file[0]}}" id="upadefile"><button>update file</button></a></td>
+                <td><a href="/delete?id={{file[0]}}" id="delefile"><button class="button">delete</button></a></td>
+                <td><a href="/update?id={{file[0]}}" id="upadefile"><button class="button">update file</button></a></td>
             </tr>
         {% endfor %} 
         </table>

@@ -1,4 +1,5 @@
 """Main module from here the app starts."""
+import os
 from flask import Flask
 from blueprints.about import about_bp
 from blueprints.authentication import authentication_blueprint
@@ -70,6 +71,18 @@ app.register_blueprint(view_blueprint)
 app.config["DB_NAME"] = "database.db"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.secret_key = b"\xf5\xe4\xabr\x89\xd9#^D@0\xae[R1\xcf"
+
+# Create storage folders if not exists
+try:
+    os.mkdir("storage")
+except FileExistsError as e:
+    pass
+
+# Create backup folder if not exsits
+try:
+    os.mkdir(os.path.join("storage","backup"))
+except FileExistsError as e:
+    pass
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

@@ -62,11 +62,11 @@ def backup_current(dbname, file_id):
         file_extension = filename.rsplit(".", 1)[1].lower()
         shutil.move(
             os.path.join(
-                "storage/",
+                "storage",
                 "{}.{}".format(file_id, file_extension),
             ),
             os.path.join(
-                "storage/backup",
+                "storage","backup",
                 "{}.{}".format(file_id, file_extension),
             ),
         )
