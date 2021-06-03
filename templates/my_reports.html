@@ -2,6 +2,6 @@
 {% block content %}
 <h3> My Reports:</h3>
 	{% for report in reports %}
-	<p> Date: {{report['date']}}  Content: {{report['report']}}
+	<p>{{loop.index}}. Date: {{report['date']}} </br> &nbsp;&nbsp;&nbsp;Content: {{report['reason']}}</br></p>
     {% endfor %}   
 {% endblock %}

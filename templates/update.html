@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+.button { width: 200px; height: 50px; background-color: #536162; border: none; color: #536162; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; transition-duration: 0.4s;}
+.buttonHover { background-color: #536162; color: white; border: 2px solid #536162; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);}
+.buttonHover:hover { background-color: white; color: black; }
+</style>
     <p>enter new file {{filename}}</p>
     <p>
       <form action = "/update" method = "POST" 
         enctype = "multipart/form-data" id="formUploadFile">
         <p>Choose file: <input type = "file" name = "file" /></p>
         <input type="hidden" id="id" name="id" value="{{file_id }}">
-      <input type="submit" value="upload" name="upload"/>
+      <input type="submit" value="upload" name="upload" class="button buttonHover"/>
       </form>
       <p> {{msg}} </p>
-      <td><a href="/user_files" id="back"><button>back to my files</button></a></td>
+      <td><a href="/user_files" id="back"><button class="button buttonHover">back to my files</button></a></td>
    </p>
 {% endblock %}
